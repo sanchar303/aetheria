@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Aetheria</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #090d16;
+      color: #f8fafc;
+      touch-action: none;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    #worldCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #080e1a;
+    }
+    .chat-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .chat-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 9999px;
+    }
+    #joystickZone {
+      touch-action: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Main Fullscreen Open World Container -->
+  <div id="app" class="relative w-full h-full overflow-hidden select-none">
+    <!-- World Canvas -->
+    <canvas id="worldCanvas"></canvas>
+
+    <!-- Top HUD Bar -->
+    <header class="pointer-events-none absolute top-0 left-0 right-0 z-20 p-2.5 sm:p-4 flex items-start justify-between gap-2">
+      <!-- Left: World & P2P Status Pill -->
+      <div class="pointer-events-auto flex flex-wrap items-center gap-2 bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl px-3 py-2 shadow-xl max-w-[74vw] sm:max-w-none">
+        <div class="flex items-center gap-2">
+          <span id="p2pStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span class="text-xs sm:text-sm font-bold tracking-tight text-white">Aetheria</span>
+          <span id="p2pStatusText" class="text-[11px] sm:text-xs text-slate-300 font-medium">Init P2P...</span>
+        </div>
+
+        <div class="h-4 w-px bg-slate-700/80 hidden sm:block"></div>
+
+        <!-- 4-Digit Peer ID & Copy Button -->
+        <div class="flex items-center gap-1.5 bg-slate-950/80 border border-slate-800 rounded-xl px-2 py-1">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold hidden md:inline">ID</span>
+          <span id="myPeerIdDisplay" class="font-mono-code text-[11px] sm:text-xs text-sky-400 font-bold">----</span>
+          <button
+            id="copyPeerBtn"
+            type="button"
+            title="Copy 4-Digit Peer ID"
+            class="p-1 rounded-lg hover:bg-slate-800 active:scale-95 text-slate-300 hover:text-white transition"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Connect Peer Button -->
+        <button
+          id="openConnectModalBtn"
+          type="button"
+          class="flex items-center gap-1 bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-semibold text-xs px-2.5 py-1.5 rounded-xl shadow-md transition"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5m7.07-7.07l-1.5 1.5a4 4 0 000 5.656"></path>
+          </svg>
+          <span>Join Peer</span>
+        </button>
+
+        <!-- Peer Count Badge -->
+        <div class="flex items-center gap-1 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold px-2 py-1 rounded-xl">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          <span id="peerCountText">1</span>
+        </div>
+
+        <!-- Hull & Kills Telemetry -->
+        <div class="flex items-center gap-2 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
+          <span id="hullText" class="font-mono-code font-bold text-rose-400">HP 100</span>
+          <span class="text-slate-600">|</span>
+          <span id="killsText" class="font-mono-code font-bold text-violet-300">0 KILLS</span>
+        </div>
+      </div>
+
+      <!-- Right: Minimap & Action Controls -->
+      <div class="pointer-events-auto flex flex-col items-end gap-2">
+        <div class="relative bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl p-1.5 shadow-xl">
+          <canvas id="minimapCanvas" width="112" height="112" class="w-20 h-20 sm:w-28 sm:h-28 rounded-xl block"></canvas>
+          <div class="mt-1 px-1 flex items-center justify-between text-[10px] text-slate-400 font-mono-code">
+            <span id="coordsText">0, 0</span>
+            <span id="shardsText" class="text-amber-300 font-semibold">0 ★</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl p-1.5 shadow-xl">
+          <!-- Dash Energy Meter -->
+          <div class="hidden sm:flex flex-col justify-center px-2 py-1 bg-slate-950/75 border border-slate-800 rounded-xl min-w-[84px]">
+            <div class="flex items-center justify-between text-[10px] font-semibold text-indigo-300 mb-1">
+              <span>DASH</span>
+              <span id="dashEnergyLabel">0%</span>
+            </div>
+            <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+              <div id="dashEnergyBar" class="h-full bg-gradient-to-r from-indigo-500 to-sky-400 transition-all duration-100" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <button
+            id="fireBtn"
+            type="button"
+            title="Fire Pulse Bolt (F or Click/Tap World)"
+            class="p-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/35 active:scale-95 text-rose-300 border border-rose-400/30 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+          </button>
+
+          <button
+            id="dashBtn"
+            type="button"
+            disabled
+            title="Dash (Space) — Requires 100% Dash Energy"
+            class="p-2 rounded-xl bg-indigo-500/15 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-indigo-500/30 active:scale-95 text-indigo-300 border border-indigo-400/30 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </button>
+
+          <button
+            id="beaconBtn"
+            type="button"
+            title="Deploy Resonance Beacon (E) — Pulls shards & draws NPC escorts"
+            class="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 active:scale-95 text-amber-300 border border-amber-400/30 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </button>
+
+          <button
+            id="soundToggleBtn"
+            type="button"
+            title="Toggle Sound"
+            class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 transition"
+          >
+            <svg id="soundOnIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+            </svg>
+            <svg id="soundOffIcon" class="w-4 h-4 hidden text-rose-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+            </svg>
+          </button>
+
+          <button
+            id="profileBtn"
+            type="button"
+            title="Explorer Profile"
+            class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Bottom Left: Touch Joystick -->
+    <div id="joystickZone" class="md:hidden fixed bottom-4 left-4 z-20 w-28 h-28 rounded-full bg-slate-900/60 backdrop-blur-md border border-slate-700/70 flex items-center justify-center shadow-2xl">
+      <div id="joystickKnob" class="w-11 h-11 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 border-2 border-white/70 shadow-lg transform transition-transform duration-75"></div>
+    </div>
+
+    <!-- Bottom Right: P2P Chat & Quick Emotes -->
+    <aside class="fixed bottom-3 right-3 left-36 md:left-auto md:bottom-4 md:right-4 z-20 md:w-80 flex flex-col gap-2">
+      <div id="chatContainer" class="bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl overflow-hidden shadow-2xl transition-all">
+        <div class="px-3 py-1.5 border-b border-slate-800/80 flex items-center justify-between">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">P2P Mesh Chat</span>
+          <button id="toggleChatBtn" type="button" class="text-[11px] text-sky-400 hover:text-sky-300 font-medium">Hide</button>
+        </div>
+
+        <div id="chatBody">
+          <div id="chatMessages" class="chat-scroll h-24 sm:h-32 overflow-y-auto px-3 py-2 space-y-1.5 text-xs">
+            <div class="text-slate-400 italic">Infinite Aetheria sector active. Watch out for Swarmers, Stalkers, and Colossus threats!</div>
+          </div>
+
+          <div class="px-2.5 py-1 border-t border-slate-800/70 flex items-center justify-between gap-1 bg-slate-950/40">
+            <button type="button" data-emote="👋" class="emote-btn flex-1 py-1 rounded-lg hover:bg-slate-800 active:scale-90 text-sm transition">👋</button>
+            <button type="button" data-emote="🔥" class="emote-btn flex-1 py-1 rounded-lg hover:bg-slate-800 active:scale-90 text-sm transition">🔥</button>
+            <button type="button" data-emote="💎" class="emote-btn flex-1 py-1 rounded-lg hover:bg-slate-800 active:scale-90 text-sm transition">💎</button>
+            <button type="button" data-emote="⚡" class="emote-btn flex-1 py-1 rounded-lg hover:bg-slate-800 active:scale-90 text-sm transition">⚡</button>
+            <button type="button" data-emote="📍" class="emote-btn flex-1 py-1 rounded-lg hover:bg-slate-800 active:scale-90 text-sm transition">📍</button>
+          </div>
+
+          <form id="chatForm" class="p-1.5 border-t border-slate-800/80 flex items-center gap-1.5 bg-slate-950/60">
+            <input
+              id="chatInput"
+              type="text"
+              maxlength="140"
+              placeholder="Message peers..."
+              autocomplete="off"
+              class="flex-1 min-w-0 bg-slate-900/90 border border-slate-700/70 focus:border-sky-400 rounded-xl px-2.5 py-1.5 text-xs text-white placeholder-slate-500 outline-none"
+            />
+            <button
+              type="submit"
+              class="bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-semibold text-xs px-3 py-1.5 rounded-xl transition shrink-0"
+            >
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Desktop Controls Hint -->
+    <div class="hidden md:flex pointer-events-none fixed bottom-4 left-4 z-10 items-center gap-2 bg-slate-900/75 backdrop-blur-md border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-slate-400">
+      <span><strong class="text-slate-200">WASD / Arrows</strong> Move</span>
+      <span>•</span>
+      <span><strong class="text-slate-200">Auto-Aim</strong> In Range</span>
+      <span>•</span>
+      <span><strong class="text-slate-200">Space</strong> Dash (100% Energy)</span>
+      <span>•</span>
+      <span><strong class="text-slate-200">E</strong> Resonance Beacon</span>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div id="toastBanner" class="pointer-events-none fixed top-20 left-1/2 -translate-x-1/2 z-40 opacity-0 -translate-y-2 transition-all duration-300 bg-slate-900/95 border border-sky-400/50 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-full shadow-2xl flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+      <span id="toastText">Ready</span>
+    </div>
+
+    <!-- Connect to Peer Modal -->
+    <div id="connectModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+      <div class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-white">Connect to P2P Peer</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Direct WebRTC mesh connection via 4-digit code.</p>
+          </div>
+          <button id="closeConnectModalBtn" type="button" class="p-2 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3">
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Your 4-Digit Peer ID</div>
+          <div class="flex items-center justify-between gap-2">
+            <code id="modalMyPeerId" class="font-mono-code text-sm text-sky-400 select-all">----</code>
+            <button id="modalCopyIdBtn" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white shrink-0 transition">
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <form id="connectPeerForm" class="space-y-3">
+          <div>
+            <label for="remotePeerInput" class="block text-xs font-semibold text-slate-300 mb-1.5">Remote 4-Digit Peer ID</label>
+            <input
+              id="remotePeerInput"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]{4}"
+              maxlength="4"
+              required
+              placeholder="e.g. 4829"
+              class="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-xl px-3.5 py-2.5 text-sm font-mono-code tracking-widest text-white placeholder-slate-500 outline-none"
+            />
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button id="cancelConnectBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-xs font-bold text-slate-950 shadow-lg transition">
+              Connect Now
+            </button>
+          </div>
+        </form>
+
+        <div class="pt-2 border-t border-slate-800">
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Connected Peers (<span id="modalPeerCount">0</span>)</div>
+          <div id="connectedPeersList" class="max-h-28 overflow-y-auto space-y-1.5 text-xs">
+            <div class="text-slate-500 italic">No remote peers connected yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Explorer Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+      <div class="w-full max-w-sm bg-slate-900 border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white">Explorer Identity</h2>
+          <button id="closeProfileModalBtn" type="button" class="p-2 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <form id="profileForm" class="space-y-4">
+          <div>
+            <label for="explorerNameInput" class="block text-xs font-semibold text-slate-300 mb-1.5">Display Name</label>
+            <input
+              id="explorerNameInput"
+              type="text"
+              maxlength="18"
+              required
+              class="w-full bg-slate-950 border border-slate-700 focus:border-sky-400 rounded-xl px-3.5 py-2 text-sm text-white outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-2">Aura Color</label>
+            <div id="colorSwatches" class="grid grid-cols-6 gap-2"></div>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-xs font-bold text-slate-950 shadow-lg transition">
+            Save & Broadcast
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Aetheria — Infinite Open-World P2P Combat & Exploration Engine
+     * - Unbounded procedural sector generation around player & active zones
+     * - 4-digit WebRTC mesh networking via PeerJS
+     * - Charge-based Dash Energy (0-100%) + Resonance Beacons + Pulse Combat
+     * - Autonomous numbered NPCs (NPC-01 .. NPC-04) that engage nearby hostiles
+     * - Multiple enemy variants: Swarmer, Stalker, and Colossus (ranged + melee)
+     */
+
+    const SECTOR_SIZE = 700;
+    const BROADCAST_INTERVAL_MS = 50;
+    const DASH_ENERGY_MAX = 100;
+    const BEACON_RADIUS = 240;
+    const BEACON_DURATION_MS = 22000;
+    const AETHER_PREFIX = 'AETH-P2P-';
+
+    const AURA_COLORS = ['#38bdf8', '#34d399', '#f472b6', '#fbbf24', '#a78bfa', '#fb7185'];
+
+    const BIOME_PALETTES = [
+      { name: 'Nexus Basin', accent: '#38bdf8', grid: 'rgba(56, 189, 248, 0.06)' },
+      { name: 'Emerald Wilds', accent: '#34d399', grid: 'rgba(52, 211, 153, 0.06)' },
+      { name: 'Solar Wastes', accent: '#fbbf24', grid: 'rgba(251, 191, 36, 0.06)' },
+      { name: 'Astral Rift', accent: '#a78bfa', grid: 'rgba(167, 139, 250, 0.07)' },
+      { name: 'Crimson Front', accent: '#fb7185', grid: 'rgba(251, 113, 133, 0.07)' }
+    ];
+
+    function generateFourDigitCode() {
+      return String(Math.floor(1000 + Math.random() * 9000));
+    }
+
+    function normalizeFourDigitInput(raw) {
+      return String(raw || '').replace(/\D/g, '').slice(0, 4);
+    }
+
+    function hashCoords(cx, cy, salt = 0) {
+      let h = (Math.imul(cx, 374761393) + Math.imul(cy, 668265263) + Math.imul(salt, 1442695041)) | 0;
+      h = Math.imul(h ^ (h >>> 13), 1274126177);
+      return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+    }
+
+    function getBiomeForSector(cx, cy) {
+      const idx = Math.abs((cx * 7 + cy * 13) % BIOME_PALETTES.length);
+      return BIOME_PALETTES[idx];
+    }
+
+    // =========================================================================
+    // WEB AUDIO SYNTHESIZER
+    // =========================================================================
+    const SoundFX = (() => {
+      let ctx = null;
+      let enabled = true;
+
+      function ensureContext() {
+        if (!enabled) return null;
+        if (!ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) ctx = new AudioCtx();
+        }
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+        return ctx;
+      }
+
+      function playTone(freq, endFreq, duration, type = 'sine', gainVal = 0.07) {
+        const audioCtx = ensureContext();
+        if (!audioCtx) return;
+        try {
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now);
+          if (endFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFreq), now + duration);
+          gain.gain.setValueAtTime(gainVal, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + duration);
+        } catch (_) {}
+      }
+
+      return {
+        setEnabled(val) { enabled = val; },
+        isEnabled() { return enabled; },
+        pickup() { playTone(580, 980, 0.14, 'triangle', 0.08); },
+        dash() { playTone(240, 95, 0.16, 'sawtooth', 0.06); },
+        beacon() { playTone(440, 680, 0.22, 'sine', 0.08); },
+        laser() { playTone(820, 260, 0.11, 'sawtooth', 0.05); },
+        hit() { playTone(160, 65, 0.13, 'square', 0.055); },
+        kill() { playTone(320, 920, 0.22, 'triangle', 0.08); },
+        peerJoin() {
+          playTone(523.25, null, 0.11, 'sine', 0.07);
+          setTimeout(() => playTone(659.25, null, 0.14, 'sine', 0.07), 90);
+        },
+        message() { playTone(740, 820, 0.07, 'sine', 0.04); }
+      };
+    })();
+
+    // =========================================================================
+    // STATE
+    // =========================================================================
+    const randomAdj = ['Swift', 'Astral', 'Nova', 'Echo', 'Cobalt', 'Vesper', 'Lumen', 'Drift'];
+    const randomNoun = ['Nomad', 'Voyager', 'Weaver', 'Ranger', 'Drifter', 'Seeker'];
+    const seedNum = Math.floor(Math.random() * 99999);
+
+    const localPlayer = {
+      id: null,
+      shortCode: '----',
+      name: `${randomAdj[seedNum % randomAdj.length]}_${randomNoun[(seedNum >> 3) % randomNoun.length]}`,
+      color: AURA_COLORS[seedNum % AURA_COLORS.length],
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      aimAngle: 0,
+      radius: 16,
+      baseSpeed: 165,
+      speed: 165,
+      hp: 100,
+      maxHp: 100,
+      hpRegen: 1.5,
+      baseFireInterval: 0.42,
+      fireInterval: 0.42,
+      autoAimRange: 390,
+      magSize: 12,
+      ammo: 12,
+      reloadTimer: 0,
+      reloadDuration: 1.35,
+      critChance: 0.08,
+      critMult: 1.5,
+      kills: 0,
+      dashEnergy: 0,
+      dashTimer: 0,
+      fireCooldown: 0,
+      shards: 0,
+      emote: null,
+      emoteTimer: 0,
+      trail: []
+    };
+
+    const remotePeers = new Map();
+    const dataConnections = new Map();
+    const npcs = [];
+    const enemies = [];
+    const projectiles = [];
+    const shards = [];
+    const beacons = [];
+    const particles = [];
+    const generatedSectors = new Set();
+
+    let peerInstance = null;
+    let toastTimeout = null;
+    let idRetryCount = 0;
+    let activeColossusCount = 0;
+
+    const keys = new Set();
+    const joystickInput = { x: 0, y: 0, active: false };
+
+    function recalculatePlayerStats() {
+      const s = localPlayer.shards;
+      // Gradual progression requiring lots of shards to noticeably scale stats
+      localPlayer.maxHp = 100 + Math.floor(s / 3) * 15;
+      localPlayer.hpRegen = 1.5 + Math.floor(s / 4) * 0.8;
+      localPlayer.speed = Math.min(275, 165 + Math.floor(s / 3) * 5);
+      localPlayer.fireInterval = Math.max(0.14, 0.42 - Math.floor(s / 4) * 0.02);
+      localPlayer.magSize = 12 + Math.floor(s / 3) * 2;
+      localPlayer.critChance = Math.min(0.65, 0.08 + Math.floor(s / 4) * 0.03);
+      localPlayer.critMult = 1.5 + Math.floor(s / 5) * 0.15;
+      if (localPlayer.hp > localPlayer.maxHp) localPlayer.hp = localPlayer.maxHp;
+    }
+
+    // =========================================================================
+    // INFINITE PROCEDURAL SECTOR & ENTITY GENERATION
+    // =========================================================================
+    function spawnEnemyVariant(x, y, variant, scale = 1) {
+      if (variant === 'colossus') {
+        activeColossusCount += 1;
+        enemies.push({
+          id: `en_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          variant: 'Colossus',
+          x,
+          y,
+          vx: 0,
+          vy: 0,
+          radius: 28,
+          speed: 52 * scale,
+          hp: Math.round(190 * scale),
+          maxHp: Math.round(190 * scale),
+          contactDmg: 20,
+          color: '#f43f5e',
+          fireTimer: 2.1 + Math.random() * 1.4,
+          hitFlash: 0
+        });
+      } else if (variant === 'stalker') {
+        enemies.push({
+          id: `en_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          variant: 'Stalker',
+          x,
+          y,
+          vx: 0,
+          vy: 0,
+          radius: 17,
+          speed: 108 * scale,
+          hp: Math.round(56 * scale),
+          maxHp: Math.round(56 * scale),
+          contactDmg: 12,
+          color: '#e879f9',
+          fireTimer: 1.5 + Math.random() * 1.2,
+          hitFlash: 0
+        });
+      } else {
+        enemies.push({
+          id: `en_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          variant: 'Swarmer',
+          x,
+          y,
+          vx: 0,
+          vy: 0,
+          radius: 12,
+          speed: 132 * scale,
+          hp: Math.round(28 * scale),
+          maxHp: Math.round(28 * scale),
+          contactDmg: 8,
+          color: '#fb923c',
+          fireTimer: 99,
+          hitFlash: 0
+        });
+      }
+    }
+
+    function ensureInfiniteSectorsAround(wx, wy) {
+      const centerCx = Math.floor(wx / SECTOR_SIZE);
+      const centerCy = Math.floor(wy / SECTOR_SIZE);
+      const distFromOrigin = Math.hypot(wx, wy);
+      const difficultyScale = 1 + Math.min(2.0, distFromOrigin / 5200);
+
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const cx = centerCx + dx;
+          const cy = centerCy + dy;
+          const key = `${cx},${cy}`;
+          if (generatedSectors.has(key)) continue;
+          generatedSectors.add(key);
+
+          const baseX = cx * SECTOR_SIZE;
+          const baseY = cy * SECTOR_SIZE;
+
+          // Spawn 4 energy shards per sector
+          for (let i = 0; i < 4; i++) {
+            const rx = hashCoords(cx, cy, i * 11 + 1);
+            const ry = hashCoords(cx, cy, i * 11 + 2);
+            shards.push({
+              id: `sh_${cx}_${cy}_${i}`,
+              x: baseX + 70 + rx * (SECTOR_SIZE - 140),
+              y: baseY + 70 + ry * (SECTOR_SIZE - 140),
+              active: true,
+              respawnTimer: 0,
+              phase: rx * Math.PI * 2
+            });
+          }
+
+          // Keep immediate spawn origin lighter so new explorers can orient
+          const sectorDist = Math.hypot(baseX + SECTOR_SIZE / 2, baseY + SECTOR_SIZE / 2);
+          if (sectorDist > 380) {
+            const packCount = sectorDist > 1800 ? 4 : 3;
+            for (let e = 0; e < packCount; e++) {
+              const r1 = hashCoords(cx, cy, e * 19 + 3);
+              const r2 = hashCoords(cx, cy, e * 19 + 4);
+              const r3 = hashCoords(cx, cy, e * 19 + 5);
+              const ex = baseX + 90 + r1 * (SECTOR_SIZE - 180);
+              const ey = baseY + 90 + r2 * (SECTOR_SIZE - 180);
+
+              let variant = 'swarmer';
+              // Strictly cap Colossus presence to at most 2 active worldwide
+              if (r3 > 0.91 && sectorDist > 1200 && activeColossusCount < 2) {
+                variant = 'colossus';
+              } else if (r3 > 0.45) {
+                variant = 'stalker';
+              }
+
+              spawnEnemyVariant(ex, ey, variant, difficultyScale);
+            }
+          }
+        }
+      }
+
+      // Prune distant entities beyond ~2450px so memory stays fast forever
+      const cullRadius = 2450;
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        if (Math.hypot(enemies[i].x - wx, enemies[i].y - wy) > cullRadius) {
+          if (enemies[i].variant === 'Colossus') activeColossusCount = Math.max(0, activeColossusCount - 1);
+          enemies.splice(i, 1);
+        }
+      }
+      for (let i = shards.length - 1; i >= 0; i--) {
+        if (Math.hypot(shards[i].x - wx, shards[i].y - wy) > cullRadius) {
+          shards.splice(i, 1);
+        }
+      }
+    }
+
+    function initWorld() {
+      const npcSpecs = [
+        { code: 'NPC-01', role: 'Vanguard', color: '#22d3ee', ox: -140, oy: -90 },
+        { code: 'NPC-02', role: 'Striker', color: '#4ade80', ox: 150, oy: -110 },
+        { code: 'NPC-03', role: 'Hunter', color: '#facc15', ox: -160, oy: 130 },
+        { code: 'NPC-04', role: 'Warden', color: '#c084fc', ox: 140, oy: 120 }
+      ];
+
+      npcSpecs.forEach((spec, idx) => {
+        npcs.push({
+          id: spec.code,
+          code: spec.code,
+          role: spec.role,
+          color: spec.color,
+          x: spec.ox,
+          y: spec.oy,
+          vx: 0,
+          vy: 0,
+          radius: 15,
+          speed: 132 + idx * 7,
+          hp: 150,
+          maxHp: 150,
+          fireTimer: 0.6 + idx * 0.25,
+          waypointX: spec.ox * 2,
+          waypointY: spec.oy * 2,
+          decisionTimer: 1.2 + idx * 0.5,
+          emote: null,
+          emoteTimer: 0,
+          trail: []
+        });
+      });
+
+      ensureInfiniteSectorsAround(localPlayer.x, localPlayer.y);
+    }
+
+    function spawnParticles(x, y, color, count = 12, speedScale = 1) {
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+        const speed = (45 + Math.random() * 125) * speedScale;
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 0.4 + Math.random() * 0.25,
+          maxLife: 0.65,
+          color,
+          size: 2.5 + Math.random() * 3
+        });
+      }
+    }
+    function spawnProjectile(x, y, angle, speed, damage, ownerType, color, isCrit = false) {
+      projectiles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        damage,
+        ownerType, // 'player' | 'npc' | 'enemy'
+        color,
+        isCrit,
+        life: 1.15
+      });
+    }
+
+    function triggerDash() {
+      if (localPlayer.dashEnergy < DASH_ENERGY_MAX || localPlayer.dashTimer > 0) {
+        showToast('Dash needs 100% Dash Energy!');
+        return;
+      }
+      localPlayer.dashEnergy = 0;
+      localPlayer.dashTimer = 0.22;
+
+      const angle = Math.hypot(localPlayer.vx, localPlayer.vy) > 10
+        ? Math.atan2(localPlayer.vy, localPlayer.vx)
+        : localPlayer.aimAngle;
+      const dashSpeed = Math.max(460, localPlayer.speed * 2.6);
+      localPlayer.vx = Math.cos(angle) * dashSpeed;
+      localPlayer.vy = Math.sin(angle) * dashSpeed;
+
+      SoundFX.dash();
+      spawnParticles(localPlayer.x, localPlayer.y, localPlayer.color, 14, 1.2);
+      updateCombatAndEnergyUI();
+    }
+
+    function triggerBeacon() {
+      addBeacon(localPlayer.x, localPlayer.y, '#fbbf24', `${localPlayer.name} [${localPlayer.shortCode}]`);
+      SoundFX.beacon();
+      spawnParticles(localPlayer.x, localPlayer.y, '#fbbf24', 16, 1.15);
+      showToast('Resonance Beacon deployed! Pulls shards & draws NPCs.');
+      broadcastToAll({
+        type: 'beacon',
+        x: localPlayer.x,
+        y: localPlayer.y,
+        color: '#fbbf24',
+        label: `${localPlayer.name} [${localPlayer.shortCode}]`
+      });
+    }
+
+    function sendEmote(emoji) {
+      localPlayer.emote = emoji;
+      localPlayer.emoteTimer = 2.4;
+      SoundFX.pickup();
+      broadcastToAll({
+        type: 'emote',
+        emote: emoji
+      });
+    }
+
+    // =========================================================================
+    // UI HELPERS
+    // =========================================================================
+    function showToast(message) {
+      const banner = document.getElementById('toastBanner');
+      const text = document.getElementById('toastText');
+      text.textContent = message;
+      banner.classList.remove('opacity-0', '-translate-y-2');
+      banner.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        banner.classList.remove('opacity-100', 'translate-y-0');
+        banner.classList.add('opacity-0', '-translate-y-2');
+      }, 2400);
+    }
+
+    function appendChatMessage(sender, text, isSystem = false, color = '#38bdf8') {
+      const container = document.getElementById('chatMessages');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = 'leading-snug break-words';
+      if (isSystem) {
+        el.innerHTML = `<span class="text-slate-400 italic">${escapeHtml(text)}</span>`;
+      } else {
+        el.innerHTML = `<span class="font-bold" style="color:${escapeHtml(color)}">${escapeHtml(sender)}:</span> <span class="text-slate-200">${escapeHtml(text)}</span>`;
+      }
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+      if (!isSystem) SoundFX.message();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function copyToClipboard(text) {
+      if (!text || text === '----') return;
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.setAttribute('readonly', '');
+      temp.style.position = 'absolute';
+      temp.style.left = '-9999px';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        showToast(`Copied 4-digit ID ${text}`);
+      } catch (_) {
+        showToast('Copy manually');
+      }
+      document.body.removeChild(temp);
+    }
+
+    function refreshPeerUI() {
+      document.getElementById('peerCountText').textContent = String(1 + remotePeers.size);
+      document.getElementById('modalPeerCount').textContent = String(remotePeers.size);
+      const listEl = document.getElementById('connectedPeersList');
+      if (remotePeers.size === 0) {
+        listEl.innerHTML = '<div class="text-slate-500 italic">No remote peers connected yet.</div>';
+      } else {
+        listEl.innerHTML = '';
+        remotePeers.forEach((p, code) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between bg-slate-950/70 border border-slate-800 rounded-xl px-2.5 py-1.5';
+          row.innerHTML = `
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${escapeHtml(p.color || '#38bdf8')}"></span>
+              <span class="font-semibold text-slate-200 truncate">${escapeHtml(p.name || 'Explorer')}</span>
+            </div>
+            <span class="font-mono-code text-xs font-bold text-sky-400 ml-2">${escapeHtml(code)}</span>
+          `;
+          listEl.appendChild(row);
+        });
+      }
+    }
+
+    function updateCombatAndEnergyUI() {
+      const pct = Math.floor((localPlayer.dashEnergy / DASH_ENERGY_MAX) * 100);
+      const bar = document.getElementById('dashEnergyBar');
+      const label = document.getElementById('dashEnergyLabel');
+      const btn = document.getElementById('dashBtn');
+      if (bar) bar.style.width = `${pct}%`;
+      if (label) label.textContent = `${pct}%`;
+      if (btn) {
+        btn.disabled = !(localPlayer.dashEnergy >= DASH_ENERGY_MAX && localPlayer.dashTimer <= 0);
+      }
+      const ammoLabel = localPlayer.reloadTimer > 0 ? 'RLD' : `${localPlayer.ammo}/${localPlayer.magSize}`;
+      document.getElementById('hullText').textContent = `HP ${Math.max(0, Math.ceil(localPlayer.hp))}/${localPlayer.maxHp} • ${ammoLabel}`;
+      document.getElementById('killsText').textContent = `${localPlayer.kills} KILLS`;
+      document.getElementById('shardsText').textContent = `${localPlayer.shards} ★`;
+    }
+
+    // =========================================================================
+    // PEERJS P2P MESH NETWORKING (4-DIGIT CODES)
+    // =========================================================================
+    function createPeerWithFourDigitCode() {
+      const code = generateFourDigitCode();
+      localPlayer.shortCode = code;
+      localPlayer.id = `${AETHER_PREFIX}${code}`;
+      return new Peer(localPlayer.id, {
+        debug: 0,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+          ]
+        }
+      });
+    }
+
+    function initPeerJS() {
+      const statusDot = document.getElementById('p2pStatusDot');
+      const statusText = document.getElementById('p2pStatusText');
+
+      try {
+        peerInstance = createPeerWithFourDigitCode();
+
+        peerInstance.on('open', () => {
+          idRetryCount = 0;
+          document.getElementById('myPeerIdDisplay').textContent = localPlayer.shortCode;
+          document.getElementById('modalMyPeerId').textContent = localPlayer.shortCode;
+          statusDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+          statusText.textContent = 'P2P Ready';
+          showToast(`Your 4-digit Peer ID: ${localPlayer.shortCode}`);
+        });
+
+        peerInstance.on('connection', (conn) => setupDataConnection(conn));
+
+        peerInstance.on('disconnected', () => {
+          statusDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
+          statusText.textContent = 'Reconnecting...';
+          try { peerInstance.reconnect(); } catch (_) {}
+        });
+
+        peerInstance.on('error', (err) => {
+          if (err && err.type === 'unavailable-id' && idRetryCount < 6) {
+            idRetryCount += 1;
+            try { peerInstance.destroy(); } catch (_) {}
+            peerInstance = null;
+            initPeerJS();
+            return;
+          }
+          if (err && err.type === 'peer-unavailable') {
+            showToast('4-digit Peer ID not found or offline.');
+          } else {
+            statusText.textContent = 'P2P Limited';
+          }
+        });
+      } catch (_) {
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
+        statusText.textContent = 'Solo Mode';
+      }
+    }
+
+    function connectToPeer(rawCode) {
+      const fourDigit = normalizeFourDigitInput(rawCode);
+      if (!peerInstance || fourDigit.length !== 4) {
+        showToast('Enter a 4-digit Peer ID (e.g. 4829).');
+        return;
+      }
+      if (fourDigit === localPlayer.shortCode) {
+        showToast('That is your own Peer ID.');
+        return;
+      }
+      if (dataConnections.has(fourDigit)) {
+        showToast(`Already connected to ${fourDigit}.`);
+        return;
+      }
+      try {
+        const conn = peerInstance.connect(`${AETHER_PREFIX}${fourDigit}`, { reliable: true });
+        if (conn) {
+          showToast(`Connecting to ${fourDigit}...`);
+          setupDataConnection(conn);
+        }
+      } catch (_) {
+        showToast('Connection failed.');
+      }
+    }
+
+    function extractShortCode(peerFullId) {
+      const digits = normalizeFourDigitInput(peerFullId);
+      return digits.length === 4 ? digits : String(peerFullId || '0000').slice(-4);
+    }
+
+    function setupDataConnection(conn) {
+      const shortCode = extractShortCode(conn.peer);
+      if (!shortCode || shortCode === localPlayer.shortCode) return;
+
+      conn.on('open', () => {
+        dataConnections.set(shortCode, conn);
+        if (!remotePeers.has(shortCode)) {
+          remotePeers.set(shortCode, {
+            id: conn.peer,
+            shortCode,
+            name: `Peer_${shortCode}`,
+            color: '#38bdf8',
+            x: 0,
+            y: 0,
+            targetX: 0,
+            targetY: 0,
+            shards: 0,
+            emote: null,
+            emoteTimer: 0,
+            trail: []
+          });
+          SoundFX.peerJoin();
+          appendChatMessage(null, `Explorer [${shortCode}] joined Aetheria.`, true);
+        }
+
+        const knownCodes = [localPlayer.shortCode, ...Array.from(dataConnections.keys())];
+        safeSend(conn, {
+          type: 'hello',
+          shortCode: localPlayer.shortCode,
+          name: localPlayer.name,
+          color: localPlayer.color,
+          x: localPlayer.x,
+          y: localPlayer.y,
+          shards: localPlayer.shards,
+          knownCodes
+        });
+        refreshPeerUI();
+      });
+
+      conn.on('data', (payload) => handlePeerPayload(shortCode, payload));
+      conn.on('close', () => removeRemotePeer(shortCode));
+      conn.on('error', () => removeRemotePeer(shortCode));
+    }
+
+    function removeRemotePeer(shortCode) {
+      const existing = remotePeers.get(shortCode);
+      if (existing) appendChatMessage(null, `${existing.name || shortCode} disconnected.`, true);
+      dataConnections.delete(shortCode);
+      remotePeers.delete(shortCode);
+      refreshPeerUI();
+    }
+
+    function safeSend(conn, data) {
+      try {
+        if (conn && conn.open) conn.send(data);
+      } catch (_) {}
+    }
+
+    function broadcastToAll(data) {
+      dataConnections.forEach((conn) => safeSend(conn, data));
+    }
+
+    function handlePeerPayload(fromCode, payload) {
+      if (!payload || typeof payload !== 'object') return;
+      let peer = remotePeers.get(fromCode);
+      if (!peer) {
+        peer = {
+          id: `${AETHER_PREFIX}${fromCode}`,
+          shortCode: fromCode,
+          name: payload.name || `Peer_${fromCode}`,
+          color: payload.color || '#38bdf8',
+          x: payload.x ?? 0,
+          y: payload.y ?? 0,
+          targetX: payload.x ?? 0,
+          targetY: payload.y ?? 0,
+          shards: payload.shards ?? 0,
+          emote: null,
+          emoteTimer: 0,
+          trail: []
+        };
+        remotePeers.set(fromCode, peer);
+        refreshPeerUI();
+      }
+
+      switch (payload.type) {
+        case 'hello':
+          peer.name = payload.name || peer.name;
+          peer.color = payload.color || peer.color;
+          peer.x = payload.x ?? peer.x;
+          peer.y = payload.y ?? peer.y;
+          peer.targetX = payload.x ?? peer.targetX;
+          peer.targetY = payload.y ?? peer.targetY;
+          peer.shards = payload.shards ?? peer.shards;
+          refreshPeerUI();
+          if (Array.isArray(payload.knownCodes)) {
+            payload.knownCodes.forEach((otherCode) => {
+              if (
+                otherCode &&
+                otherCode !== localPlayer.shortCode &&
+                !dataConnections.has(otherCode) &&
+                localPlayer.shortCode > otherCode
+              ) {
+                connectToPeer(otherCode);
+              }
+            });
+          }
+          break;
+        case 'state':
+          peer.name = payload.name || peer.name;
+          peer.color = payload.color || peer.color;
+          peer.targetX = payload.x;
+          peer.targetY = payload.y;
+          peer.shards = payload.shards ?? peer.shards;
+          break;
+        case 'chat':
+          appendChatMessage(payload.name || peer.name || fromCode, payload.text || '', false, payload.color || peer.color);
+          break;
+        case 'emote':
+          peer.emote = payload.emote;
+          peer.emoteTimer = 2.4;
+          break;
+        case 'beacon':
+          addBeacon(payload.x, payload.y, payload.color || '#fbbf24', payload.label || `Peer ${fromCode}`);
+          spawnParticles(payload.x, payload.y, payload.color || '#fbbf24', 14, 1.1);
+          break;
+        case 'shard_claim': {
+          const s = shards.find((item) => item.id === payload.shardId);
+          if (s && s.active) {
+            s.active = false;
+            s.respawnTimer = 18;
+          }
+          break;
+        }
+      }
+    }
+
+    function addBeacon(x, y, color, label) {
+      beacons.push({
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        x,
+        y,
+        color,
+        label,
+        createdAt: performance.now(),
+        duration: BEACON_DURATION_MS,
+        bonusClaimed: false
+      });
+      if (beacons.length > 8) beacons.shift();
+    }
+
+    // =========================================================================
+    // COMBAT, DASH, BEACON & NPC/ENEMY AI
+    // =========================================================================
+    function getNearestHostileForPlayer() {
+      let bestTarget = null;
+      let bestDist = localPlayer.autoAimRange;
+
+      // Check enemies
+      for (const en of enemies) {
+        const d = Math.hypot(en.x - localPlayer.x, en.y - localPlayer.y);
+        if (d < bestDist) {
+          bestDist = d;
+          bestTarget = en;
+        }
+      }
+
+      // NPCs are also hostile to the player
+      for (const npc of npcs) {
+        const d = Math.hypot(npc.x - localPlayer.x, npc.y - localPlayer.y);
+        if (d < bestDist) {
+          bestDist = d;
+          bestTarget = npc;
+        }
+      }
+
+      return bestTarget;
+    }
+
+    function updatePlayerAutoCombat(dt) {
+      if (localPlayer.fireCooldown > 0) localPlayer.fireCooldown = Math.max(0, localPlayer.fireCooldown - dt);
+
+      if (localPlayer.reloadTimer > 0) {
+        localPlayer.reloadTimer -= dt;
+        if (localPlayer.reloadTimer <= 0) {
+          localPlayer.reloadTimer = 0;
+          localPlayer.ammo = localPlayer.magSize;
+        }
+        return;
+      }
+
+      if (localPlayer.ammo <= 0) {
+        localPlayer.reloadTimer = localPlayer.reloadDuration;
+        return;
+      }
+
+      const target = getNearestHostileForPlayer();
+      if (!target) return;
+
+      const angle = Math.atan2(target.y - localPlayer.y, target.x - localPlayer.x);
+      localPlayer.aimAngle = angle;
+
+      if (localPlayer.fireCooldown <= 0) {
+        localPlayer.fireCooldown = localPlayer.fireInterval;
+        localPlayer.ammo = Math.max(0, localPlayer.ammo - 1);
+        if (localPlayer.ammo === 0) {
+          localPlayer.reloadTimer = localPlayer.reloadDuration;
+        }
+
+        const isCrit = Math.random() < localPlayer.critChance;
+        const dmg = Math.round(22 * (isCrit ? localPlayer.critMult : 1));
+        spawnProjectile(
+          localPlayer.x + Math.cos(angle) * 20,
+          localPlayer.y + Math.sin(angle) * 20,
+          angle,
+          620,
+          dmg,
+          'player',
+          isCrit ? '#fde047' : localPlayer.color,
+          isCrit
+        );
+        SoundFX.laser();
+      }
+    }
+    function updateNPCs(dt) {
+      for (const npc of npcs) {
+        if (npc.hp <= 0) {
+          npc.hp = npc.maxHp;
+          npc.x = localPlayer.x + (Math.random() - 0.5) * 340;
+          npc.y = localPlayer.y + (Math.random() - 0.5) * 340;
+          npc.emote = '♻️';
+          npc.emoteTimer = 2.0;
+        }
+        npc.fireTimer -= dt;
+        npc.decisionTimer -= dt;
+        if (npc.emoteTimer > 0) {
+          npc.emoteTimer -= dt;
+          if (npc.emoteTimer <= 0) npc.emote = null;
+        }
+
+        // Priority 1: Any big enemy (Colossus) is the shared enemy of all NPCs
+        let colossusTarget = null;
+        let colossusDist = 750;
+        let nearestAnyEnemy = null;
+        let anyEnemyDist = 440;
+
+        for (const en of enemies) {
+          const d = Math.hypot(en.x - npc.x, en.y - npc.y);
+          if (en.variant === 'Colossus' && d < colossusDist) {
+            colossusDist = d;
+            colossusTarget = en;
+          }
+          if (d < anyEnemyDist) {
+            anyEnemyDist = d;
+            nearestAnyEnemy = en;
+          }
+        }
+
+        const priorityEnemy = colossusTarget || nearestAnyEnemy;
+        const playerDist = Math.hypot(localPlayer.x - npc.x, localPlayer.y - npc.y);
+
+        if (priorityEnemy) {
+          const dx = priorityEnemy.x - npc.x;
+          const dy = priorityEnemy.y - npc.y;
+          const dist = Math.max(1, Math.hypot(dx, dy));
+          const ang = Math.atan2(dy, dx);
+          const desiredRange = priorityEnemy.variant === 'Colossus' ? 210 : 165;
+          if (dist > desiredRange) {
+            npc.vx = (dx / dist) * npc.speed;
+            npc.vy = (dy / dist) * npc.speed;
+          } else {
+            npc.vx *= 0.82;
+            npc.vy *= 0.82;
+          }
+          if (npc.fireTimer <= 0) {
+            npc.fireTimer = priorityEnemy.variant === 'Colossus' ? 0.48 : 0.62;
+            spawnProjectile(
+              npc.x + Math.cos(ang) * 16,
+              npc.y + Math.sin(ang) * 16,
+              ang,
+              500,
+              15,
+              'npc',
+              npc.color
+            );
+          }
+        } else if (playerDist < 360) {
+          // No big enemy in range: NPCs treat the player as an enemy
+          const dx = localPlayer.x - npc.x;
+          const dy = localPlayer.y - npc.y;
+          const dist = Math.max(1, playerDist);
+          const ang = Math.atan2(dy, dx);
+          if (dist > 175) {
+            npc.vx = (dx / dist) * npc.speed * 0.9;
+            npc.vy = (dy / dist) * npc.speed * 0.9;
+          } else {
+            npc.vx *= 0.82;
+            npc.vy *= 0.82;
+          }
+          if (npc.fireTimer <= 0) {
+            npc.fireTimer = 0.72;
+            spawnProjectile(
+              npc.x + Math.cos(ang) * 16,
+              npc.y + Math.sin(ang) * 16,
+              ang,
+              460,
+              9,
+              'npc',
+              npc.color
+            );
+          }
+        } else {
+          if (npc.decisionTimer <= 0) {
+            npc.decisionTimer = 2.4 + Math.random() * 2.0;
+            const activeBeacon = beacons.length > 0 ? beacons[beacons.length - 1] : null;
+            if (activeBeacon) {
+              const a = Math.random() * Math.PI * 2;
+              npc.waypointX = activeBeacon.x + Math.cos(a) * 95;
+              npc.waypointY = activeBeacon.y + Math.sin(a) * 95;
+            } else {
+              const a = Math.random() * Math.PI * 2;
+              const r = 140 + Math.random() * 340;
+              npc.waypointX = localPlayer.x + Math.cos(a) * r;
+              npc.waypointY = localPlayer.y + Math.sin(a) * r;
+            }
+          }
+          const dx = npc.waypointX - npc.x;
+          const dy = npc.waypointY - npc.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist > 10) {
+            npc.vx = (dx / dist) * npc.speed * 0.8;
+            npc.vy = (dy / dist) * npc.speed * 0.8;
+          } else {
+            npc.vx *= 0.85;
+            npc.vy *= 0.85;
+          }
+        }
+
+        npc.x += npc.vx * dt;
+        npc.y += npc.vy * dt;
+
+        if (Math.hypot(npc.vx, npc.vy) > 20) {
+          npc.trail.push({ x: npc.x, y: npc.y, alpha: 0.25 });
+        }
+        for (let i = npc.trail.length - 1; i >= 0; i--) {
+          npc.trail[i].alpha -= dt * 1.7;
+          if (npc.trail[i].alpha <= 0) npc.trail.splice(i, 1);
+        }
+      }
+    }
+
+    function updateEnemies(dt) {
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const en = enemies[i];
+        if (en.hitFlash > 0) {
+          en.hitFlash = Math.max(0, en.hitFlash - dt * 6);
+        }
+        en.fireTimer -= dt;
+
+        // Pick closest target between localPlayer and nearby NPCs
+        let targetX = localPlayer.x;
+        let targetY = localPlayer.y;
+        let bestDist = Math.hypot(localPlayer.x - en.x, localPlayer.y - en.y);
+
+        for (const npc of npcs) {
+          const d = Math.hypot(npc.x - en.x, npc.y - en.y);
+          if (d < bestDist) {
+            bestDist = d;
+            targetX = npc.x;
+            targetY = npc.y;
+          }
+        }
+
+        if (bestDist < 680) {
+          const dx = targetX - en.x;
+          const dy = targetY - en.y;
+          const dist = Math.max(1, bestDist);
+          const ang = Math.atan2(dy, dx);
+
+          const stopDist = en.variant === 'Colossus' ? 190 : en.variant === 'Stalker' ? 140 : 12;
+          if (dist > stopDist) {
+            en.vx = (dx / dist) * en.speed;
+            en.vy = (dy / dist) * en.speed;
+          } else {
+            en.vx *= 0.85;
+            en.vy *= 0.85;
+          }
+
+          en.x += en.vx * dt;
+          en.y += en.vy * dt;
+
+          // Ranged shots for Stalker and Colossus
+          if ((en.variant === 'Colossus' || en.variant === 'Stalker') && en.fireTimer <= 0 && dist < 440) {
+            en.fireTimer = en.variant === 'Colossus' ? 1.85 : 2.1;
+            const dmg = en.variant === 'Colossus' ? 16 : 10;
+            const spd = en.variant === 'Colossus' ? 320 : 350;
+            spawnProjectile(en.x, en.y, ang, spd, dmg, 'enemy', en.color);
+          }
+
+          // Contact damage against player
+          const playerDist = Math.hypot(localPlayer.x - en.x, localPlayer.y - en.y);
+          if (playerDist < en.radius + localPlayer.radius && localPlayer.dashTimer <= 0) {
+            localPlayer.hp -= en.contactDmg * dt * 2.2;
+            spawnParticles(localPlayer.x, localPlayer.y, en.color, 4, 0.6);
+            if (localPlayer.hp <= 0) {
+              localPlayer.hp = localPlayer.maxHp;
+              localPlayer.ammo = localPlayer.magSize;
+              localPlayer.x = 0;
+              localPlayer.y = 0;
+              showToast('Hull breached! Reconstructed at Origin.');
+            }
+          }
+        }
+      }
+    }
+
+    function updateProjectiles(dt) {
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const pr = projectiles[i];
+        pr.x += pr.vx * dt;
+        pr.y += pr.vy * dt;
+        pr.life -= dt;
+        if (pr.life <= 0) {
+          projectiles.splice(i, 1);
+          continue;
+        }
+
+        if (pr.ownerType === 'player' || pr.ownerType === 'npc') {
+          let hit = false;
+          for (let j = enemies.length - 1; j >= 0; j--) {
+            const en = enemies[j];
+            if (Math.hypot(pr.x - en.x, pr.y - en.y) < en.radius + 6) {
+              en.hp -= pr.damage;
+              en.hitFlash = 1;
+              hit = true;
+              spawnParticles(pr.x, pr.y, pr.isCrit ? '#fde047' : en.color, pr.isCrit ? 10 : 6, 0.85);
+              if (en.hp <= 0) {
+                if (en.variant === 'Colossus') activeColossusCount = Math.max(0, activeColossusCount - 1);
+                spawnParticles(en.x, en.y, en.color, 18, 1.3);
+                SoundFX.kill();
+                enemies.splice(j, 1);
+                if (pr.ownerType === 'player') {
+                  localPlayer.kills += 1;
+                  localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 20);
+                }
+              } else {
+                SoundFX.hit();
+              }
+              break;
+            }
+          }
+
+          // Player shots can also hit hostile NPCs
+          if (!hit && pr.ownerType === 'player') {
+            for (const npc of npcs) {
+              if (Math.hypot(pr.x - npc.x, pr.y - npc.y) < npc.radius + 6) {
+                npc.hp -= pr.damage;
+                hit = true;
+                spawnParticles(pr.x, pr.y, npc.color, 6, 0.8);
+                SoundFX.hit();
+                break;
+              }
+            }
+          }
+
+          if (hit) {
+            projectiles.splice(i, 1);
+          }
+        } else if (pr.ownerType === 'enemy' || pr.ownerType === 'npc') {
+          if (Math.hypot(pr.x - localPlayer.x, pr.y - localPlayer.y) < localPlayer.radius + 5 && localPlayer.dashTimer <= 0) {
+            localPlayer.hp -= pr.damage;
+            spawnParticles(pr.x, pr.y, pr.ownerType === 'npc' ? pr.color : '#f43f5e', 7, 0.8);
+            SoundFX.hit();
+            projectiles.splice(i, 1);
+            if (localPlayer.hp <= 0) {
+              localPlayer.hp = localPlayer.maxHp;
+              localPlayer.ammo = localPlayer.magSize;
+              localPlayer.x = 0;
+              localPlayer.y = 0;
+              showToast('Hull breached! Reconstructed at Origin.');
+            }
+          }
+        }
+      }
+    }
+
+    function updateSimulation(dt) {
+      recalculatePlayerStats();
+      if (localPlayer.hp < localPlayer.maxHp) {
+        localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + localPlayer.hpRegen * dt);
+      }
+
+      if (localPlayer.dashTimer > 0) localPlayer.dashTimer = Math.max(0, localPlayer.dashTimer - dt);
+      if (localPlayer.emoteTimer > 0) {
+        localPlayer.emoteTimer -= dt;
+        if (localPlayer.emoteTimer <= 0) localPlayer.emote = null;
+      }
+
+      let moveX = 0;
+      let moveY = 0;
+      if (keys.has('KeyW') || keys.has('ArrowUp')) moveY -= 1;
+      if (keys.has('KeyS') || keys.has('ArrowDown')) moveY += 1;
+      if (keys.has('KeyA') || keys.has('ArrowLeft')) moveX -= 1;
+      if (keys.has('KeyD') || keys.has('ArrowRight')) moveX += 1;
+      if (joystickInput.active) {
+        moveX += joystickInput.x;
+        moveY += joystickInput.y;
+      }
+
+      const inputMag = Math.hypot(moveX, moveY);
+      if (localPlayer.dashTimer <= 0) {
+        if (inputMag > 0.05) {
+          const nx = moveX / Math.max(1, inputMag);
+          const ny = moveY / Math.max(1, inputMag);
+          const scale = Math.min(1, inputMag);
+          localPlayer.vx = nx * localPlayer.speed * scale;
+          localPlayer.vy = ny * localPlayer.speed * scale;
+          localPlayer.aimAngle = Math.atan2(ny, nx);
+        } else {
+          localPlayer.vx *= Math.pow(0.001, dt);
+          localPlayer.vy *= Math.pow(0.001, dt);
+        }
+      }
+
+      const prevX = localPlayer.x;
+      const prevY = localPlayer.y;
+      localPlayer.x += localPlayer.vx * dt;
+      localPlayer.y += localPlayer.vy * dt;
+
+      ensureInfiniteSectorsAround(localPlayer.x, localPlayer.y);
+
+      const movedDist = Math.hypot(localPlayer.x - prevX, localPlayer.y - prevY);
+      if (movedDist > 0.1 && localPlayer.dashTimer <= 0 && localPlayer.dashEnergy < DASH_ENERGY_MAX) {
+        localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + movedDist * 0.085);
+      }
+
+      if (Math.hypot(localPlayer.vx, localPlayer.vy) > 25) {
+        localPlayer.trail.push({ x: localPlayer.x, y: localPlayer.y, alpha: 0.45 });
+      }
+      for (let i = localPlayer.trail.length - 1; i >= 0; i--) {
+        localPlayer.trail[i].alpha -= dt * 1.6;
+        if (localPlayer.trail[i].alpha <= 0) localPlayer.trail.splice(i, 1);
+      }
+
+      // Beacon shard resonance
+      const now = performance.now();
+      for (let i = beacons.length - 1; i >= 0; i--) {
+        const b = beacons[i];
+        if (now - b.createdAt > b.duration) {
+          beacons.splice(i, 1);
+          continue;
+        }
+        let pulled = 0;
+        for (const s of shards) {
+          if (!s.active) continue;
+          const bx = b.x - s.x;
+          const by = b.y - s.y;
+          const d = Math.hypot(bx, by);
+          if (d < BEACON_RADIUS && d > 12) {
+            pulled += 1;
+            s.x += (bx / d) * 80 * dt;
+            s.y += (by / d) * 80 * dt;
+          }
+        }
+        if (pulled >= 3 && !b.bonusClaimed) {
+          b.bonusClaimed = true;
+          localPlayer.shards += 2;
+          localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 30);
+          SoundFX.pickup();
+          spawnParticles(b.x, b.y, '#fbbf24', 18, 1.25);
+          showToast('Beacon Resonance! +2 Shards & +30% Dash Energy');
+        }
+      }
+
+      // Shard collection
+      for (const s of shards) {
+        s.phase += dt * 3.2;
+        if (!s.active) {
+          s.respawnTimer -= dt;
+          if (s.respawnTimer <= 0) s.active = true;
+          continue;
+        }
+        if (Math.hypot(localPlayer.x - s.x, localPlayer.y - s.y) < localPlayer.radius + 14) {
+          s.active = false;
+          s.respawnTimer = 18;
+          localPlayer.shards += 1;
+          recalculatePlayerStats();
+          localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 15);
+          SoundFX.pickup();
+          spawnParticles(s.x, s.y, '#fbbf24', 12, 0.9);
+          broadcastToAll({ type: 'shard_claim', shardId: s.id });
+        }
+      }
+
+      updatePlayerAutoCombat(dt);
+      updateNPCs(dt);
+      updateEnemies(dt);
+      updateProjectiles(dt);
+      updateCombatAndEnergyUI();
+
+      remotePeers.forEach((peer) => {
+        const pPrevX = peer.x;
+        const pPrevY = peer.y;
+        const lerpFactor = 1 - Math.exp(-12 * dt);
+        peer.x += (peer.targetX - peer.x) * lerpFactor;
+        peer.y += (peer.targetY - peer.y) * lerpFactor;
+        if (Math.hypot(peer.x - pPrevX, peer.y - pPrevY) > 0.6) {
+          peer.trail.push({ x: peer.x, y: peer.y, alpha: 0.35 });
+        }
+        for (let i = peer.trail.length - 1; i >= 0; i--) {
+          peer.trail[i].alpha -= dt * 1.6;
+          if (peer.trail[i].alpha <= 0) peer.trail.splice(i, 1);
+        }
+        if (peer.emoteTimer > 0) {
+          peer.emoteTimer -= dt;
+          if (peer.emoteTimer <= 0) peer.emote = null;
+        }
+      });
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vx *= Math.pow(0.08, dt);
+        p.vy *= Math.pow(0.08, dt);
+        p.life -= dt;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+
+      document.getElementById('coordsText').textContent = `${Math.round(localPlayer.x)}, ${Math.round(localPlayer.y)}`;
+    }
+
+    // =========================================================================
+    // CANVAS & MINIMAP RENDERING
+    // =========================================================================
+    const canvas = document.getElementById('worldCanvas');
+    const ctx = canvas.getContext('2d');
+    const minimapCanvas = document.getElementById('minimapCanvas');
+    const miniCtx = minimapCanvas.getContext('2d');
+
+    function resizeCanvases() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function drawWorld() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const camX = localPlayer.x - width / 2;
+      const camY = localPlayer.y - height / 2;
+
+      const curCx = Math.floor(localPlayer.x / SECTOR_SIZE);
+      const curCy = Math.floor(localPlayer.y / SECTOR_SIZE);
+      const biome = getBiomeForSector(curCx, curCy);
+
+      ctx.fillStyle = '#080e1a';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.translate(-camX, -camY);
+
+      // Infinite grid
+      const gridSize = 100;
+      const startX = Math.floor(camX / gridSize) * gridSize;
+      const endX = camX + width + gridSize;
+      const startY = Math.floor(camY / gridSize) * gridSize;
+      const endY = camY + height + gridSize;
+
+      ctx.strokeStyle = biome.grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = startX; x <= endX; x += gridSize) {
+        ctx.moveTo(x, camY);
+        ctx.lineTo(x, camY + height);
+      }
+      for (let y = startY; y <= endY; y += gridSize) {
+        ctx.moveTo(camX, y);
+        ctx.lineTo(camX + width, y);
+      }
+      ctx.stroke();
+
+      // Sector labels
+      const minSecX = Math.floor(camX / SECTOR_SIZE);
+      const maxSecX = Math.floor((camX + width) / SECTOR_SIZE);
+      const minSecY = Math.floor(camY / SECTOR_SIZE);
+      const maxSecY = Math.floor((camY + height) / SECTOR_SIZE);
+      ctx.font = '600 11px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      for (let sy = minSecY; sy <= maxSecY; sy++) {
+        for (let sx = minSecX; sx <= maxSecX; sx++) {
+          const b = getBiomeForSector(sx, sy);
+          ctx.fillStyle = b.accent + '55';
+          ctx.fillText(`[${sx},${sy}] ${b.name}`, sx * SECTOR_SIZE + 14, sy * SECTOR_SIZE + 22);
+        }
+      }
+
+      // Beacons
+      const now = performance.now();
+      for (const b of beacons) {
+        const pulse = ((now - b.createdAt) % 1400) / 1400;
+        ctx.strokeStyle = b.color + '3d';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 6]);
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, BEACON_RADIUS, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.strokeStyle = b.color;
+        ctx.globalAlpha = Math.max(0, 1 - pulse);
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 12 + pulse * 44, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = b.color;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '600 11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`📍 ${b.label}`, b.x, b.y - 16);
+      }
+
+      // Shards
+      for (const s of shards) {
+        if (!s.active) continue;
+        if (s.x < camX - 30 || s.x > camX + width + 30 || s.y < camY - 30 || s.y > camY + height + 30) continue;
+        const bob = Math.sin(s.phase) * 3;
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y - 9 + bob);
+        ctx.lineTo(s.x + 8, s.y + bob);
+        ctx.lineTo(s.x, s.y + 9 + bob);
+        ctx.lineTo(s.x - 8, s.y + bob);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Enemies (Swarmers, Stalkers, Colossus)
+      for (const en of enemies) {
+        if (en.x < camX - 70 || en.x > camX + width + 70 || en.y < camY - 70 || en.y > camY + height + 70) continue;
+        ctx.fillStyle = en.hitFlash > 0 ? '#ffffff' : en.color;
+        ctx.strokeStyle = '#090d16';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        if (en.variant === 'Colossus') {
+          ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2);
+        } else if (en.variant === 'Stalker') {
+          ctx.moveTo(en.x, en.y - en.radius);
+          ctx.lineTo(en.x + en.radius, en.y);
+          ctx.lineTo(en.x, en.y + en.radius);
+          ctx.lineTo(en.x - en.radius, en.y);
+          ctx.closePath();
+        } else {
+          ctx.moveTo(en.x, en.y - en.radius);
+          ctx.lineTo(en.x + en.radius, en.y + en.radius);
+          ctx.lineTo(en.x - en.radius, en.y + en.radius);
+          ctx.closePath();
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        // HP Bar
+        const bw = en.radius * 2;
+        const hpRatio = Math.max(0, en.hp / en.maxHp);
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillRect(en.x - bw / 2, en.y - en.radius - 11, bw, 4);
+        ctx.fillStyle = en.color;
+        ctx.fillRect(en.x - bw / 2, en.y - en.radius - 11, bw * hpRatio, 4);
+
+        ctx.fillStyle = '#fca5a5';
+        ctx.font = '600 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(en.variant, en.x, en.y - en.radius - 15);
+      }
+
+      // Projectiles
+      for (const pr of projectiles) {
+        ctx.fillStyle = pr.color;
+        ctx.beginPath();
+        ctx.arc(pr.x, pr.y, pr.ownerType === 'enemy' ? 5 : 4.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Particles
+      for (const p of particles) {
+        ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // NPCs, Remote Peers, Local Player
+      for (const npc of npcs) drawExplorerEntity(npc, false, true);
+      remotePeers.forEach((peer) => drawExplorerEntity(peer, false, false));
+      drawExplorerEntity(localPlayer, true, false);
+
+      ctx.restore();
+      drawMinimap();
+    }
+
+    function drawExplorerEntity(entity, isLocal, isNpc = false) {
+      for (const t of entity.trail) {
+        ctx.globalAlpha = Math.max(0, t.alpha * 0.45);
+        ctx.fillStyle = entity.color;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, (entity.radius || 16) * 0.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      const r = entity.radius || 16;
+      ctx.fillStyle = entity.color || '#38bdf8';
+      ctx.strokeStyle = isLocal ? '#ffffff' : '#0f172a';
+      ctx.lineWidth = isLocal ? 2.5 : 1.75;
+      ctx.beginPath();
+      ctx.arc(entity.x, entity.y, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#090d16';
+      ctx.beginPath();
+      ctx.arc(entity.x, entity.y, r * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = isNpc ? '#cbd5e1' : '#f8fafc';
+      ctx.font = `${isLocal ? '700' : '600'} 12px Inter, sans-serif`;
+      ctx.textAlign = 'center';
+      const label = isLocal
+        ? `${entity.name} [${entity.shortCode}]`
+        : isNpc
+          ? `${entity.code} • ${entity.role}`
+          : `${entity.name} [${entity.shortCode}]`;
+      ctx.fillText(label, entity.x, entity.y - r - 10);
+
+      if (entity.emote) {
+        ctx.font = '22px sans-serif';
+        ctx.fillText(entity.emote, entity.x, entity.y - r - 30);
+      }
+    }
+
+    function drawMinimap() {
+      const mw = minimapCanvas.width;
+      const mh = minimapCanvas.height;
+      miniCtx.clearRect(0, 0, mw, mh);
+      miniCtx.fillStyle = '#070c16';
+      miniCtx.fillRect(0, 0, mw, mh);
+
+      const radarSpan = 2200;
+      const scale = mw / radarSpan;
+      const toX = (wx) => mw / 2 + (wx - localPlayer.x) * scale;
+      const toY = (wy) => mh / 2 + (wy - localPlayer.y) * scale;
+
+      miniCtx.fillStyle = 'rgba(251, 191, 36, 0.5)';
+      for (const sh of shards) {
+        if (!sh.active) continue;
+        miniCtx.fillRect(toX(sh.x) - 1, toY(sh.y) - 1, 2, 2);
+      }
+
+      miniCtx.fillStyle = '#f43f5e';
+      for (const en of enemies) {
+        miniCtx.fillRect(toX(en.x) - 1.5, toY(en.y) - 1.5, 3, 3);
+      }
+
+      miniCtx.fillStyle = '#94a3b8';
+      for (const npc of npcs) {
+        miniCtx.beginPath();
+        miniCtx.arc(toX(npc.x), toY(npc.y), 2.2, 0, Math.PI * 2);
+        miniCtx.fill();
+      }
+
+      remotePeers.forEach((peer) => {
+        miniCtx.fillStyle = peer.color || '#38bdf8';
+        miniCtx.beginPath();
+        miniCtx.arc(toX(peer.x), toY(peer.y), 3, 0, Math.PI * 2);
+        miniCtx.fill();
+      });
+
+      miniCtx.fillStyle = '#ffffff';
+      miniCtx.beginPath();
+      miniCtx.arc(mw / 2, mh / 2, 3.8, 0, Math.PI * 2);
+      miniCtx.fill();
+    }
+
+    // =========================================================================
+    // INPUT LISTENERS
+    // =========================================================================
+    function bindEvents() {
+      window.addEventListener('resize', resizeCanvases);
+
+      window.addEventListener('keydown', (e) => {
+        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        keys.add(e.code);
+        if (e.code === 'Space') {
+          e.preventDefault();
+          triggerDash();
+        } else if (e.code === 'KeyE') {
+          e.preventDefault();
+          triggerBeacon();
+        }
+      });
+
+      window.addEventListener('keyup', (e) => keys.delete(e.code));
+
+      // Touch Joystick
+      const joyZone = document.getElementById('joystickZone');
+      const joyKnob = document.getElementById('joystickKnob');
+      let joyTouchId = null;
+
+      function updateJoystick(clientX, clientY) {
+        const rect = joyZone.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const maxR = rect.width * 0.36;
+        let dx = clientX - cx;
+        let dy = clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist > maxR) {
+          dx = (dx / dist) * maxR;
+          dy = (dy / dist) * maxR;
+        }
+        joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+        joystickInput.x = dx / maxR;
+        joystickInput.y = dy / maxR;
+        joystickInput.active = true;
+      }
+
+      function resetJoystick() {
+        joyTouchId = null;
+        joystickInput.x = 0;
+        joystickInput.y = 0;
+        joystickInput.active = false;
+        joyKnob.style.transform = 'translate(0px, 0px)';
+      }
+
+      joyZone.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const touch = e.changedTouches[0];
+        joyTouchId = touch.identifier;
+        updateJoystick(touch.clientX, touch.clientY);
+      }, { passive: false });
+
+      joyZone.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        for (const t of e.changedTouches) {
+          if (t.identifier === joyTouchId) {
+            updateJoystick(t.clientX, t.clientY);
+            break;
+          }
+        }
+      }, { passive: false });
+
+      joyZone.addEventListener('touchend', (e) => {
+        e.stopPropagation();
+        resetJoystick();
+      });
+      joyZone.addEventListener('touchcancel', resetJoystick);
+
+      document.getElementById('dashBtn').addEventListener('click', triggerDash);
+      document.getElementById('beaconBtn').addEventListener('click', triggerBeacon);
+
+      document.getElementById('soundToggleBtn').addEventListener('click', () => {
+        const next = !SoundFX.isEnabled();
+        SoundFX.setEnabled(next);
+        document.getElementById('soundOnIcon').classList.toggle('hidden', !next);
+        document.getElementById('soundOffIcon').classList.toggle('hidden', next);
+        showToast(next ? 'Sound enabled' : 'Sound muted');
+      });
+
+      document.getElementById('copyPeerBtn').addEventListener('click', () => copyToClipboard(localPlayer.shortCode));
+      document.getElementById('modalCopyIdBtn').addEventListener('click', () => copyToClipboard(localPlayer.shortCode));
+
+      const connectModal = document.getElementById('connectModal');
+      document.getElementById('openConnectModalBtn').addEventListener('click', () => {
+        refreshPeerUI();
+        connectModal.classList.remove('hidden');
+        connectModal.classList.add('flex');
+        document.getElementById('remotePeerInput').focus();
+      });
+      const closeConnectModal = () => {
+        connectModal.classList.add('hidden');
+        connectModal.classList.remove('flex');
+      };
+      document.getElementById('closeConnectModalBtn').addEventListener('click', closeConnectModal);
+      document.getElementById('cancelConnectBtn').addEventListener('click', closeConnectModal);
+
+      document.getElementById('connectPeerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('remotePeerInput');
+        connectToPeer(input.value);
+        input.value = '';
+        closeConnectModal();
+      });
+
+      const profileModal = document.getElementById('profileModal');
+      const swatchesEl = document.getElementById('colorSwatches');
+      let selectedColor = localPlayer.color;
+
+      function renderColorSwatches() {
+        swatchesEl.innerHTML = '';
+        AURA_COLORS.forEach((hex) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `w-9 h-9 rounded-full border-2 transition transform active:scale-90 ${
+            selectedColor === hex ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-75 hover:opacity-100'
+          }`;
+          btn.style.backgroundColor = hex;
+          btn.addEventListener('click', () => {
+            selectedColor = hex;
+            renderColorSwatches();
+          });
+          swatchesEl.appendChild(btn);
+        });
+      }
+
+      document.getElementById('profileBtn').addEventListener('click', () => {
+        selectedColor = localPlayer.color;
+        document.getElementById('explorerNameInput').value = localPlayer.name;
+        renderColorSwatches();
+        profileModal.classList.remove('hidden');
+        profileModal.classList.add('flex');
+      });
+      document.getElementById('closeProfileModalBtn').addEventListener('click', () => {
+        profileModal.classList.add('hidden');
+        profileModal.classList.remove('flex');
+      });
+
+      document.getElementById('profileForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const rawName = document.getElementById('explorerNameInput').value.trim();
+        if (rawName) localPlayer.name = rawName;
+        localPlayer.color = selectedColor;
+        profileModal.classList.add('hidden');
+        profileModal.classList.remove('flex');
+        showToast('Profile saved!');
+        broadcastToAll({
+          type: 'state',
+          name: localPlayer.name,
+          color: localPlayer.color,
+          x: localPlayer.x,
+          y: localPlayer.y,
+          shards: localPlayer.shards
+        });
+      });
+
+      const toggleChatBtn = document.getElementById('toggleChatBtn');
+      const chatBody = document.getElementById('chatBody');
+      toggleChatBtn.addEventListener('click', () => {
+        const hidden = chatBody.classList.toggle('hidden');
+        toggleChatBtn.textContent = hidden ? 'Show' : 'Hide';
+      });
+
+      document.getElementById('chatForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        appendChatMessage(localPlayer.name, text, false, localPlayer.color);
+        broadcastToAll({
+          type: 'chat',
+          name: localPlayer.name,
+          color: localPlayer.color,
+          text
+        });
+        input.value = '';
+      });
+
+      document.querySelectorAll('.emote-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const emoji = btn.getAttribute('data-emote');
+          if (emoji) sendEmote(emoji);
+        });
+      });
+    }
+
+    // =========================================================================
+    // MAIN LOOP
+    // =========================================================================
+    let lastTimestamp = performance.now();
+    let lastBroadcastTime = 0;
+
+    function mainLoop(now) {
+      const dt = Math.min(0.05, (now - lastTimestamp) / 1000);
+      lastTimestamp = now;
+
+      updateSimulation(dt);
+      drawWorld();
+
+      if (now - lastBroadcastTime >= BROADCAST_INTERVAL_MS && dataConnections.size > 0) {
+        lastBroadcastTime = now;
+        broadcastToAll({
+          type: 'state',
+          name: localPlayer.name,
+          color: localPlayer.color,
+          x: localPlayer.x,
+          y: localPlayer.y,
+          shards: localPlayer.shards
+        });
+      }
+
+      requestAnimationFrame(mainLoop);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      resizeCanvases();
+      initWorld();
+      updateCombatAndEnergyUI();
+      bindEvents();
+      initPeerJS();
+      requestAnimationFrame(mainLoop);
+    });
+  </script>
+</body>
+</html>
