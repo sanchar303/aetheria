@@ -63,34 +63,11 @@
           <div class="flex items-center gap-1 bg-slate-950/90 border border-slate-800 rounded-xl px-2 py-1">
             <span class="text-[11px] uppercase tracking-wider text-slate-400">ID</span>
             <span id="myPeerCode" class="font-mono-code text-xs sm:text-sm font-bold text-sky-400 tracking-widest">----</span>
-            <button
-              id="copyIdBtn"
-              type="button"
-              title="Copy 4-digit Peer ID"
-              class="ml-1 px-1.5 py-0.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/35 active:scale-95 text-sky-300 text-[11px] font-medium transition"
-            >
-              Copy
-            </button>
+            <span id="explorerNameBadge" class="ml-1 text-xs font-semibold text-white">Explorer</span>
           </div>
 
-          <div class="flex items-center gap-1 bg-slate-950/90 border border-slate-800 rounded-xl p-0.5">
-            <input
-              id="remoteCodeInput"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="4"
-              placeholder="4-digit ID"
-              aria-label="Remote 4-digit Peer ID"
-              class="font-mono-code w-20 sm:w-24 bg-transparent px-2 py-1 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none tracking-widest"
-            />
-            <button
-              id="connectPeerBtn"
-              type="button"
-              class="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-semibold text-xs transition"
-            >
-              Link
-            </button>
+          <div class="flex items-center gap-1 bg-slate-950/90 border border-slate-800 rounded-xl px-2 py-1 text-xs">
+            <span id="gangBadge" class="font-mono-code font-bold text-indigo-300">STRANGER • SOLO</span>
           </div>
 
           <div class="flex items-center gap-2 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
@@ -114,10 +91,18 @@
             <span id="dashEnergyLabel" class="font-mono-code text-[11px] font-bold text-cyan-200">0%</span>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
+          <div class="flex flex-wrap items-center gap-2 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
             <span id="hullText" class="font-mono-code font-bold text-rose-400">HP 100/100 • 12/12</span>
             <span class="text-slate-600">|</span>
             <span id="weaponBadge" class="font-mono-code font-bold text-emerald-300">SAFE (NO FIRE)</span>
+            <button
+              id="swapGunBtn"
+              type="button"
+              title="Swap Equipped Gun (Q)"
+              class="px-2 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-sky-300 font-mono-code text-[11px] font-bold transition"
+            >
+              Swap [Q]
+            </button>
             <span class="text-slate-600">|</span>
             <span id="killsText" class="font-mono-code font-bold text-violet-300">0 KILLS</span>
           </div>
@@ -189,17 +174,58 @@
       <div id="toastText" class="bg-slate-900/95 border border-sky-400/40 text-sky-100 text-xs sm:text-sm font-medium px-4 py-2 rounded-full shadow-2xl backdrop-blur-md"></div>
     </div>
 
+    <!-- Username & Community Gang Onboarding Modal -->
+    <div id="usernameModal" class="fixed inset-0 z-40 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-6 shadow-2xl space-y-4">
+        <div class="space-y-1">
+          <p class="text-[11px] uppercase tracking-widest text-sky-400 font-semibold">Single Shared World • Aetheria</p>
+          <h1 class="text-2xl font-bold text-white">Set Your Explorer Identity</h1>
+          <p class="text-xs text-slate-400">Everyone enters the same world. Start as strangers, assist others to build allies, and join a community gang.</p>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Username</label>
+            <input
+              id="usernameInput"
+              type="text"
+              maxlength="18"
+              placeholder="Enter your explorer name..."
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-400"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Community Gang</label>
+            <select
+              id="gangSelect"
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-sky-400"
+            >
+              <option value="Solari Vanguard">Solari Vanguard (Solar Wardens)</option>
+              <option value="Rift Drifters">Rift Drifters (Outer Steppe)</option>
+              <option value="Aegis Pact">Aegis Pact (Beacon Keepers)</option>
+            </select>
+          </div>
+        </div>
+        <button
+          id="enterWorldBtn"
+          type="button"
+          class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-[0.99] text-slate-950 font-bold text-sm transition"
+        >
+          Enter Shared World
+        </button>
+      </div>
+    </div>
+
     <!-- Collapsible P2P Chat Drawer -->
     <aside id="chatDrawer" class="hidden fixed top-20 right-2.5 sm:right-4 z-30 w-[calc(100vw-1.25rem)] max-w-xs sm:max-w-sm bg-slate-900/92 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden" style="max-height: min(420px, 58vh);">
       <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-800">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-300">P2P Comms</span>
-          <span id="chatPeerSummary" class="text-[11px] text-slate-400">No peers linked</span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-300">World & Gang Comms</span>
+          <span id="chatPeerSummary" class="text-[11px] text-slate-400">Scanning world...</span>
         </div>
         <button id="closeChatBtn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
       </div>
       <div id="chatMessages" class="custom-scroll flex-1 overflow-y-auto p-3 space-y-2 text-xs">
-        <div class="text-slate-400 italic text-center py-4">Share your 4-digit ID or enter a peer's 4-digit ID to chat directly over WebRTC.</div>
+        <div class="text-slate-400 italic text-center py-4">Connected to the single Aetheria world mesh. Help allies and coordinate in chat.</div>
       </div>
       <form id="chatForm" class="flex items-center gap-1.5 p-2.5 border-t border-slate-800 bg-slate-950/60">
         <input
@@ -230,30 +256,33 @@
       <button data-emote="🧭" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Explore">🧭</button>
       <button data-emote="⚡" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Surge">⚡</button>
       <div class="h-5 w-px bg-slate-800 mx-0.5 hidden sm:block"></div>
-      <span class="hidden sm:inline text-[11px] text-slate-400 pr-1">WASD/Arrows roam • Auto-aim/fire in range • Space Dash • E Beacon (2★)</span>
+      <span class="hidden sm:inline text-[11px] text-slate-400 pr-1">WASD/Arrows roam • Auto-aim • Q Swap Gun • Space Dash • E Beacon (2★)</span>
     </footer>
   </div>
 
   <script>
     const SECTOR_SIZE = 700;
-    const BROADCAST_INTERVAL_MS = 50;
+    const BROADCAST_INTERVAL_MS = 60;
     const DASH_ENERGY_MAX = 100;
-    const BEACON_RADIUS = 250;
-    const BEACON_DURATION_MS = 24000;
+    const BEACON_RADIUS = 270;
+    const BEACON_DURATION_MS = 26000;
     const BEACON_SHARD_COST = 2;
-    const BEACON_COOLDOWN_MS = 14000;
+    const BEACON_COOLDOWN_MS = 13000;
     const SAFE_ZONE_RADIUS = 290;
-    const AETHER_PREFIX = 'AETH-P2P-';
+    const AETHER_PREFIX = 'AETH-WORLD-';
+    const WORLD_REGISTRY_KEY = 'aetheria_world_registry_v1';
+    const RTDB_FOLDER = 'aetheria';
+    const STALE_PEER_MS = 35000;
 
     const GUN_SPECS = {
       pulse: {
         id: 'pulse',
         label: 'PULSE',
         color: '#38bdf8',
-        fireInterval: 0.40,
+        fireInterval: 0.44,
         magSize: 12,
-        reloadDuration: 1.3,
-        speed: 630,
+        reloadDuration: 1.35,
+        speed: 610,
         baseDmg: 22,
         pellets: 1,
         spread: 0
@@ -262,10 +291,10 @@
         id: 'scatter',
         label: 'SCATTER',
         color: '#fb923c',
-        fireInterval: 0.68,
+        fireInterval: 0.72,
         magSize: 6,
         reloadDuration: 1.55,
-        speed: 540,
+        speed: 520,
         baseDmg: 14,
         pellets: 4,
         spread: 0.24
@@ -274,10 +303,10 @@
         id: 'rail',
         label: 'RAIL',
         color: '#c084fc',
-        fireInterval: 0.85,
+        fireInterval: 0.88,
         magSize: 5,
         reloadDuration: 1.65,
-        speed: 880,
+        speed: 860,
         baseDmg: 48,
         pellets: 1,
         spread: 0
@@ -371,6 +400,7 @@
       id: null,
       shortCode: '----',
       name: `${randomAdj[seedNum % randomAdj.length]}_${randomNoun[(seedNum >> 3) % randomNoun.length]}`,
+      gang: 'Solari Vanguard',
       color: AURA_COLORS[seedNum % AURA_COLORS.length],
       x: 0,
       y: 0,
@@ -378,18 +408,20 @@
       vy: 0,
       aimAngle: 0,
       radius: 16,
-      baseSpeed: 165,
-      speed: 165,
+      baseSpeed: 145,
+      speed: 145,
       hp: 100,
       maxHp: 100,
       hpRegen: 1.5,
       weaponId: 'pulse',
-      fireInterval: 0.40,
+      ownedGuns: ['pulse'],
+      gunLevels: { pulse: 1, scatter: 1, rail: 1 },
+      fireInterval: 0.44,
       autoAimRange: 400,
       magSize: 12,
       ammo: 12,
       reloadTimer: 0,
-      reloadDuration: 1.3,
+      reloadDuration: 1.35,
       critChance: 0.08,
       critMult: 1.5,
       kills: 0,
@@ -399,6 +431,8 @@
       shards: 0,
       hitFlash: 0,
       inSafeZone: true,
+      inOwnBeacon: false,
+      allyBond: new Map(),
       powerups: {
         overdrive: 0,
         aegis: 0,
@@ -428,6 +462,110 @@
     let activeColossusCount = 0;
     let lastBeaconDeployTime = -BEACON_COOLDOWN_MS;
     let lastPowerupStripKey = '';
+    let worldEntered = false;
+    let lastRegistryHeartbeat = 0;
+
+    // Optional RTDB persistence hook under folder "aetheria"
+    const AetheriaRTDB = (() => {
+      let dbRef = null;
+      let rtdbMod = null;
+      let ready = false;
+
+      async function initIfConfigured() {
+        if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
+        try {
+          const cfg = JSON.parse(__firebase_config);
+          if (!cfg || !cfg.databaseURL) return;
+          const appMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+          const authMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
+          rtdbMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
+          const fbApp = appMod.initializeApp(cfg);
+          const auth = authMod.getAuth(fbApp);
+          await authMod.signInAnonymously(auth);
+          dbRef = rtdbMod.getDatabase(fbApp);
+          ready = true;
+        } catch (err) {
+          ready = false;
+        }
+      }
+
+      async function saveExplorer(code, record) {
+        if (!ready || !dbRef || !rtdbMod || !code || code === '----') return;
+        try {
+          await rtdbMod.set(rtdbMod.ref(dbRef, `${RTDB_FOLDER}/explorers/${code}`), record);
+        } catch (err) {}
+      }
+
+      async function pruneStale() {
+        if (!ready || !dbRef || !rtdbMod) return;
+        try {
+          const snap = await rtdbMod.get(rtdbMod.ref(dbRef, `${RTDB_FOLDER}/explorers`));
+          if (!snap.exists()) return;
+          const now = Date.now();
+          const data = snap.val() || {};
+          for (const [code, rec] of Object.entries(data)) {
+            if (!rec || !rec.updatedAt || now - rec.updatedAt > STALE_PEER_MS) {
+              await rtdbMod.remove(rtdbMod.ref(dbRef, `${RTDB_FOLDER}/explorers/${code}`));
+            }
+          }
+        } catch (err) {}
+      }
+
+      return { initIfConfigured, saveExplorer, pruneStale };
+    })();
+
+    function readCleanRegistry() {
+      const now = Date.now();
+      let parsed = {};
+      try {
+        parsed = JSON.parse(localStorage.getItem(WORLD_REGISTRY_KEY) || '{}') || {};
+      } catch (err) {
+        parsed = {};
+      }
+      const clean = {};
+      for (const [code, entry] of Object.entries(parsed)) {
+        if (entry && typeof entry.updatedAt === 'number' && now - entry.updatedAt <= STALE_PEER_MS) {
+          clean[code] = entry;
+        }
+      }
+      try {
+        localStorage.setItem(WORLD_REGISTRY_KEY, JSON.stringify(clean));
+      } catch (err) {}
+      return clean;
+    }
+
+    function publishPresenceAndClean() {
+      if (!localPlayer.shortCode || localPlayer.shortCode === '----') return;
+      const now = Date.now();
+      const reg = readCleanRegistry();
+      reg[localPlayer.shortCode] = {
+        code: localPlayer.shortCode,
+        name: localPlayer.name,
+        gang: localPlayer.gang,
+        color: localPlayer.color,
+        x: Math.round(localPlayer.x),
+        y: Math.round(localPlayer.y),
+        shards: localPlayer.shards,
+        kills: localPlayer.kills,
+        updatedAt: now
+      };
+      try {
+        localStorage.setItem(WORLD_REGISTRY_KEY, JSON.stringify(reg));
+      } catch (err) {}
+
+      AetheriaRTDB.saveExplorer(localPlayer.shortCode, reg[localPlayer.shortCode]);
+      AetheriaRTDB.pruneStale();
+
+      Object.keys(reg).forEach((code) => {
+        if (
+          code !== localPlayer.shortCode &&
+          !dataConnections.has(code) &&
+          localPlayer.shortCode > code
+        ) {
+          connectToPeer(code);
+        }
+      });
+    }
 
     const keys = new Set();
     const joystickInput = { x: 0, y: 0, active: false };
@@ -436,35 +574,83 @@
       return Math.hypot(x, y) <= SAFE_ZONE_RADIUS;
     }
 
+    function isInsideOwnBeacon(x, y) {
+      const now = performance.now();
+      return beacons.some((b) => b.ownerCode === localPlayer.shortCode && (now - b.createdAt) <= b.duration && Math.hypot(x - b.x, y - b.y) <= BEACON_RADIUS);
+    }
+
+    function getGunDamageForPlayer(gunId) {
+      const spec = GUN_SPECS[gunId] || GUN_SPECS.pulse;
+      const lvl = localPlayer.gunLevels[gunId] || 1;
+      const lvlMult = 1 + (lvl - 1) * 0.22;
+      const beaconMult = localPlayer.inOwnBeacon ? 1.30 : 1.0;
+      return spec.baseDmg * lvlMult * beaconMult;
+    }
+
     function recalculatePlayerStats() {
       const s = localPlayer.shards;
       const gun = GUN_SPECS[localPlayer.weaponId] || GUN_SPECS.pulse;
       const overdriveMult = localPlayer.powerups.overdrive > 0 ? 1.35 : 1.0;
 
       localPlayer.maxHp = 100 + Math.floor(s / 3) * 15;
-      localPlayer.hpRegen = 1.5 + Math.floor(s / 4) * 0.8;
-      localPlayer.speed = Math.min(285, (165 + Math.floor(s / 3) * 5) * (localPlayer.powerups.overdrive > 0 ? 1.15 : 1.0));
-      localPlayer.fireInterval = Math.max(0.14, (gun.fireInterval - Math.floor(s / 5) * 0.02) / overdriveMult);
+      localPlayer.hpRegen = (1.5 + Math.floor(s / 4) * 0.8) * (localPlayer.inOwnBeacon ? 2.2 : 1.0);
+      localPlayer.speed = Math.min(255, (145 + Math.floor(s / 3) * 4.5) * (localPlayer.powerups.overdrive > 0 ? 1.15 : 1.0));
+      localPlayer.fireInterval = Math.max(0.16, (gun.fireInterval - Math.floor(s / 5) * 0.02) / overdriveMult);
       localPlayer.magSize = gun.magSize + Math.floor(s / 4) * 2;
       localPlayer.reloadDuration = gun.reloadDuration;
-      localPlayer.critChance = Math.min(0.65, 0.08 + Math.floor(s / 4) * 0.03 + (localPlayer.powerups.overdrive > 0 ? 0.12 : 0));
+      localPlayer.critChance = Math.min(0.65, 0.08 + Math.floor(s / 4) * 0.03 + (localPlayer.powerups.overdrive > 0 ? 0.12 : 0) + (localPlayer.inOwnBeacon ? 0.1 : 0));
       localPlayer.critMult = 1.5 + Math.floor(s / 5) * 0.15;
       if (localPlayer.ammo > localPlayer.magSize) localPlayer.ammo = localPlayer.magSize;
       if (localPlayer.hp > localPlayer.maxHp) localPlayer.hp = localPlayer.maxHp;
     }
 
+    function swapEquippedGun() {
+      if (!Array.isArray(localPlayer.ownedGuns) || localPlayer.ownedGuns.length <= 1) {
+        showToast('Pick up another gun type in the world to swap!');
+        return;
+      }
+      const idx = localPlayer.ownedGuns.indexOf(localPlayer.weaponId);
+      const nextGun = localPlayer.ownedGuns[(idx + 1) % localPlayer.ownedGuns.length];
+      localPlayer.weaponId = nextGun;
+      recalculatePlayerStats();
+      localPlayer.ammo = localPlayer.magSize;
+      localPlayer.reloadTimer = 0;
+      const spec = GUN_SPECS[nextGun];
+      const lvl = localPlayer.gunLevels[nextGun] || 1;
+      SoundFX.pickup();
+      showToast(`Swapped to ${spec.label} (Lv.${lvl})`);
+      updateCombatAndEnergyUI();
+    }
+
+    function recordAllyBond(peerCode, amount = 1) {
+      if (!peerCode || peerCode === localPlayer.shortCode) return;
+      const next = (localPlayer.allyBond.get(peerCode) || 0) + amount;
+      localPlayer.allyBond.set(peerCode, next);
+      if (next === 1) {
+        const peer = remotePeers.get(peerCode);
+        showToast(`${peer ? peer.name : peerCode} is now your Ally!`);
+      }
+    }
+
+    function isAlly(peerCode) {
+      const peer = remotePeers.get(peerCode);
+      if (peer && peer.gang && peer.gang === localPlayer.gang) return true;
+      return (localPlayer.allyBond.get(peerCode) || 0) >= 1;
+    }
+
     function initNPCs() {
       const configs = [
-        { code: 'NPC-01', role: 'Scout', color: '#60a5fa', x: 150, y: 90, speed: 125 },
-        { code: 'NPC-02', role: 'Harvester', color: '#34d399', x: -165, y: 110, speed: 110 },
-        { code: 'NPC-03', role: 'Vanguard', color: '#f472b6', x: 140, y: -150, speed: 118 },
-        { code: 'NPC-04', role: 'Pathfinder', color: '#c084fc', x: -155, y: -135, speed: 122 }
+        { code: 'NPC-01', role: 'Scout', gang: 'Solari Vanguard', color: '#60a5fa', x: 150, y: 90, speed: 112 },
+        { code: 'NPC-02', role: 'Harvester', gang: 'Rift Drifters', color: '#34d399', x: -165, y: 110, speed: 102 },
+        { code: 'NPC-03', role: 'Vanguard', gang: 'Aegis Pact', color: '#f472b6', x: 140, y: -150, speed: 108 },
+        { code: 'NPC-04', role: 'Pathfinder', gang: 'Solari Vanguard', color: '#c084fc', x: -155, y: -135, speed: 110 }
       ];
       configs.forEach((cfg, idx) => {
         npcs.push({
           id: `npc_${idx + 1}`,
           code: cfg.code,
           role: cfg.role,
+          gang: cfg.gang,
           color: cfg.color,
           x: cfg.x,
           y: cfg.y,
@@ -474,6 +660,7 @@
           speed: cfg.speed,
           hp: 110,
           maxHp: 110,
+          lastAttacker: null,
           waypointX: cfg.x,
           waypointY: cfg.y,
           decisionTimer: 0.6 + idx * 0.4,
@@ -508,13 +695,14 @@
           y,
           vx: 0,
           vy: 0,
-          radius: 30,
-          speed: 62,
-          hp: Math.round(240 * scale),
-          maxHp: Math.round(240 * scale),
-          contactDmg: Math.round(24 * scale),
+          radius: 32,
+          speed: 64,
+          hp: Math.round(310 * scale),
+          maxHp: Math.round(310 * scale),
+          contactDmg: Math.round(28 * scale),
           color: '#ef4444',
-          fireTimer: 1.5,
+          fireTimer: 1.4,
+          novaTimer: 4.5,
           hitFlash: 0
         });
       } else if (variant === 'stalker') {
@@ -526,12 +714,12 @@
           vx: 0,
           vy: 0,
           radius: 16,
-          speed: 112,
-          hp: Math.round(58 * scale),
-          maxHp: Math.round(58 * scale),
+          speed: 106,
+          hp: Math.round(62 * scale),
+          maxHp: Math.round(62 * scale),
           contactDmg: Math.round(14 * scale),
           color: '#f97316',
-          fireTimer: 1.3,
+          fireTimer: 1.35,
           hitFlash: 0
         });
       } else {
@@ -543,9 +731,9 @@
           vx: 0,
           vy: 0,
           radius: 12,
-          speed: 138,
-          hp: Math.round(32 * scale),
-          maxHp: Math.round(32 * scale),
+          speed: 126,
+          hp: Math.round(34 * scale),
+          maxHp: Math.round(34 * scale),
           contactDmg: Math.round(11 * scale),
           color: '#fb7185',
           fireTimer: 99,
@@ -666,13 +854,13 @@
         }
       }
     }
-
-    function addBeacon(x, y, color, label) {
+    function addBeacon(x, y, color, label, ownerCode = localPlayer.shortCode) {
       beacons.push({
         x,
         y,
         color,
         label,
+        ownerCode,
         createdAt: performance.now(),
         duration: BEACON_DURATION_MS,
         bonusClaimed: false
@@ -758,8 +946,9 @@
 
     function applyDamageToLocalPlayer(rawDmg, sourceColor = '#f43f5e') {
       if (localPlayer.inSafeZone || localPlayer.dashTimer > 0) return;
-      const dmgMult = localPlayer.powerups.aegis > 0 ? 0.35 : 1.0;
-      const finalDmg = rawDmg * dmgMult;
+      const beaconMitigation = localPlayer.inOwnBeacon ? 0.65 : 1.0;
+      const aegisMitigation = localPlayer.powerups.aegis > 0 ? 0.35 : 1.0;
+      const finalDmg = rawDmg * beaconMitigation * aegisMitigation;
       localPlayer.hp -= finalDmg;
       localPlayer.hitFlash = 1;
       spawnParticles(localPlayer.x, localPlayer.y, sourceColor, 6, 0.75);
@@ -808,14 +997,14 @@
       recalculatePlayerStats();
       lastBeaconDeployTime = now;
 
-      localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + 25);
+      localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + 28);
 
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
         if (Math.hypot(en.x - localPlayer.x, en.y - localPlayer.y) <= BEACON_RADIUS) {
-          en.hp -= 35;
+          en.hp -= 40;
           en.hitFlash = 1;
-          addDamagePopup(en.x, en.y - 12, 35, '#fbbf24', true);
+          addDamagePopup(en.x, en.y - 12, 40, '#fbbf24', true);
           if (en.hp <= 0) {
             if (en.variant === 'Colossus') activeColossusCount = Math.max(0, activeColossusCount - 1);
             enemies.splice(i, 1);
@@ -824,16 +1013,17 @@
         }
       }
 
-      addBeacon(localPlayer.x, localPlayer.y, '#fbbf24', `${localPlayer.name} [${localPlayer.shortCode}]`);
+      addBeacon(localPlayer.x, localPlayer.y, '#fbbf24', `${localPlayer.name} (${localPlayer.gang})`, localPlayer.shortCode);
       SoundFX.beacon();
       spawnParticles(localPlayer.x, localPlayer.y, '#fbbf24', 20, 1.3);
-      showToast('Resonance Beacon deployed! +25 HP, Shockwave, Shard Pull & NPC Rally.');
+      showToast('Resonance Beacon deployed! +30% DMG, -35% DMG Taken, Fast Heal & NPC Rally.');
       broadcastToAll({
         type: 'beacon',
         x: localPlayer.x,
         y: localPlayer.y,
         color: '#fbbf24',
-        label: `${localPlayer.name} [${localPlayer.shortCode}]`
+        label: `${localPlayer.name} (${localPlayer.gang})`,
+        ownerCode: localPlayer.shortCode
       });
       updateCombatAndEnergyUI();
     }
@@ -870,12 +1060,19 @@
       }
 
       const gun = GUN_SPECS[localPlayer.weaponId] || GUN_SPECS.pulse;
+      const gunLvl = localPlayer.gunLevels[localPlayer.weaponId] || 1;
       const weaponBadge = document.getElementById('weaponBadge');
       if (weaponBadge) {
-        weaponBadge.textContent = localPlayer.inSafeZone ? 'SAFE (NO FIRE)' : gun.label;
+        weaponBadge.textContent = localPlayer.inSafeZone ? 'SAFE (NO FIRE)' : `${gun.label} Lv.${gunLvl}`;
         weaponBadge.className = localPlayer.inSafeZone
           ? 'font-mono-code font-bold text-emerald-300'
           : 'font-mono-code font-bold text-cyan-300';
+      }
+
+      const gangBadge = document.getElementById('gangBadge');
+      if (gangBadge) {
+        const allyCount = Array.from(localPlayer.allyBond.values()).filter((v) => v >= 1).length;
+        gangBadge.textContent = `${localPlayer.gang} • ${allyCount} ${allyCount === 1 ? 'Ally' : 'Allies'}`;
       }
 
       const ammoLabel = localPlayer.reloadTimer > 0 ? 'RLD' : `${localPlayer.ammo}/${localPlayer.magSize}`;
@@ -886,6 +1083,9 @@
       const strip = document.getElementById('powerupsStrip');
       if (strip) {
         const items = [];
+        if (localPlayer.inOwnBeacon) {
+          items.push({ key: 'beacon_zone', label: '🔆 Beacon Field (+30% DMG / -35% Taken / Fast Heal)', cls: 'bg-amber-500/20 border-amber-400/50 text-amber-200' });
+        }
         if (localPlayer.powerups.overdrive > 0) {
           items.push({ key: `od_${Math.ceil(localPlayer.powerups.overdrive)}`, label: `⚡ Overdrive ${localPlayer.powerups.overdrive.toFixed(1)}s`, cls: 'bg-amber-500/20 border-amber-400/50 text-amber-200' });
         }
@@ -969,6 +1169,7 @@
       switch (payload.type) {
         case 'hello':
           peer.name = payload.name || peer.name;
+          peer.gang = payload.gang || peer.gang || 'Solari Vanguard';
           peer.color = payload.color || peer.color;
           peer.shards = payload.shards ?? peer.shards;
           if (typeof payload.hp === 'number') peer.hp = payload.hp;
@@ -988,6 +1189,7 @@
           break;
         case 'state':
           peer.name = payload.name || peer.name;
+          peer.gang = payload.gang || peer.gang || 'Solari Vanguard';
           peer.color = payload.color || peer.color;
           peer.targetX = payload.x;
           peer.targetY = payload.y;
@@ -1011,7 +1213,7 @@
         case 'chat':
           SoundFX.message();
           appendChatMessage({
-            sender: peer.name,
+            sender: `${peer.name} • ${peer.gang}`,
             code: peerCode,
             text: String(payload.text || '').slice(0, 240),
             color: peer.color,
@@ -1024,7 +1226,13 @@
           SoundFX.pickup();
           break;
         case 'beacon':
-          addBeacon(payload.x, payload.y, payload.color || peer.color, payload.label || `${peer.name} [${peerCode}]`);
+          addBeacon(
+            payload.x,
+            payload.y,
+            payload.color || peer.color,
+            payload.label || `${peer.name} [${peerCode}]`,
+            payload.ownerCode || peerCode
+          );
           SoundFX.beacon();
           spawnParticles(payload.x, payload.y, payload.color || peer.color, 18, 1.2);
           showToast(`${peer.name} [${peerCode}] deployed a Resonance Beacon!`);
@@ -1191,6 +1399,7 @@
 
       for (const npc of npcs) {
         if (isInSafeZone(npc.x, npc.y)) continue;
+        if (npc.gang === localPlayer.gang) continue;
         const d = Math.hypot(npc.x - localPlayer.x, npc.y - localPlayer.y);
         if (d < bestDist) {
           bestDist = d;
@@ -1200,6 +1409,7 @@
 
       remotePeers.forEach((peer, code) => {
         if (isInSafeZone(peer.x, peer.y)) return;
+        if (isAlly(code)) return;
         const d = Math.hypot(peer.x - localPlayer.x, peer.y - localPlayer.y);
         if (d < bestDist) {
           bestDist = d;
@@ -1241,6 +1451,7 @@
 
       if (localPlayer.fireCooldown <= 0) {
         const gun = GUN_SPECS[localPlayer.weaponId] || GUN_SPECS.pulse;
+        const scaledDmg = getGunDamageForPlayer(localPlayer.weaponId);
         localPlayer.fireCooldown = localPlayer.fireInterval;
         localPlayer.ammo = Math.max(0, localPlayer.ammo - 1);
         if (localPlayer.ammo === 0) {
@@ -1252,7 +1463,7 @@
             ? ((p / (gun.pellets - 1)) - 0.5) * gun.spread
             : (Math.random() - 0.5) * gun.spread;
           const isCrit = Math.random() < localPlayer.critChance;
-          const dmg = Math.round(gun.baseDmg * (isCrit ? localPlayer.critMult : 1));
+          const dmg = Math.max(1, Math.round(scaledDmg * (isCrit ? localPlayer.critMult : 1)));
           spawnProjectile(
             localPlayer.x + Math.cos(baseAngle + offset) * 20,
             localPlayer.y + Math.sin(baseAngle + offset) * 20,
@@ -1303,7 +1514,7 @@
 
         const priorityEnemy = colossusTarget || nearestAnyEnemy;
         const playerDist = Math.hypot(localPlayer.x - npc.x, localPlayer.y - npc.y);
-        const canEngagePlayer = playerDist < 360 && !localPlayer.inSafeZone && !isInSafeZone(npc.x, npc.y);
+        const canEngagePlayer = playerDist < 340 && !localPlayer.inSafeZone && !isInSafeZone(npc.x, npc.y) && npc.gang !== localPlayer.gang;
 
         if (priorityEnemy) {
           const dx = priorityEnemy.x - npc.x;
@@ -1401,6 +1612,9 @@
           en.hitFlash = Math.max(0, en.hitFlash - dt * 6);
         }
         en.fireTimer -= dt;
+        if (en.variant === 'Colossus') {
+          en.novaTimer = (en.novaTimer ?? 4.5) - dt;
+        }
 
         let targetX = null;
         let targetY = null;
@@ -1430,7 +1644,7 @@
           const dist = Math.max(1, bestDist);
           const ang = Math.atan2(dy, dx);
 
-          const stopDist = en.variant === 'Colossus' ? 190 : en.variant === 'Stalker' ? 140 : 12;
+          const stopDist = en.variant === 'Colossus' ? 185 : en.variant === 'Stalker' ? 140 : 12;
           if (dist > stopDist) {
             en.vx = (dx / dist) * en.speed;
             en.vy = (dy / dist) * en.speed;
@@ -1442,10 +1656,18 @@
           en.x += en.vx * dt;
           en.y += en.vy * dt;
 
+          if (en.variant === 'Colossus' && en.novaTimer <= 0 && dist < 420) {
+            en.novaTimer = 5.0;
+            for (let k = 0; k < 8; k++) {
+              const radAng = (Math.PI * 2 * k) / 8;
+              spawnProjectile(en.x, en.y, radAng, 290, 14, 'enemy', '#f87171');
+            }
+          }
+
           if ((en.variant === 'Colossus' || en.variant === 'Stalker') && en.fireTimer <= 0 && dist < 440) {
-            en.fireTimer = en.variant === 'Colossus' ? 1.85 : 2.1;
-            const dmg = en.variant === 'Colossus' ? 16 : 10;
-            const spd = en.variant === 'Colossus' ? 320 : 350;
+            en.fireTimer = en.variant === 'Colossus' ? 1.55 : 2.1;
+            const dmg = en.variant === 'Colossus' ? 18 : 10;
+            const spd = en.variant === 'Colossus' ? 330 : 350;
             spawnProjectile(en.x, en.y, ang, spd, dmg, 'enemy', en.color);
           }
 
@@ -1484,10 +1706,13 @@
                 spawnParticles(en.x, en.y, en.color, 18, 1.3);
                 SoundFX.kill();
                 enemies.splice(j, 1);
-                if (pr.ownerType === 'player') {
-                  localPlayer.kills += 1;
-                  localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 20);
-                }
+                localPlayer.kills += 1;
+                localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 20);
+                remotePeers.forEach((p, code) => {
+                  if (Math.hypot(p.x - en.x, p.y - en.y) < 380) {
+                    recordAllyBond(code, 1);
+                  }
+                });
               } else {
                 SoundFX.hit();
               }
@@ -1496,25 +1721,39 @@
           }
 
           if (!hit && pr.ownerType === 'player') {
-            for (const npc of npcs) {
+            for (let k = npcs.length - 1; k >= 0; k--) {
+              const npc = npcs[k];
+              if (npc.gang === localPlayer.gang) continue;
               if (Math.hypot(pr.x - npc.x, pr.y - npc.y) < npc.radius + 6) {
                 npc.hp -= pr.damage;
                 hit = true;
                 addDamagePopup(npc.x, npc.y - 14, pr.damage, npc.color, pr.isCrit);
                 spawnParticles(pr.x, pr.y, npc.color, 6, 0.8);
-                SoundFX.hit();
+                if (npc.hp <= 0) {
+                  localPlayer.kills += 1;
+                  SoundFX.kill();
+                  npc.hp = npc.maxHp;
+                  npc.x = localPlayer.x + (Math.random() - 0.5) * 420;
+                  npc.y = localPlayer.y + (Math.random() - 0.5) * 420;
+                } else {
+                  SoundFX.hit();
+                }
                 break;
               }
             }
 
             if (!hit) {
               remotePeers.forEach((peer, code) => {
-                if (hit || isInSafeZone(peer.x, peer.y)) return;
+                if (hit || isInSafeZone(peer.x, peer.y) || isAlly(code)) return;
                 if (Math.hypot(pr.x - peer.x, pr.y - peer.y) < (peer.radius || 16) + 6) {
-                  peer.hp = Math.max(0, (peer.hp ?? 100) - pr.damage);
+                  const nextHp = Math.max(0, (peer.hp ?? 100) - pr.damage);
+                  if (peer.hp > 0 && nextHp <= 0) {
+                    localPlayer.kills += 1;
+                  }
+                  peer.hp = nextHp;
                   peer.hitFlash = 1;
                   hit = true;
-                  addDamagePopup(peer.x, peer.y - 16, pr.damage, '#fb7185', pr.isCrit);
+                  addDamagePopup(peer.x, peer.y - 16, pr.damage, '#fb7185', !!pr.isCrit);
                   spawnParticles(pr.x, pr.y, peer.color, 7, 0.85);
                   SoundFX.hit();
                   broadcastToAll({
@@ -1544,6 +1783,7 @@
 
     function updateSimulation(dt) {
       localPlayer.inSafeZone = isInSafeZone(localPlayer.x, localPlayer.y);
+      localPlayer.inOwnBeacon = isInsideOwnBeacon(localPlayer.x, localPlayer.y);
       if (localPlayer.hitFlash > 0) localPlayer.hitFlash = Math.max(0, localPlayer.hitFlash - dt * 5);
 
       if (localPlayer.powerups.overdrive > 0) localPlayer.powerups.overdrive = Math.max(0, localPlayer.powerups.overdrive - dt);
@@ -1650,14 +1890,20 @@
         if (Math.hypot(localPlayer.x - g.x, localPlayer.y - g.y) < localPlayer.radius + 16) {
           g.active = false;
           g.respawnTimer = 26;
+          if (!localPlayer.ownedGuns.includes(g.gunType)) {
+            localPlayer.ownedGuns.push(g.gunType);
+          } else {
+            localPlayer.gunLevels[g.gunType] = (localPlayer.gunLevels[g.gunType] || 1) + 1;
+          }
           localPlayer.weaponId = g.gunType;
           recalculatePlayerStats();
           localPlayer.ammo = localPlayer.magSize;
           localPlayer.reloadTimer = 0;
           const spec = GUN_SPECS[g.gunType];
+          const lvl = localPlayer.gunLevels[g.gunType] || 1;
           SoundFX.pickup();
           spawnParticles(g.x, g.y, spec.color, 14, 1.0);
-          showToast(`Equipped ${spec.label} Gun!`);
+          showToast(`Equipped ${spec.label} Lv.${lvl} (+22% DMG/Lv)!`);
         }
       }
 
@@ -2018,11 +2264,12 @@
       ctx.font = `${isLocal ? '700' : '600'} 12px Inter, sans-serif`;
       ctx.textAlign = 'center';
       const yOffset = isLocal ? r + 10 : r + 16;
+      const allyTag = (!isLocal && !isNpc && entity.shortCode && isAlly(entity.shortCode)) ? ' • ALLY' : '';
       const label = isLocal
-        ? `${entity.name} [${entity.shortCode}]`
+        ? `${entity.name} [${entity.gang}]`
         : isNpc
-          ? `${entity.code} • ${entity.role}`
-          : `${entity.name} [${entity.shortCode}]`;
+          ? `${entity.code} • ${entity.gang}`
+          : `${entity.name} [${entity.gang}]${allyTag}`;
       ctx.fillText(label, entity.x, entity.y - yOffset);
 
       if (entity.emote) {
@@ -2106,38 +2353,36 @@
 
       document.getElementById('dashBtn').addEventListener('click', triggerDash);
       document.getElementById('beaconBtn').addEventListener('click', triggerBeacon);
+      document.getElementById('swapGunBtn').addEventListener('click', swapEquippedGun);
 
-      document.getElementById('copyIdBtn').addEventListener('click', () => {
-        const code = localPlayer.shortCode;
-        if (!code || code === '----') return;
-        const helper = document.createElement('textarea');
-        helper.value = code;
-        helper.style.position = 'fixed';
-        helper.style.opacity = '0';
-        document.body.appendChild(helper);
-        helper.select();
-        try {
-          document.execCommand('copy');
-          showToast(`Copied 4-digit ID: ${code}`);
-        } catch (err) {
-          showToast(`Your 4-digit ID: ${code}`);
-        }
-        document.body.removeChild(helper);
-      });
-
-      const codeInput = document.getElementById('remoteCodeInput');
-      codeInput.addEventListener('input', () => {
-        codeInput.value = codeInput.value.replace(/\D/g, '').slice(0, 4);
-      });
-      codeInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+      window.addEventListener('keydown', (e) => {
+        if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+        keys.add(e.code);
+        if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
           e.preventDefault();
-          connectToPeer(codeInput.value);
+          triggerDash();
+        } else if (e.code === 'KeyE') {
+          triggerBeacon();
+        } else if (e.code === 'KeyQ') {
+          swapEquippedGun();
         }
       });
 
-      document.getElementById('connectPeerBtn').addEventListener('click', () => {
-        connectToPeer(codeInput.value);
+      document.getElementById('enterWorldBtn').addEventListener('click', () => {
+        const nameVal = document.getElementById('usernameInput').value.trim();
+        const gangVal = document.getElementById('gangSelect').value;
+        if (nameVal) {
+          localPlayer.name = nameVal.slice(0, 18);
+        }
+        if (gangVal) {
+          localPlayer.gang = gangVal;
+        }
+        document.getElementById('explorerNameBadge').textContent = localPlayer.name;
+        document.getElementById('usernameModal').classList.add('hidden');
+        worldEntered = true;
+        publishPresenceAndClean();
+        updateCombatAndEnergyUI();
+        showToast(`Welcome to Aetheria, ${localPlayer.name} (${localPlayer.gang})`);
       });
 
       const soundBtn = document.getElementById('soundToggleBtn');
@@ -2261,6 +2506,7 @@
         broadcastToAll({
           type: 'state',
           name: localPlayer.name,
+          gang: localPlayer.gang,
           color: localPlayer.color,
           x: localPlayer.x,
           y: localPlayer.y,
@@ -2271,16 +2517,22 @@
         });
       }
 
+      if (worldEntered && now - lastRegistryHeartbeat >= 4000) {
+        lastRegistryHeartbeat = now;
+        publishPresenceAndClean();
+      }
+
       requestAnimationFrame(mainLoop);
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       resizeCanvas();
       initNPCs();
       recalculatePlayerStats();
       ensureInfiniteSectorsAround(localPlayer.x, localPlayer.y);
       bindEvents();
       updateCombatAndEnergyUI();
+      await AetheriaRTDB.initIfConfigured();
       initPeer();
       requestAnimationFrame(mainLoop);
     });
