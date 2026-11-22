@@ -68,7 +68,7 @@
           </div>
 
           <div class="flex items-center gap-2 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
-            <span id="peerCountText" class="font-semibold text-emerald-300">1 in world</span>
+            <span id="peerCountText" class="font-semibold text-emerald-300">1 explorer</span>
             <span class="text-slate-600">•</span>
             <span id="shardsText" class="font-mono-code font-bold text-amber-300">0 ★</span>
             <span class="text-slate-600 hidden md:inline">•</span>
@@ -298,6 +298,7 @@
     const WORLD_MESH_PREFIX = 'AETHERIA-SHARED-';
     const RTDB_ROOT_FOLDER = 'aetheria';
     const STALE_SESSION_MS = 40000;
+    const STALE_PROFILE_MS = 14 * 24 * 60 * 60 * 1000;
 
     const GUN_ORDER = ['pulse', 'scatter', 'rail', 'nova'];
     const GUN_SPECS = {
@@ -532,7 +533,10 @@
         if (!rawCfg) return false;
         try {
           const cfg = typeof rawCfg === 'string' ? JSON.parse(rawCfg) : rawCfg;
-          if (!cfg || !cfg.databaseURL) return false;
+          if (!cfg || !cfg.projectId) return false;
+          if (!cfg.databaseURL) {
+            cfg.databaseURL = `https://${cfg.projectId}-default-rtdb.firebaseio.com`;
+          }
           const appMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
           const authMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
           rtdb = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
@@ -576,26 +580,33 @@
         } catch (err) {}
       }
 
+      async function removeSession(peerId) {
+        if (!ready || !db || !rtdb || !peerId) return;
+        try {
+          await rtdb.remove(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/sessions/${peerId}`));
+        } catch (err) {}
+      }
+
       async function discoverSessionsAndClean() {
         if (!ready || !db || !rtdb) return [];
         try {
           const sessionsRef = rtdb.ref(db, `${RTDB_ROOT_FOLDER}/sessions`);
           const snap = await rtdb.get(sessionsRef);
-          if (!snap.exists()) return [];
           const now = Date.now();
-          const all = snap.val() || {};
           const activeList = [];
 
-          for (const [pid, rec] of Object.entries(all)) {
-            if (!rec || typeof rec.updatedAt !== 'number' || now - rec.updatedAt > STALE_SESSION_MS) {
-              // Smart cleaner removes stale disconnected sessions inside aetheria/sessions
-              await rtdb.remove(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/sessions/${pid}`));
-            } else {
-              activeList.push(rec);
+          if (snap.exists()) {
+            const all = snap.val() || {};
+            for (const [pid, rec] of Object.entries(all)) {
+              if (!rec || typeof rec.updatedAt !== 'number' || now - rec.updatedAt > STALE_SESSION_MS) {
+                await rtdb.remove(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/sessions/${pid}`));
+              } else {
+                activeList.push(rec);
+              }
             }
           }
 
-          // Smart cleaner also prunes expired beacons inside aetheria/beacons
+          // Smart cleaner prunes expired beacons inside aetheria/beacons and hydrates active ones
           const beaconsRef = rtdb.ref(db, `${RTDB_ROOT_FOLDER}/beacons`);
           const bSnap = await rtdb.get(beaconsRef);
           if (bSnap.exists()) {
@@ -603,6 +614,38 @@
             for (const [bid, bRec] of Object.entries(bData)) {
               if (!bRec || typeof bRec.expiresAt !== 'number' || now > bRec.expiresAt) {
                 await rtdb.remove(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/beacons/${bid}`));
+              } else if (!beacons.some((existing) => existing.id === bid)) {
+                const remaining = Math.max(2000, bRec.expiresAt - now);
+                beacons.push({
+                  id: bid,
+                  x: Number(bRec.x) || 0,
+                  y: Number(bRec.y) || 0,
+                  color: bRec.color || '#fbbf24',
+                  label: `${bRec.ownerName || 'Explorer'} [${bRec.ownerGang || 'World'}]`,
+                  ownerPeerId: bRec.ownerPeerId || '',
+                  ownerProfileKey: bRec.ownerProfileKey || '',
+                  ownerGang: bRec.ownerGang || '',
+                  isRival: bRec.ownerGang !== localPlayer.gang,
+                  hp: 160,
+                  maxHp: 160,
+                  hitFlash: 0,
+                  pulseTimer: 2.5,
+                  createdAt: performance.now() - (BEACON_DURATION_MS - remaining),
+                  duration: BEACON_DURATION_MS,
+                  bonusClaimed: false
+                });
+              }
+            }
+          }
+
+          // Smart cleaner also prunes dormant profiles older than 14 days inside aetheria/profiles
+          const profilesRef = rtdb.ref(db, `${RTDB_ROOT_FOLDER}/profiles`);
+          const pSnap = await rtdb.get(profilesRef);
+          if (pSnap.exists()) {
+            const pData = pSnap.val() || {};
+            for (const [pKey, pRec] of Object.entries(pData)) {
+              if (!pRec || typeof pRec.updatedAt !== 'number' || now - pRec.updatedAt > STALE_PROFILE_MS) {
+                await rtdb.remove(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/profiles/${pKey}`));
               }
             }
           }
@@ -625,6 +668,7 @@
         loadPersistentProfile,
         savePersistentProfile,
         publishActiveSession,
+        removeSession,
         discoverSessionsAndClean,
         saveBeacon,
         isReady: () => ready
@@ -676,7 +720,7 @@
 
       await AetheriaRTDB.publishActiveSession(localPlayer.peerId, sessionData);
       const activeSessions = await AetheriaRTDB.discoverSessionsAndClean();
-      activeSessions.forEach((sess) => {
+      for (const sess of activeSessions) {
         if (
           sess.peerId &&
           sess.peerId !== localPlayer.peerId &&
@@ -685,7 +729,7 @@
         ) {
           connectToPeer(sess.peerId);
         }
-      });
+      }
     }
 
     const keys = new Set();
@@ -1205,14 +1249,15 @@
       // Initial shockwave pulse on deploy
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
-        if (Math.hypot(en.x - localPlayer.x, en.y - localPlayer.y) <= BEACON_RADIUS) {
+        if (!en.dead && Math.hypot(en.x - localPlayer.x, en.y - localPlayer.y) <= BEACON_RADIUS) {
           en.hp -= 50;
           en.hitFlash = 1;
           addDamagePopup(en.x, en.y - 12, 50, '#fbbf24', true);
           if (en.hp <= 0) {
+            en.dead = true;
             if (en.isBoss) activeColossusCount = Math.max(0, activeColossusCount - 1);
             enemies.splice(i, 1);
-            localPlayer.kills += 1;
+            creditPlayerKill(en.x, en.y, en.isBoss ? 5 : 1);
           }
         }
       }
@@ -1239,8 +1284,11 @@
         id: bId,
         x: Math.round(localPlayer.x),
         y: Math.round(localPlayer.y),
+        ownerPeerId: localPlayer.peerId,
+        ownerProfileKey: localPlayer.profileKey,
         ownerName: localPlayer.name,
         ownerGang: localPlayer.gang,
+        color: '#fbbf24',
         expiresAt: Date.now() + BEACON_DURATION_MS
       });
 
@@ -1630,20 +1678,22 @@
           SoundFX.pickup();
           break;
         case 'beacon':
-          addBeacon({
-            id: payload.id,
-            x: payload.x,
-            y: payload.y,
-            color: payload.color || peer.color,
-            label: payload.label || `${peer.name} [${peer.gang}]`,
-            ownerPeerId: payload.ownerPeerId || peerId,
-            ownerProfileKey: payload.ownerProfileKey || peer.profileKey,
-            ownerGang: payload.ownerGang || peer.gang,
-            isRival: !isPeerAlly(peer)
-          });
-          SoundFX.beacon();
-          spawnParticles(payload.x, payload.y, payload.color || peer.color, 18, 1.2);
-          showToast(`${peer.name} deployed a Resonance Beacon!`);
+          if (!beacons.some((existing) => existing.id === payload.id)) {
+            addBeacon({
+              id: payload.id,
+              x: payload.x,
+              y: payload.y,
+              color: payload.color || peer.color,
+              label: payload.label || `${peer.name} [${peer.gang}]`,
+              ownerPeerId: payload.ownerPeerId || peerId,
+              ownerProfileKey: payload.ownerProfileKey || peer.profileKey,
+              ownerGang: payload.ownerGang || peer.gang,
+              isRival: !isPeerAlly(peer)
+            });
+            SoundFX.beacon();
+            spawnParticles(payload.x, payload.y, payload.color || peer.color, 18, 1.2);
+            showToast(`${peer.name} deployed a Resonance Beacon!`);
+          }
           break;
         case 'shard_claim': {
           const s = shards.find((item) => item.id === payload.shardId);
@@ -1762,6 +1812,8 @@
       });
     }
 
+    let currentLockedTarget = null;
+
     function getNearestHostileForPlayer() {
       if (localPlayer.inSafeZone) return null;
 
@@ -1799,9 +1851,9 @@
         }
       }
 
-      remotePeers.forEach((peer, pid) => {
-        if (isInSafeZone(peer.x, peer.y)) return;
-        if (isPeerAlly(peer)) return;
+      for (const [pid, peer] of remotePeers.entries()) {
+        if (isInSafeZone(peer.x, peer.y)) continue;
+        if (isPeerAlly(peer)) continue;
         const d = Math.hypot(peer.x - localPlayer.x, peer.y - localPlayer.y);
         if (d < bestDist) {
           bestDist = d;
@@ -1814,7 +1866,7 @@
             entity: peer
           };
         }
-      });
+      }
 
       // Rival beacons can also be targeted and destroyed
       const now = performance.now();
@@ -1842,6 +1894,7 @@
     }
 
     function updateTargetTelemetry(targetInfo) {
+      currentLockedTarget = targetInfo;
       const box = document.getElementById('targetTelemetryBox');
       if (!box) return;
       if (!targetInfo) {
@@ -2127,7 +2180,7 @@
           en.x += en.vx * dt;
           en.y += en.vy * dt;
 
-          // Boss Special Powers: Gravity Vortex + 10-Way Enraged Nova + Twin Lance
+          // Boss Special Powers: Gravity Vortex + Multi-Spoke Enraged Nova + Twin Lance
           if (en.isBoss) {
             if (en.gravityTimer <= 0 && dist < 440) {
               en.gravityTimer = 8.5;
@@ -2257,7 +2310,6 @@
                     showToast('Colossus Boss defeated! +1 Kill & +5 Shards ★');
                   }
                 } else if (Math.hypot(localPlayer.x - en.x, localPlayer.y - en.y) < 360) {
-                  // Assisted NPC takedown
                   localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 12);
                 }
               } else {
@@ -2294,8 +2346,8 @@
 
           // 3. Check Stranger / Rival Peers
           if (!hit && pr.ownerType === 'player') {
-            remotePeers.forEach((peer, pid) => {
-              if (hit || isInSafeZone(peer.x, peer.y) || isPeerAlly(peer)) return;
+            for (const [pid, peer] of remotePeers.entries()) {
+              if (isInSafeZone(peer.x, peer.y) || isPeerAlly(peer)) continue;
               if (Math.hypot(pr.x - peer.x, pr.y - peer.y) < (peer.radius || 16) + 7) {
                 const prevHp = peer.hp ?? 100;
                 const nextHp = Math.max(0, prevHp - pr.damage);
@@ -2317,8 +2369,9 @@
                   isCrit: pr.isCrit,
                   color: localPlayer.color
                 });
+                break;
               }
-            });
+            }
           }
 
           // 4. Check Rival Beacons (Destructible!)
@@ -2832,7 +2885,6 @@
         if (en.x < camX - 80 || en.x > camX + width + 80 || en.y < camY - 80 || en.y > camY + height + 80) continue;
 
         if (en.isBoss) {
-          // Boss Gravity Telegraph Ring
           ctx.save();
           ctx.strokeStyle = en.gravityPulling > 0 ? 'rgba(192, 132, 252, 0.7)' : 'rgba(239, 68, 68, 0.22)';
           ctx.lineWidth = en.gravityPulling > 0 ? 3 : 1.5;
@@ -2862,6 +2914,20 @@
         ctx.font = `${en.isBoss ? '800' : '600'} 10px Inter, sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(`${en.variant} (${Math.max(0, Math.ceil(en.hp))})`, en.x, en.y - en.radius - 18);
+      }
+
+      // Auto-Aim Target Lock Ring
+      if (currentLockedTarget && currentLockedTarget.entity) {
+        const te = currentLockedTarget.entity;
+        const lockRadius = (te.radius || 18) + 8;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(251, 113, 133, 0.85)';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.arc(te.x, te.y, lockRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
       }
 
       // Projectiles
@@ -3017,7 +3083,7 @@
         minimapCtx.fill();
       }
 
-      remotePeers.forEach((peer) => {
+      for (const peer of remotePeers.values()) {
         const mx = mw / 2 + (peer.x - localPlayer.x) * scale;
         const my = mh / 2 + (peer.y - localPlayer.y) * scale;
         if (mx < 0 || mx > mw || my < 0 || my > mh) continue;
@@ -3025,7 +3091,7 @@
         minimapCtx.beginPath();
         minimapCtx.arc(mx, my, 3.2, 0, Math.PI * 2);
         minimapCtx.fill();
-      });
+      }
 
       minimapCtx.fillStyle = '#ffffff';
       minimapCtx.beginPath();
@@ -3064,8 +3130,18 @@
       document.getElementById('dashBtn').addEventListener('click', triggerDash);
       document.getElementById('beaconBtn').addEventListener('click', triggerBeacon);
 
-      document.getElementById('enterWorldBtn').addEventListener('click', async () => {
-        const nameVal = document.getElementById('usernameInput').value.trim();
+      const enterBtn = document.getElementById('enterWorldBtn');
+      const usernameInput = document.getElementById('usernameInput');
+
+      usernameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          enterBtn.click();
+        }
+      });
+
+      enterBtn.addEventListener('click', async () => {
+        const nameVal = usernameInput.value.trim();
         const gangVal = document.getElementById('gangSelect').value;
         if (nameVal) {
           localPlayer.name = nameVal.slice(0, 18);
@@ -3172,6 +3248,12 @@
         });
       });
 
+      window.addEventListener('pagehide', () => {
+        if (localPlayer.peerId) {
+          AetheriaRTDB.removeSession(localPlayer.peerId);
+        }
+      });
+
       const zone = document.getElementById('joystickZone');
       const knob = document.getElementById('joystickKnob');
       let joyTouchId = null;
@@ -3259,7 +3341,7 @@
         });
       }
 
-      if (worldEntered && now - lastHeartbeatTime >= 5000) {
+      if (worldEntered && now - lastHeartbeatTime >= 4500) {
         lastHeartbeatTime = now;
         syncWorldPresence();
         saveLocalStateToCloud();
@@ -3276,7 +3358,7 @@
       bindEvents();
       updateCombatAndEnergyUI();
 
-      // Same-browser instant peer discovery via BroadcastChannel (no localStorage needed)
+      // Same-browser instant peer discovery via BroadcastChannel
       if (typeof BroadcastChannel !== 'undefined') {
         broadcastBus = new BroadcastChannel('aetheria_shared_world_bus');
         broadcastBus.onmessage = (ev) => {
