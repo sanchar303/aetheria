@@ -52,9 +52,9 @@
 
     <!-- Top HUD Bar -->
     <header class="pointer-events-none absolute top-0 left-0 right-0 z-20 flex flex-wrap items-start justify-between gap-2 p-2.5 sm:p-4">
-      <!-- Left: Identity, Gang, Currencies, Telemetry & Arsenal -->
+      <!-- Left: Identity, Gang, P2P Mesh Population, Currencies, Telemetry & Arsenal -->
       <div class="pointer-events-auto flex flex-col gap-1.5 max-w-[75vw] sm:max-w-3xl">
-        <!-- Row 1: Explorer Identity, Gang, World Population, Coins, Rubies, Coords -->
+        <!-- Row 1: Explorer Identity, Gang, P2P World Population, Coins, Rubies, Coords -->
         <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-slate-900/90 backdrop-blur-md border border-slate-700/70 rounded-2xl px-2.5 py-1.5 shadow-xl">
           <div class="flex items-center gap-1.5 pr-1">
             <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
@@ -68,7 +68,14 @@
           </div>
 
           <div class="flex items-center gap-2 bg-slate-950/85 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
-            <span id="peerCountText" class="font-semibold text-emerald-300">1 explorer</span>
+            <button
+              id="meshSyncBtn"
+              type="button"
+              title="P2P Shared World Mesh — Click to re-sync global P2P peers"
+              class="font-semibold text-emerald-300 hover:text-emerald-200 transition flex items-center gap-1"
+            >
+              <span id="peerCountText">1 explorer (P2P)</span>
+            </button>
             <span class="text-slate-600">•</span>
             <span id="coinsText" class="font-mono-code font-bold text-amber-300" title="Coins (100 Coins builds a Ruby Mine)">0 🪙</span>
             <span class="text-slate-600">•</span>
@@ -227,17 +234,17 @@
       <div id="toastText" class="bg-slate-900/95 border border-sky-400/45 text-sky-100 text-xs sm:text-sm font-medium px-4 py-2 rounded-full shadow-2xl backdrop-blur-md text-center"></div>
     </div>
 
-    <!-- Username & Gang Onboarding Modal (Zero Join Codes — Single Persistent Shared World) -->
+    <!-- Username & Gang Onboarding Modal (Zero Join Codes — Single Persistent Shared P2P World) -->
     <div id="usernameModal" class="fixed inset-0 z-40 bg-slate-950/88 backdrop-blur-md flex items-center justify-center p-4">
       <div class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-6 shadow-2xl space-y-4">
         <div class="space-y-1.5">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-400/30 text-[11px] uppercase tracking-wider text-sky-300 font-semibold">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Single Shared Open World • P2P Mesh
+            Global P2P Mesh • One Shared World For Everyone
           </div>
           <h1 class="text-2xl font-extrabold text-white tracking-tight">Enter Aetheria</h1>
           <p class="text-xs text-slate-300 leading-relaxed">
-            Enter your username to load your persistent progress and join the shared world. Gather <span class="text-amber-300 font-semibold">100 Coins</span> to construct <span class="text-rose-300 font-semibold">Ruby Mines</span>, visit the <span class="text-indigo-300 font-semibold">Treaty Board</span> to forge gang alliances, and spend <span class="text-rose-300 font-semibold">Rubies 💎</span> at the <span class="text-emerald-300 font-semibold">Shop</span>.
+            Anyone who visits Aetheria automatically links via WebRTC P2P into the exact same live world. Gather <span class="text-amber-300 font-semibold">100 Coins</span> to construct <span class="text-rose-300 font-semibold">Ruby Mines</span>, visit the <span class="text-indigo-300 font-semibold">Treaty Board</span> to forge gang alliances, and spend <span class="text-rose-300 font-semibold">Rubies 💎</span> at the <span class="text-emerald-300 font-semibold">Shop</span>.
           </p>
         </div>
 
@@ -272,7 +279,7 @@
           type="button"
           class="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-[0.99] text-slate-950 font-extrabold text-sm shadow-lg shadow-sky-500/20 transition"
         >
-          Join Shared World
+          Join Shared P2P World
         </button>
       </div>
     </div>
@@ -304,7 +311,7 @@
     <!-- Gang Standings & World Roster Drawer -->
     <aside id="communityDrawer" class="hidden fixed top-24 right-2.5 sm:right-4 z-30 w-[calc(100vw-1.25rem)] max-w-xs sm:max-w-sm bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden" style="max-height: min(460px, 65vh);">
       <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-800">
-        <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">5 Gangs • Equal Roster</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">5 Gangs • Shared World Roster</span>
         <button id="closeCommunityBtn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
       </div>
       <div id="communityContent" class="custom-scroll flex-1 overflow-y-auto p-3 space-y-3 text-xs"></div>
@@ -315,12 +322,12 @@
       <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-800">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold uppercase tracking-wider text-slate-200">World Comms</span>
-          <span id="chatPeerSummary" class="text-[11px] text-emerald-300">Auto-linking world...</span>
+          <span id="chatPeerSummary" class="text-[11px] text-emerald-300">Linking P2P mesh...</span>
         </div>
         <button id="closeChatBtn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
       </div>
       <div id="chatMessages" class="custom-scroll flex-1 overflow-y-auto p-3 space-y-2 text-xs">
-        <div class="text-slate-400 italic text-center py-4">Welcome to Aetheria! Gather 100 Coins to build a Ruby Mine, or visit Treaty Board & Shop safe zones.</div>
+        <div class="text-slate-400 italic text-center py-4">Welcome to Aetheria! All visitors share this P2P world automatically. Gather 100 Coins to build a Ruby Mine, or visit Treaty Board & Shop safe zones.</div>
       </div>
       <form id="chatForm" class="flex items-center gap-1.5 p-2.5 border-t border-slate-800 bg-slate-950/60">
         <input
@@ -377,7 +384,24 @@
     const RUBY_MINE_CYCLE_SEC = 4.6;
     const RESPAWN_DELAY_SEC = 3.0;
 
+    // Global P2P Mesh Identifiers & Deterministic World Hub Anchor Slots (Zero-Config Cross-Network P2P Discovery)
     const WORLD_MESH_PREFIX = 'AETHERIA-SHARED-';
+    const WORLD_ANCHOR_SLOTS = [
+      'AETHERIA-GLOBAL-WORLD-HUB-01',
+      'AETHERIA-GLOBAL-WORLD-HUB-02',
+      'AETHERIA-GLOBAL-WORLD-HUB-03',
+      'AETHERIA-GLOBAL-WORLD-HUB-04',
+      'AETHERIA-GLOBAL-WORLD-HUB-05'
+    ];
+    const PEER_ICE_CONFIG = {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:global.stun.twilio.com:3478' }
+      ]
+    };
+
     const RTDB_ROOT_FOLDER = 'aetheria';
     const STALE_SESSION_MS = 40000;
     const STALE_MINE_MS = 3 * 60 * 60 * 1000;
@@ -662,6 +686,8 @@
 
     const remotePeers = new Map();
     const dataConnections = new Map();
+    const anchorConnections = new Map();
+    const knownWorldNodes = new Set();
     const npcs = [];
     const enemies = [];
     const projectiles = [];
@@ -684,6 +710,11 @@
     }
 
     let peerInstance = null;
+    let anchorPeerInstance = null;
+    let hostedAnchorSlot = null;
+    let anchorClaimIndex = 0;
+    const anchorHostedConns = new Set();
+
     let broadcastBus = null;
     let toastTimeout = null;
     let activeColossusCount = 0;
@@ -802,7 +833,6 @@
             }
           }
 
-          // Hydrate & clean expired beacons in aetheria/beacons
           const bSnap = await rtdb.get(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/beacons`));
           if (bSnap.exists()) {
             const bData = bSnap.val() || {};
@@ -830,7 +860,6 @@
             }
           }
 
-          // Hydrate & clean stale Ruby Mines in aetheria/mines
           const mSnap = await rtdb.get(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/mines`));
           if (mSnap.exists()) {
             const mData = mSnap.val() || {};
@@ -891,8 +920,169 @@
       });
     }
 
+    // =========================================================================
+    // GLOBAL P2P RENDEZVOUS & GOSSIP MESH (ANYONE ANYWHERE JOINS SAME WORLD)
+    // =========================================================================
+    function broadcastAnchorDirectory() {
+      const dirPayload = JSON.stringify({
+        type: 'peer_directory',
+        peers: Array.from(knownWorldNodes)
+      });
+      anchorHostedConns.forEach((conn) => {
+        if (conn.open) {
+          try {
+            conn.send(dirPayload);
+          } catch (err) {}
+        }
+      });
+    }
+
+    function claimNextAvailableAnchorSlot() {
+      if (typeof Peer === 'undefined' || !localPlayer.peerId || hostedAnchorSlot) return;
+      if (anchorClaimIndex >= WORLD_ANCHOR_SLOTS.length) {
+        anchorClaimIndex = 0;
+        return;
+      }
+
+      const candidateSlot = WORLD_ANCHOR_SLOTS[anchorClaimIndex];
+      anchorClaimIndex += 1;
+
+      let candidatePeer;
+      try {
+        candidatePeer = new Peer(candidateSlot, { debug: 0, config: PEER_ICE_CONFIG });
+      } catch (err) {
+        return;
+      }
+
+      candidatePeer.on('open', () => {
+        anchorPeerInstance = candidatePeer;
+        hostedAnchorSlot = candidateSlot;
+        knownWorldNodes.add(localPlayer.peerId);
+        updateConnectionUI('ready');
+      });
+
+      candidatePeer.on('connection', (conn) => {
+        anchorHostedConns.add(conn);
+        const metaNodeId = conn.metadata && conn.metadata.nodePeerId;
+        if (metaNodeId && metaNodeId !== localPlayer.peerId) {
+          knownWorldNodes.add(metaNodeId);
+          connectToPeer(metaNodeId);
+        }
+
+        conn.on('open', () => {
+          broadcastAnchorDirectory();
+        });
+
+        conn.on('data', (raw) => {
+          let msg;
+          try {
+            msg = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          } catch (err) {
+            return;
+          }
+          if (msg && msg.type === 'register_node' && msg.nodePeerId) {
+            knownWorldNodes.add(msg.nodePeerId);
+            if (msg.nodePeerId !== localPlayer.peerId) {
+              connectToPeer(msg.nodePeerId);
+            }
+            broadcastAnchorDirectory();
+          }
+        });
+
+        conn.on('close', () => {
+          anchorHostedConns.delete(conn);
+        });
+        conn.on('error', () => {
+          anchorHostedConns.delete(conn);
+        });
+      });
+
+      candidatePeer.on('error', () => {
+        try {
+          candidatePeer.destroy();
+        } catch (err) {}
+      });
+    }
+
+    function dialGlobalWorldAnchors() {
+      if (!peerInstance || peerInstance.disconnected || !localPlayer.peerId) return;
+
+      for (const anchorSlot of WORLD_ANCHOR_SLOTS) {
+        if (anchorSlot === hostedAnchorSlot) continue;
+        const existing = anchorConnections.get(anchorSlot);
+        if (existing && existing.open) {
+          try {
+            existing.send(JSON.stringify({
+              type: 'register_node',
+              nodePeerId: localPlayer.peerId
+            }));
+          } catch (err) {}
+          continue;
+        }
+
+        try {
+          const aConn = peerInstance.connect(anchorSlot, {
+            reliable: true,
+            metadata: { nodePeerId: localPlayer.peerId }
+          });
+          if (!aConn) continue;
+          anchorConnections.set(anchorSlot, aConn);
+
+          aConn.on('open', () => {
+            aConn.send(JSON.stringify({
+              type: 'register_node',
+              nodePeerId: localPlayer.peerId
+            }));
+          });
+
+          aConn.on('data', (raw) => {
+            let msg;
+            try {
+              msg = typeof raw === 'string' ? JSON.parse(raw) : raw;
+            } catch (err) {
+              return;
+            }
+            if (msg && msg.type === 'peer_directory' && Array.isArray(msg.peers)) {
+              for (const pid of msg.peers) {
+                if (pid && pid !== localPlayer.peerId) {
+                  knownWorldNodes.add(pid);
+                  connectToPeer(pid);
+                }
+              }
+            }
+          });
+
+          aConn.on('close', () => {
+            anchorConnections.delete(anchorSlot);
+          });
+          aConn.on('error', () => {
+            anchorConnections.delete(anchorSlot);
+          });
+        } catch (err) {}
+      }
+    }
+
     async function syncWorldPresence() {
       if (!localPlayer.peerId) return;
+      knownWorldNodes.add(localPlayer.peerId);
+
+      // 1. Global P2P Anchor & Gossip Mesh Discovery
+      dialGlobalWorldAnchors();
+      if (!hostedAnchorSlot) {
+        claimNextAvailableAnchorSlot();
+      } else {
+        broadcastAnchorDirectory();
+      }
+
+      // Gossip known peer IDs across already-linked peers so mesh stays 100% connected
+      if (dataConnections.size > 0) {
+        broadcastToAll({
+          type: 'peer_gossip',
+          knownPeers: Array.from(knownWorldNodes)
+        });
+      }
+
+      // 2. Same-Browser Multi-Tab BroadcastChannel Discovery
       const sessionData = {
         peerId: localPlayer.peerId,
         username: localPlayer.name,
@@ -911,16 +1101,15 @@
         } catch (err) {}
       }
 
+      // 3. Optional Firebase RTDB Persistence & Discovery under "aetheria/"
       await AetheriaRTDB.publishActiveSession(localPlayer.peerId, sessionData);
       const activeSessions = await AetheriaRTDB.discoverWorldAndClean();
       for (const sess of activeSessions) {
-        if (
-          sess.peerId &&
-          sess.peerId !== localPlayer.peerId &&
-          !dataConnections.has(sess.peerId) &&
-          localPlayer.peerId > sess.peerId
-        ) {
-          connectToPeer(sess.peerId);
+        if (sess.peerId && sess.peerId !== localPlayer.peerId) {
+          knownWorldNodes.add(sess.peerId);
+          if (!dataConnections.has(sess.peerId)) {
+            connectToPeer(sess.peerId);
+          }
         }
       }
     }
@@ -1110,11 +1299,12 @@
       return BIOMES[idx];
     }
 
-    function spawnEnemyVariant(x, y, variant, scale) {
+    function spawnEnemyVariant(x, y, variant, scale, customId = null) {
+      if (customId && enemies.some((e) => e.id === customId)) return;
       if (variant === 'colossus') {
         activeColossusCount += 1;
         enemies.push({
-          id: `boss_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          id: customId || `boss_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
           variant: 'Colossus Boss',
           isBoss: true,
           x,
@@ -1135,7 +1325,7 @@
         });
       } else if (variant === 'stalker') {
         enemies.push({
-          id: `en_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          id: customId || `en_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
           variant: 'Stalker',
           isBoss: false,
           x,
@@ -1153,7 +1343,7 @@
         });
       } else {
         enemies.push({
-          id: `en_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          id: customId || `en_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
           variant: 'Swarmer',
           isBoss: false,
           x,
@@ -1222,7 +1412,7 @@
               } else if (r3 > 0.48) {
                 variant = 'stalker';
               }
-              spawnEnemyVariant(ex, ey, variant, difficultyScale);
+              spawnEnemyVariant(ex, ey, variant, difficultyScale, `sec_${cx}_${cy}`);
             }
           }
 
@@ -1278,9 +1468,13 @@
       }
     }
 
-    function addBeacon({ id, x, y, ownerPeerId, ownerName, ownerGang }) {
+    function addBeacon({ id, x, y, ownerPeerId, ownerName, ownerGang, remainingMs }) {
       const beaconId = id || `bcn_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+      if (beacons.some((b) => b.id === beaconId)) return beaconId;
       const theme = GANG_THEMES[ownerGang] || GANG_THEMES['Astro Nuts'];
+      const elapsedOffset = typeof remainingMs === 'number'
+        ? Math.max(0, BEACON_DURATION_MS - remainingMs)
+        : 0;
       beacons.push({
         id: beaconId,
         x,
@@ -1294,7 +1488,7 @@
         maxHp: 160,
         hitFlash: 0,
         pulseTimer: 2.5,
-        createdAt: performance.now(),
+        createdAt: performance.now() - elapsedOffset,
         duration: BEACON_DURATION_MS,
         bonusClaimed: false
       });
@@ -1303,6 +1497,7 @@
 
     function addRubyMine({ id, x, y, ownerPeerId, ownerName, ownerGang, hp = 240, createdAt }) {
       const mineId = id || `mine_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+      if (rubyMines.some((m) => m.id === mineId)) return mineId;
       rubyMines.push({
         id: mineId,
         x,
@@ -1337,10 +1532,10 @@
       const chatPeerSummary = document.getElementById('chatPeerSummary');
       const totalOnline = 1 + dataConnections.size;
 
-      peerCountText.textContent = `${totalOnline} ${totalOnline === 1 ? 'explorer' : 'explorers'}`;
+      peerCountText.textContent = `${totalOnline} ${totalOnline === 1 ? 'explorer' : 'explorers'} (P2P)`;
       chatPeerSummary.textContent = dataConnections.size > 0
-        ? `${dataConnections.size} linked in world`
-        : 'World mesh active';
+        ? `${dataConnections.size} P2P ${dataConnections.size === 1 ? 'explorer' : 'explorers'} linked`
+        : (hostedAnchorSlot ? 'Global P2P Hub Active' : 'Global P2P Mesh Ready');
 
       dot.className = 'w-2.5 h-2.5 rounded-full';
       if (state === 'error') {
@@ -1891,6 +2086,13 @@
           localPlayer.gangStances[targetGang] = newStance;
           gangDiplomacy[localPlayer.gang][targetGang] = newStance;
           gangDiplomacy[targetGang][localPlayer.gang] = newStance;
+          broadcastToAll({
+            type: 'treaty_update',
+            gangA: localPlayer.gang,
+            gangB: targetGang,
+            stance: newStance,
+            byName: localPlayer.name
+          });
           if (newStance === 'ally') {
             SoundFX.ally();
             showToast(`🤝 ${localPlayer.gang} signed an Alliance Treaty with ${targetGang}!`);
@@ -2059,7 +2261,7 @@
       for (const g of GANG_NAMES) gangMembers[g] = [];
       gangMembers[localPlayer.gang].push(`${localPlayer.name} (You)`);
       remotePeers.forEach((p) => {
-        if (gangMembers[p.gang]) gangMembers[p.gang].push(p.name);
+        if (gangMembers[p.gang]) gangMembers[p.gang].push(`${p.name} (P2P)`);
       });
       npcs.forEach((npc) => {
         if (gangMembers[npc.gang]) gangMembers[npc.gang].push(npc.name);
@@ -2086,7 +2288,7 @@
       }).join('');
 
       box.innerHTML = `
-        <div class="text-[11px] text-slate-400">Every gang maintains equal roster strength. Visit the <span class="text-indigo-300 font-semibold">Treaty Board</span> safe zone to forge alliances.</div>
+        <div class="text-[11px] text-slate-400">Live P2P explorers (${1 + remotePeers.size} online) & gang units share this world. Visit the <span class="text-indigo-300 font-semibold">Treaty Board</span> safe zone to forge alliances.</div>
         <div class="space-y-2">${gangCards}</div>
       `;
     }
@@ -2134,6 +2336,44 @@
       });
     }
 
+    function buildWorldSnapshotPayload() {
+      const now = performance.now();
+      return {
+        type: 'world_snapshot',
+        mines: rubyMines.map((m) => ({
+          id: m.id,
+          x: m.x,
+          y: m.y,
+          ownerPeerId: m.ownerPeerId,
+          ownerName: m.ownerName,
+          ownerGang: m.ownerGang,
+          hp: m.hp,
+          createdAt: m.createdAt
+        })),
+        beacons: beacons
+          .filter((b) => now - b.createdAt < b.duration)
+          .map((b) => ({
+            id: b.id,
+            x: b.x,
+            y: b.y,
+            ownerPeerId: b.ownerPeerId,
+            ownerName: b.ownerName,
+            ownerGang: b.ownerGang,
+            remainingMs: Math.max(1000, b.duration - (now - b.createdAt))
+          })),
+        bosses: enemies
+          .filter((en) => en.isBoss && !en.dead)
+          .map((en) => ({
+            id: en.id,
+            x: Math.round(en.x),
+            y: Math.round(en.y),
+            hp: Math.round(en.hp),
+            maxHp: Math.round(en.maxHp)
+          })),
+        diplomacy: gangDiplomacy
+      };
+    }
+
     function handlePeerData(peerId, rawData) {
       let payload;
       try {
@@ -2155,17 +2395,90 @@
           peer.kills = payload.kills ?? peer.kills;
           if (typeof payload.hp === 'number') peer.hp = payload.hp;
           if (typeof payload.maxHp === 'number') peer.maxHp = payload.maxHp;
+          if (typeof payload.x === 'number') {
+            peer.x = payload.x;
+            peer.targetX = payload.x;
+          }
+          if (typeof payload.y === 'number') {
+            peer.y = payload.y;
+            peer.targetY = payload.y;
+          }
           if (Array.isArray(payload.knownPeers)) {
             payload.knownPeers.forEach((otherId) => {
-              if (
-                otherId &&
-                otherId !== localPlayer.peerId &&
-                !dataConnections.has(otherId) &&
-                localPlayer.peerId > otherId
-              ) {
-                connectToPeer(otherId);
+              if (otherId && otherId !== localPlayer.peerId) {
+                knownWorldNodes.add(otherId);
+                if (!dataConnections.has(otherId)) {
+                  connectToPeer(otherId);
+                }
               }
             });
+          }
+          break;
+        case 'peer_gossip':
+          if (Array.isArray(payload.knownPeers)) {
+            payload.knownPeers.forEach((otherId) => {
+              if (otherId && otherId !== localPlayer.peerId) {
+                knownWorldNodes.add(otherId);
+                if (!dataConnections.has(otherId)) {
+                  connectToPeer(otherId);
+                }
+              }
+            });
+          }
+          break;
+        case 'world_snapshot':
+          if (Array.isArray(payload.mines)) {
+            for (const m of payload.mines) {
+              if (m && m.id && !rubyMines.some((existing) => existing.id === m.id)) {
+                addRubyMine(m);
+              }
+            }
+          }
+          if (Array.isArray(payload.beacons)) {
+            for (const b of payload.beacons) {
+              if (b && b.id && !beacons.some((existing) => existing.id === b.id)) {
+                addBeacon(b);
+              }
+            }
+          }
+          if (Array.isArray(payload.bosses)) {
+            for (const boss of payload.bosses) {
+              if (boss && boss.id && !enemies.some((e) => e.id === boss.id) && activeColossusCount < 2) {
+                spawnEnemyVariant(boss.x, boss.y, 'colossus', 1, boss.id);
+                const spawned = enemies.find((e) => e.id === boss.id);
+                if (spawned) {
+                  spawned.hp = boss.hp;
+                  spawned.maxHp = boss.maxHp;
+                }
+              }
+            }
+          }
+          if (payload.diplomacy && typeof payload.diplomacy === 'object') {
+            for (const gA of GANG_NAMES) {
+              if (!payload.diplomacy[gA]) continue;
+              for (const gB of GANG_NAMES) {
+                if (gA === gB) continue;
+                const st = payload.diplomacy[gA][gB];
+                if (st === 'ally' || st === 'enemy') {
+                  gangDiplomacy[gA][gB] = st;
+                  if (gA === localPlayer.gang) {
+                    localPlayer.gangStances[gB] = st;
+                  }
+                }
+              }
+            }
+          }
+          break;
+        case 'treaty_update':
+          if (GANG_THEMES[payload.gangA] && GANG_THEMES[payload.gangB] && (payload.stance === 'ally' || payload.stance === 'enemy')) {
+            gangDiplomacy[payload.gangA][payload.gangB] = payload.stance;
+            gangDiplomacy[payload.gangB][payload.gangA] = payload.stance;
+            if (payload.gangA === localPlayer.gang) {
+              localPlayer.gangStances[payload.gangB] = payload.stance;
+            } else if (payload.gangB === localPlayer.gang) {
+              localPlayer.gangStances[payload.gangA] = payload.stance;
+            }
+            showToast(`📜 ${payload.byName || payload.gangA}: ${payload.gangA} & ${payload.gangB} are now ${payload.stance.toUpperCase()}!`);
           }
           break;
         case 'state':
@@ -2173,6 +2486,7 @@
           peer.gang = GANG_THEMES[payload.gang] ? payload.gang : peer.gang;
           peer.targetX = payload.x;
           peer.targetY = payload.y;
+          peer.isDead = !!payload.isDead;
           peer.coins = payload.coins ?? peer.coins;
           peer.rubies = payload.rubies ?? peer.rubies;
           peer.kills = payload.kills ?? peer.kills;
@@ -2257,7 +2571,19 @@
     }
 
     function setupDataConnection(conn, targetPeerId) {
+      if (!targetPeerId || targetPeerId === localPlayer.peerId) return;
+
+      const existing = dataConnections.get(targetPeerId);
+      if (existing && existing !== conn && existing.open) {
+        try {
+          conn.close();
+        } catch (err) {}
+        return;
+      }
+
+      knownWorldNodes.add(targetPeerId);
       dataConnections.set(targetPeerId, conn);
+
       if (!remotePeers.has(targetPeerId)) {
         remotePeers.set(targetPeerId, {
           peerId: targetPeerId,
@@ -2270,6 +2596,7 @@
           radius: 16,
           hp: 100,
           maxHp: 100,
+          isDead: false,
           hitFlash: 0,
           coins: 0,
           rubies: 0,
@@ -2285,38 +2612,53 @@
         SoundFX.connect();
         updateConnectionUI('connected');
         const p = remotePeers.get(targetPeerId);
-        showToast(`${p ? p.name : 'An explorer'} joined the world!`);
-        conn.send(JSON.stringify({
-          type: 'hello',
-          name: localPlayer.name,
-          gang: localPlayer.gang,
-          coins: localPlayer.coins,
-          rubies: localPlayer.rubies,
-          kills: localPlayer.kills,
-          hp: Math.round(localPlayer.hp),
-          maxHp: Math.round(localPlayer.maxHp),
-          knownPeers: Array.from(dataConnections.keys())
-        }));
+        showToast(`${p ? p.name : 'An explorer'} linked into the shared P2P world!`);
+        try {
+          conn.send(JSON.stringify({
+            type: 'hello',
+            name: localPlayer.name,
+            gang: localPlayer.gang,
+            x: Math.round(localPlayer.x),
+            y: Math.round(localPlayer.y),
+            coins: localPlayer.coins,
+            rubies: localPlayer.rubies,
+            kills: localPlayer.kills,
+            hp: Math.round(localPlayer.hp),
+            maxHp: Math.round(localPlayer.maxHp),
+            knownPeers: Array.from(knownWorldNodes)
+          }));
+          conn.send(JSON.stringify(buildWorldSnapshotPayload()));
+        } catch (err) {}
       });
 
       conn.on('data', (data) => handlePeerData(targetPeerId, data));
 
       conn.on('close', () => {
-        dataConnections.delete(targetPeerId);
-        remotePeers.delete(targetPeerId);
-        updateConnectionUI(localPlayer.peerId ? 'ready' : 'error');
+        if (dataConnections.get(targetPeerId) === conn) {
+          dataConnections.delete(targetPeerId);
+          remotePeers.delete(targetPeerId);
+          knownWorldNodes.delete(targetPeerId);
+          updateConnectionUI(localPlayer.peerId ? 'ready' : 'error');
+        }
       });
 
       conn.on('error', () => {
-        dataConnections.delete(targetPeerId);
-        remotePeers.delete(targetPeerId);
-        updateConnectionUI(localPlayer.peerId ? 'ready' : 'error');
+        if (dataConnections.get(targetPeerId) === conn) {
+          dataConnections.delete(targetPeerId);
+          remotePeers.delete(targetPeerId);
+          knownWorldNodes.delete(targetPeerId);
+          updateConnectionUI(localPlayer.peerId ? 'ready' : 'error');
+        }
       });
     }
 
     function connectToPeer(targetPeerId) {
-      if (!targetPeerId || targetPeerId === localPlayer.peerId || dataConnections.has(targetPeerId)) return;
+      if (!targetPeerId || targetPeerId === localPlayer.peerId) return;
+      if (WORLD_ANCHOR_SLOTS.includes(targetPeerId)) return;
+      const existing = dataConnections.get(targetPeerId);
+      if (existing && existing.open) return;
       if (!peerInstance || peerInstance.disconnected) return;
+
       const conn = peerInstance.connect(`${WORLD_MESH_PREFIX}${targetPeerId}`, { reliable: true });
       if (conn) {
         setupDataConnection(conn, targetPeerId);
@@ -2334,7 +2676,7 @@
       updateConnectionUI('connecting');
 
       try {
-        peerInstance = new Peer(fullId, { debug: 0 });
+        peerInstance = new Peer(fullId, { debug: 0, config: PEER_ICE_CONFIG });
       } catch (err) {
         updateConnectionUI('error');
         return;
@@ -2343,6 +2685,7 @@
       peerInstance.on('open', (id) => {
         const cleanId = id.replace(WORLD_MESH_PREFIX, '');
         localPlayer.peerId = cleanId;
+        knownWorldNodes.add(cleanId);
         updateConnectionUI('ready');
         syncWorldPresence();
       });
@@ -2350,6 +2693,12 @@
       peerInstance.on('connection', (conn) => {
         const remoteId = conn.peer.replace(WORLD_MESH_PREFIX, '');
         setupDataConnection(conn, remoteId);
+      });
+
+      peerInstance.on('disconnected', () => {
+        try {
+          peerInstance.reconnect();
+        } catch (err) {}
       });
 
       peerInstance.on('error', () => {
@@ -2397,7 +2746,7 @@
       }
 
       for (const [pid, peer] of remotePeers.entries()) {
-        if (isInSafeZone(peer.x, peer.y) || isFriendlyGang(peer.gang)) continue;
+        if (peer.isDead || isInSafeZone(peer.x, peer.y) || isFriendlyGang(peer.gang)) continue;
         const d = Math.hypot(peer.x - localPlayer.x, peer.y - localPlayer.y);
         if (d < bestDist) {
           bestDist = d;
@@ -2559,7 +2908,6 @@
       npc.vx = 0;
       npc.vy = 0;
 
-      // Drop carried coins where the NPC fell
       if (npc.coins > 0) {
         coins.push({
           id: `drop_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
@@ -2572,7 +2920,6 @@
         });
       }
 
-      // Reset everything the NPC gathered upon death
       npc.coins = 0;
       npc.rubies = 0;
       npc.ownedGuns = ['pulse'];
@@ -2586,7 +2933,6 @@
 
     function updateNPCs(dt) {
       for (const npc of npcs) {
-        // 3-Second Respawn Delay & Random Space Summoning
         if (npc.isDead) {
           npc.respawnTimer -= dt;
           if (npc.respawnTimer <= 0) {
@@ -2723,7 +3069,7 @@
           }
         }
 
-        // Priority 2: Rival Gang Members (Player or Rival NPCs outside safe zone)
+        // Priority 2: Rival Gang Members (Player, P2P Peers, or Rival NPCs outside safe zone)
         let rivalTarget = null;
         let rivalDist = 350;
         if (!npcInSafe) {
@@ -2788,7 +3134,6 @@
             }
           }
         } else {
-          // Intelligent Roaming: Seek nearby Guns, Powerups, Coins, or explore open space (works inside & outside Safe Zones!)
           let lootTarget = null;
           let lootDist = 360;
           for (const g of gunPickups) {
@@ -2823,16 +3168,13 @@
               npc.decisionTimer = 3.2 + Math.random() * 2.5;
               const roll = Math.random();
               if (roll < 0.16) {
-                // Visit Treaty Board safe zone
                 npc.waypointX = -430 + (Math.random() - 0.5) * 120;
                 npc.waypointY = -260 + (Math.random() - 0.5) * 120;
               } else if (roll < 0.30 && rubyMines.length > 0) {
-                // Visit a Ruby Mine to mine Rubies
                 const m = rubyMines[Math.floor(Math.random() * rubyMines.length)];
                 npc.waypointX = m.x + (Math.random() - 0.5) * 60;
                 npc.waypointY = m.y + (Math.random() - 0.5) * 60;
               } else {
-                // Roam freely out into the open frontier around the world
                 const a = Math.random() * Math.PI * 2;
                 const r = 360 + Math.random() * 980;
                 npc.waypointX = Math.cos(a) * r;
@@ -3092,10 +3434,10 @@
             }
           }
 
-          // 4. Check Rival Remote Peers
+          // 4. Check Rival Remote P2P Peers
           if (!hit && pr.ownerType === 'player') {
             for (const [pid, peer] of remotePeers.entries()) {
-              if (isInSafeZone(peer.x, peer.y) || isFriendlyGang(peer.gang)) continue;
+              if (peer.isDead || isInSafeZone(peer.x, peer.y) || isFriendlyGang(peer.gang)) continue;
               if (Math.hypot(pr.x - peer.x, pr.y - peer.y) < (peer.radius || 16) + 7) {
                 const prevHp = peer.hp ?? 100;
                 const nextHp = Math.max(0, prevHp - pr.damage);
@@ -3532,6 +3874,7 @@
       updateCombatAndEnergyUI();
 
       remotePeers.forEach((peer) => {
+        if (peer.isDead) return;
         const pPrevX = peer.x;
         const pPrevY = peer.y;
         const lerpFactor = 1 - Math.exp(-12 * dt);
@@ -3691,7 +4034,6 @@
         const beingMined = localPlayer.activeMineId === m.id;
         ctx.save();
 
-        // Mining radius ring
         ctx.strokeStyle = beingMined ? 'rgba(251, 113, 133, 0.85)' : 'rgba(251, 113, 133, 0.28)';
         ctx.lineWidth = beingMined ? 2.2 : 1.3;
         ctx.setLineDash([5, 5]);
@@ -3700,7 +4042,6 @@
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Mine Core Structure
         ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#be123c';
         ctx.strokeStyle = protectedInSafe ? '#34d399' : '#fda4af';
         ctx.lineWidth = 2.5;
@@ -3718,7 +4059,6 @@
         ctx.textAlign = 'center';
         ctx.fillText('💎', m.x, m.y + 4);
 
-        // Progress bar when actively mining, or HP bar when unprotected
         if (beingMined) {
           const mw = 48;
           const pct = Math.min(1, localPlayer.miningProgress / RUBY_MINE_CYCLE_SEC);
@@ -3913,7 +4253,7 @@
         if (!npc.isDead) drawExplorerEntity(npc, false, true);
       }
       for (const peer of remotePeers.values()) {
-        drawExplorerEntity(peer, false, false);
+        if (!peer.isDead) drawExplorerEntity(peer, false, false);
       }
       if (!localPlayer.isDead) {
         drawExplorerEntity(localPlayer, true, false);
@@ -4007,7 +4347,6 @@
       minimapCtx.fillStyle = '#060a12';
       minimapCtx.fillRect(0, 0, mw, mh);
 
-      // Draw all 3 Safe Zones on Radar
       for (const sz of SAFE_ZONES) {
         const sx = mw / 2 + (sz.x - localPlayer.x) * scale;
         const sy = mh / 2 + (sz.y - localPlayer.y) * scale;
@@ -4018,7 +4357,6 @@
         minimapCtx.stroke();
       }
 
-      // Draw Ruby Mines on Radar
       for (const m of rubyMines) {
         const mx = mw / 2 + (m.x - localPlayer.x) * scale;
         const my = mh / 2 + (m.y - localPlayer.y) * scale;
@@ -4050,6 +4388,7 @@
       }
 
       for (const peer of remotePeers.values()) {
+        if (peer.isDead) continue;
         const mx = mw / 2 + (peer.x - localPlayer.x) * scale;
         const my = mh / 2 + (peer.y - localPlayer.y) * scale;
         if (mx < 0 || mx > mw || my < 0 || my > mh) continue;
@@ -4098,6 +4437,11 @@
 
       window.addEventListener('keyup', (e) => {
         keys.delete(e.code);
+      });
+
+      document.getElementById('meshSyncBtn').addEventListener('click', () => {
+        syncWorldPresence();
+        showToast(`P2P Mesh synced (${1 + dataConnections.size} explorers linked in shared world).`);
       });
 
       document.getElementById('dashBtn').addEventListener('click', triggerDash);
@@ -4169,7 +4513,6 @@
           }
         }
 
-        // Reset stances for own gang & balance NPCs across all 5 gangs equally
         for (const g of GANG_NAMES) {
           if (g === localPlayer.gang) localPlayer.gangStances[g] = 'ally';
           else if (!localPlayer.gangStances[g]) localPlayer.gangStances[g] = 'enemy';
@@ -4185,6 +4528,19 @@
         worldEntered = true;
         saveLocalUserToRTDB();
         syncWorldPresence();
+        broadcastToAll({
+          type: 'hello',
+          name: localPlayer.name,
+          gang: localPlayer.gang,
+          x: Math.round(localPlayer.x),
+          y: Math.round(localPlayer.y),
+          coins: localPlayer.coins,
+          rubies: localPlayer.rubies,
+          kills: localPlayer.kills,
+          hp: Math.round(localPlayer.hp),
+          maxHp: Math.round(localPlayer.maxHp),
+          knownPeers: Array.from(knownWorldNodes)
+        });
         updateCombatAndEnergyUI();
         showToast(saved
           ? `Welcome back, ${localPlayer.name}! Loaded ${localPlayer.coins} Coins & ${localPlayer.rubies} Rubies.`
@@ -4246,6 +4602,11 @@
       window.addEventListener('pagehide', () => {
         if (localPlayer.peerId) {
           AetheriaRTDB.removeSession(localPlayer.peerId);
+        }
+        if (anchorPeerInstance) {
+          try {
+            anchorPeerInstance.destroy();
+          } catch (err) {}
         }
       });
 
@@ -4326,6 +4687,7 @@
           gang: localPlayer.gang,
           x: localPlayer.x,
           y: localPlayer.y,
+          isDead: localPlayer.isDead,
           coins: localPlayer.coins,
           rubies: localPlayer.rubies,
           kills: localPlayer.kills,
@@ -4335,10 +4697,12 @@
         });
       }
 
-      if (worldEntered && now - lastHeartbeatTime >= 4500) {
+      if (now - lastHeartbeatTime >= 4000) {
         lastHeartbeatTime = now;
         syncWorldPresence();
-        saveLocalUserToRTDB();
+        if (worldEntered) {
+          saveLocalUserToRTDB();
+        }
       }
 
       requestAnimationFrame(mainLoop);
@@ -4361,12 +4725,12 @@
             msg.type === 'presence' &&
             msg.session &&
             msg.session.peerId &&
-            msg.session.peerId !== localPlayer.peerId &&
-            !dataConnections.has(msg.session.peerId) &&
-            localPlayer.peerId &&
-            localPlayer.peerId > msg.session.peerId
+            msg.session.peerId !== localPlayer.peerId
           ) {
-            connectToPeer(msg.session.peerId);
+            knownWorldNodes.add(msg.session.peerId);
+            if (!dataConnections.has(msg.session.peerId)) {
+              connectToPeer(msg.session.peerId);
+            }
           }
         };
       }
