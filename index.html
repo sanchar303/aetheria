@@ -9,7 +9,7 @@
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <style>
     html, body {
       margin: 0;
@@ -17,7 +17,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: #090d16;
+      background-color: #070b14;
       color: #f8fafc;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       touch-action: none;
@@ -31,7 +31,7 @@
       display: block;
       width: 100%;
       height: 100%;
-      background-color: #090d16;
+      background-color: #070b14;
     }
     .custom-scroll::-webkit-scrollbar {
       width: 5px;
@@ -52,74 +52,64 @@
 
     <!-- Top HUD Bar -->
     <header class="pointer-events-none absolute top-0 left-0 right-0 z-20 flex flex-wrap items-start justify-between gap-2 p-2.5 sm:p-4">
-      <!-- Left: Identity, 4-Digit Peer ID & Telemetry -->
-      <div class="pointer-events-auto flex flex-col gap-1.5 max-w-full">
-        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl px-2.5 py-1.5 shadow-xl">
+      <!-- Left: Identity, Community Status, Telemetry & Arsenal -->
+      <div class="pointer-events-auto flex flex-col gap-1.5 max-w-[74vw] sm:max-w-2xl">
+        <!-- Row 1: Explorer Identity, Gang, World Population, Shards, Coords -->
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-slate-900/88 backdrop-blur-md border border-slate-700/70 rounded-2xl px-2.5 py-1.5 shadow-xl">
           <div class="flex items-center gap-1.5 pr-1">
             <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-            <span class="font-bold tracking-tight text-sm text-white">Aetheria</span>
+            <span class="font-extrabold tracking-tight text-sm text-white">Aetheria</span>
           </div>
 
-          <div class="flex items-center gap-1 bg-slate-950/90 border border-slate-800 rounded-xl px-2 py-1">
-            <span class="text-[11px] uppercase tracking-wider text-slate-400">ID</span>
-            <span id="myPeerCode" class="font-mono-code text-xs sm:text-sm font-bold text-sky-400 tracking-widest">----</span>
-            <span id="explorerNameBadge" class="ml-1 text-xs font-semibold text-white">Explorer</span>
-          </div>
-
-          <div class="flex items-center gap-1 bg-slate-950/90 border border-slate-800 rounded-xl px-2 py-1 text-xs">
-            <span id="gangBadge" class="font-mono-code font-bold text-indigo-300">STRANGER • SOLO</span>
+          <div class="flex items-center gap-1.5 bg-slate-950/90 border border-slate-800 rounded-xl px-2.5 py-1">
+            <span id="explorerNameBadge" class="text-xs font-bold text-sky-300">Explorer</span>
+            <span class="text-slate-600">•</span>
+            <span id="gangBadge" class="font-mono-code text-[11px] font-bold text-indigo-300">Solari Vanguard • 0 Allies</span>
           </div>
 
           <div class="flex items-center gap-2 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
-            <span id="peerCountText" class="font-semibold text-emerald-300">0 peers</span>
-            <span class="text-slate-600">•</span>
-            <span class="font-semibold text-indigo-300">4 NPCs</span>
+            <span id="peerCountText" class="font-semibold text-emerald-300">1 in world</span>
             <span class="text-slate-600">•</span>
             <span id="shardsText" class="font-mono-code font-bold text-amber-300">0 ★</span>
-            <span class="text-slate-600">•</span>
+            <span class="text-slate-600 hidden md:inline">•</span>
             <span id="coordsText" class="font-mono-code text-slate-400 hidden md:inline">0, 0</span>
           </div>
         </div>
 
-        <!-- Dash Energy Gauge + Hull/Gun/Kills Telemetry -->
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-2 bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-xl px-2.5 py-1 shadow-lg">
+        <!-- Row 2: Dash Energy, Hull/Ammo, Zone Status, Kills -->
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <div class="flex items-center gap-2 bg-slate-900/88 backdrop-blur-md border border-slate-700/70 rounded-xl px-2.5 py-1 shadow-lg">
             <span class="text-[11px] font-semibold uppercase tracking-wider text-cyan-300">Dash</span>
-            <div class="w-24 sm:w-32 h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+            <div class="w-20 sm:w-28 h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
               <div id="dashEnergyBar" class="h-full w-0 bg-gradient-to-r from-cyan-400 to-sky-300 transition-all duration-100"></div>
             </div>
             <span id="dashEnergyLabel" class="font-mono-code text-[11px] font-bold text-cyan-200">0%</span>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
+          <div class="flex flex-wrap items-center gap-2 bg-slate-950/85 border border-slate-800 rounded-xl px-2.5 py-1 text-xs">
             <span id="hullText" class="font-mono-code font-bold text-rose-400">HP 100/100 • 12/12</span>
             <span class="text-slate-600">|</span>
             <span id="weaponBadge" class="font-mono-code font-bold text-emerald-300">SAFE (NO FIRE)</span>
-            <button
-              id="swapGunBtn"
-              type="button"
-              title="Swap Equipped Gun (Q)"
-              class="px-2 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-sky-300 font-mono-code text-[11px] font-bold transition"
-            >
-              Swap [Q]
-            </button>
             <span class="text-slate-600">|</span>
             <span id="killsText" class="font-mono-code font-bold text-violet-300">0 KILLS</span>
           </div>
         </div>
 
-        <!-- Active Powerups Strip -->
-        <div id="powerupsStrip" class="pointer-events-none flex flex-wrap items-center gap-1.5 max-w-[74vw] sm:max-w-none min-h-[24px]"></div>
+        <!-- Row 3: Multi-Gun Arsenal Switcher (Click or Press Q / 1-4) -->
+        <div id="arsenalBar" class="flex flex-wrap items-center gap-1.5"></div>
+
+        <!-- Row 4: Clear Active Powerups & Buffs Bar -->
+        <div id="powerupsStrip" class="pointer-events-none flex flex-wrap items-center gap-1.5 min-h-[24px]"></div>
       </div>
 
-      <!-- Right: Minimap & Action Controls -->
+      <!-- Right: Sector Radar & Action Buttons -->
       <div class="pointer-events-auto flex items-start gap-2">
-        <div class="hidden sm:flex flex-col items-center bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl p-1.5 shadow-xl">
-          <canvas id="minimapCanvas" width="108" height="108" class="rounded-xl bg-slate-950 border border-slate-800"></canvas>
+        <div class="hidden sm:flex flex-col items-center bg-slate-900/88 backdrop-blur-md border border-slate-700/70 rounded-2xl p-1.5 shadow-xl">
+          <canvas id="minimapCanvas" width="112" height="112" class="rounded-xl bg-slate-950 border border-slate-800"></canvas>
           <span class="text-[10px] text-slate-400 mt-1 tracking-wide">SECTOR RADAR</span>
         </div>
 
-        <div class="flex items-center gap-1.5 bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl p-1.5 shadow-xl">
+        <div class="flex flex-col sm:flex-row items-end sm:items-center gap-1.5 bg-slate-900/88 backdrop-blur-md border border-slate-700/70 rounded-2xl p-1.5 shadow-xl">
           <button
             id="dashBtn"
             type="button"
@@ -132,12 +122,20 @@
           <button
             id="beaconBtn"
             type="button"
-            title="Deploy Resonance Beacon (E) — Costs 2 Shards & Cooldown | Heal, Pulse, Pull Shards & Rally NPCs"
-            class="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 active:scale-95 text-amber-300 border border-amber-400/30 transition"
+            title="Deploy Resonance Beacon (E) — Costs 4 Shards & 50% Dash Energy"
+            class="px-2.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 active:scale-95 text-amber-200 border border-amber-400/35 text-xs font-bold flex items-center gap-1 transition"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <span>Beacon</span>
+            <span class="font-mono-code text-[10px] text-amber-300">4★</span>
+          </button>
+          <button
+            id="communityToggleBtn"
+            type="button"
+            title="Community, Allies & Gangs Roster"
+            class="p-2 rounded-xl hover:bg-slate-800 active:scale-95 text-indigo-300 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
           </button>
           <button
@@ -157,7 +155,7 @@
           <button
             id="chatToggleBtn"
             type="button"
-            title="Toggle P2P Comms"
+            title="World & Gang Comms"
             class="relative p-2 rounded-xl hover:bg-slate-800 active:scale-95 text-slate-200 transition"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -169,75 +167,102 @@
       </div>
     </header>
 
-    <!-- Toast Notification Banner -->
-    <div id="toastBanner" class="pointer-events-none fixed top-24 left-1/2 -translate-x-1/2 z-30 opacity-0 transition-opacity duration-200">
-      <div id="toastText" class="bg-slate-900/95 border border-sky-400/40 text-sky-100 text-xs sm:text-sm font-medium px-4 py-2 rounded-full shadow-2xl backdrop-blur-md"></div>
+    <!-- Locked Target Real-Time Health Telemetry Bar -->
+    <div id="targetTelemetryBox" class="hidden pointer-events-none fixed top-28 sm:top-4 left-1/2 -translate-x-1/2 z-20 bg-slate-900/92 backdrop-blur-md border border-rose-500/45 rounded-2xl px-3.5 py-1.5 shadow-2xl min-w-[210px] max-w-[85vw]">
+      <div class="flex items-center justify-between gap-3 text-[11px] mb-1">
+        <span id="targetNameText" class="font-bold text-rose-200 truncate">Target</span>
+        <span id="targetHpText" class="font-mono-code font-bold text-rose-300">100/100</span>
+      </div>
+      <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+        <div id="targetHpBar" class="h-full w-full bg-gradient-to-r from-rose-500 to-amber-400 transition-all duration-75"></div>
+      </div>
     </div>
 
-    <!-- Username & Community Gang Onboarding Modal -->
-    <div id="usernameModal" class="fixed inset-0 z-40 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+    <!-- Toast Notification Banner -->
+    <div id="toastBanner" class="pointer-events-none fixed top-40 sm:top-20 left-1/2 -translate-x-1/2 z-30 opacity-0 transition-opacity duration-200">
+      <div id="toastText" class="bg-slate-900/95 border border-sky-400/45 text-sky-100 text-xs sm:text-sm font-medium px-4 py-2 rounded-full shadow-2xl backdrop-blur-md text-center"></div>
+    </div>
+
+    <!-- Username & Community Gang Onboarding Modal (No Join Codes — Everyone Joins the Same World) -->
+    <div id="usernameModal" class="fixed inset-0 z-40 bg-slate-950/88 backdrop-blur-md flex items-center justify-center p-4">
       <div class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-6 shadow-2xl space-y-4">
-        <div class="space-y-1">
-          <p class="text-[11px] uppercase tracking-widest text-sky-400 font-semibold">Single Shared World • Aetheria</p>
-          <h1 class="text-2xl font-bold text-white">Set Your Explorer Identity</h1>
-          <p class="text-xs text-slate-400">Everyone enters the same world. Start as strangers, assist others to build allies, and join a community gang.</p>
+        <div class="space-y-1.5">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-400/30 text-[11px] uppercase tracking-wider text-sky-300 font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Single Shared Open World • P2P Mesh
+          </div>
+          <h1 class="text-2xl font-extrabold text-white tracking-tight">Enter Aetheria</h1>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Everyone enters the same persistent world—no join codes required. Start as strangers, assist others in combat or with Resonance Beacons to turn strangers into loyal allies, and represent your community gang.
+          </p>
         </div>
+
         <div class="space-y-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Username</label>
+            <label for="usernameInput" class="block text-xs font-semibold text-slate-300 mb-1">Explorer Username</label>
             <input
               id="usernameInput"
               type="text"
               maxlength="18"
-              placeholder="Enter your explorer name..."
-              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-400"
+              placeholder="Choose your name (restores saved progress)..."
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-400"
             />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Community Gang</label>
+            <label for="gangSelect" class="block text-xs font-semibold text-slate-300 mb-1">Community Gang</label>
             <select
               id="gangSelect"
-              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-sky-400"
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400"
             >
-              <option value="Solari Vanguard">Solari Vanguard (Solar Wardens)</option>
-              <option value="Rift Drifters">Rift Drifters (Outer Steppe)</option>
-              <option value="Aegis Pact">Aegis Pact (Beacon Keepers)</option>
+              <option value="Solari Vanguard">Solari Vanguard — Solar Guardians</option>
+              <option value="Rift Drifters">Rift Drifters — Outer Frontier</option>
+              <option value="Aegis Pact">Aegis Pact — Beacon Keepers</option>
             </select>
           </div>
         </div>
+
         <button
           id="enterWorldBtn"
           type="button"
-          class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-[0.99] text-slate-950 font-bold text-sm transition"
+          class="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-[0.99] text-slate-950 font-extrabold text-sm shadow-lg shadow-sky-500/20 transition"
         >
-          Enter Shared World
+          Join Shared World
         </button>
       </div>
     </div>
 
-    <!-- Collapsible P2P Chat Drawer -->
-    <aside id="chatDrawer" class="hidden fixed top-20 right-2.5 sm:right-4 z-30 w-[calc(100vw-1.25rem)] max-w-xs sm:max-w-sm bg-slate-900/92 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden" style="max-height: min(420px, 58vh);">
+    <!-- Community, Allies & Gangs Drawer -->
+    <aside id="communityDrawer" class="hidden fixed top-24 right-2.5 sm:right-4 z-30 w-[calc(100vw-1.25rem)] max-w-xs sm:max-w-sm bg-slate-900/94 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden" style="max-height: min(440px, 62vh);">
+      <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-800">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">Community, Allies & Gangs</span>
+        <button id="closeCommunityBtn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      </div>
+      <div id="communityContent" class="custom-scroll flex-1 overflow-y-auto p-3 space-y-3 text-xs"></div>
+    </aside>
+
+    <!-- Collapsible World & Gang Chat Drawer -->
+    <aside id="chatDrawer" class="hidden fixed top-24 right-2.5 sm:right-4 z-30 w-[calc(100vw-1.25rem)] max-w-xs sm:max-w-sm bg-slate-900/94 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden" style="max-height: min(420px, 58vh);">
       <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-800">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-300">World & Gang Comms</span>
-          <span id="chatPeerSummary" class="text-[11px] text-slate-400">Scanning world...</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-200">World Comms</span>
+          <span id="chatPeerSummary" class="text-[11px] text-emerald-300">Auto-linking world...</span>
         </div>
         <button id="closeChatBtn" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
       </div>
       <div id="chatMessages" class="custom-scroll flex-1 overflow-y-auto p-3 space-y-2 text-xs">
-        <div class="text-slate-400 italic text-center py-4">Connected to the single Aetheria world mesh. Help allies and coordinate in chat.</div>
+        <div class="text-slate-400 italic text-center py-4">Welcome to the single shared world of Aetheria. Help strangers to make allies!</div>
       </div>
       <form id="chatForm" class="flex items-center gap-1.5 p-2.5 border-t border-slate-800 bg-slate-950/60">
         <input
           id="chatInput"
           type="text"
           maxlength="240"
-          placeholder="Send a message to linked peers..."
+          placeholder="Message explorers in Aetheria..."
           class="flex-1 bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400"
         />
         <button
           type="submit"
-          class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-semibold text-xs transition"
+          class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-bold text-xs transition"
         >
           Send
         </button>
@@ -245,92 +270,112 @@
     </aside>
 
     <!-- Virtual Touch Joystick (Mobile / Touch Devices) -->
-    <div id="joystickZone" class="sm:hidden fixed bottom-20 left-5 z-20 w-28 h-28 rounded-full bg-slate-900/55 border border-slate-700/70 backdrop-blur-sm flex items-center justify-center shadow-lg">
-      <div id="joystickKnob" class="w-11 h-11 rounded-full bg-sky-400/80 border-2 border-white/70 shadow-md transform transition-transform duration-75"></div>
+    <div id="joystickZone" class="sm:hidden fixed bottom-20 left-5 z-20 w-28 h-28 rounded-full bg-slate-900/60 border border-slate-700/70 backdrop-blur-sm flex items-center justify-center shadow-lg">
+      <div id="joystickKnob" class="w-11 h-11 rounded-full bg-sky-400/85 border-2 border-white/70 shadow-md transform transition-transform duration-75"></div>
     </div>
 
     <!-- Bottom Quick Emote & Controls Bar -->
-    <footer class="pointer-events-none fixed bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-2 bg-slate-900/85 backdrop-blur-md border border-slate-700/70 rounded-2xl px-2.5 py-1.5 shadow-xl">
-      <button data-emote="👋" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Wave">👋</button>
-      <button data-emote="✨" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Sparkle">✨</button>
-      <button data-emote="🧭" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Explore">🧭</button>
-      <button data-emote="⚡" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Surge">⚡</button>
+    <footer class="pointer-events-none fixed bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-2 bg-slate-900/88 backdrop-blur-md border border-slate-700/70 rounded-2xl px-2.5 py-1.5 shadow-xl">
+      <button data-emote="👋" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Friendly Wave (Builds Trust)">👋</button>
+      <button data-emote="🤝" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Offer Alliance">🤝</button>
+      <button data-emote="🛡️" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Rally Here">🛡️</button>
+      <button data-emote="⚡" type="button" class="emote-btn pointer-events-auto w-9 h-9 rounded-xl hover:bg-slate-800 active:scale-90 flex items-center justify-center text-lg transition" title="Boss Alert">⚡</button>
       <div class="h-5 w-px bg-slate-800 mx-0.5 hidden sm:block"></div>
-      <span class="hidden sm:inline text-[11px] text-slate-400 pr-1">WASD/Arrows roam • Auto-aim • Q Swap Gun • Space Dash • E Beacon (2★)</span>
+      <span class="hidden sm:inline text-[11px] text-slate-400 pr-1">WASD/Arrows roam • Auto-aim • Q/1-4 Swap Gun • Space Dash • E Beacon (4★)</span>
     </footer>
   </div>
 
   <script>
-    const SECTOR_SIZE = 700;
+    const SECTOR_SIZE = 760;
     const BROADCAST_INTERVAL_MS = 60;
     const DASH_ENERGY_MAX = 100;
-    const BEACON_RADIUS = 270;
-    const BEACON_DURATION_MS = 26000;
-    const BEACON_SHARD_COST = 2;
-    const BEACON_COOLDOWN_MS = 13000;
-    const SAFE_ZONE_RADIUS = 290;
-    const AETHER_PREFIX = 'AETH-WORLD-';
-    const WORLD_REGISTRY_KEY = 'aetheria_world_registry_v1';
-    const RTDB_FOLDER = 'aetheria';
-    const STALE_PEER_MS = 35000;
+    const BEACON_RADIUS = 285;
+    const BEACON_DURATION_MS = 32000;
+    const BEACON_SHARD_COST = 4;
+    const BEACON_DASH_COST = 50;
+    const BEACON_COOLDOWN_MS = 18000;
+    const SAFE_ZONE_RADIUS = 310;
+    const WORLD_MESH_PREFIX = 'AETHERIA-SHARED-';
+    const RTDB_ROOT_FOLDER = 'aetheria';
+    const STALE_SESSION_MS = 40000;
 
+    const GUN_ORDER = ['pulse', 'scatter', 'rail', 'nova'];
     const GUN_SPECS = {
       pulse: {
         id: 'pulse',
         label: 'PULSE',
         color: '#38bdf8',
-        fireInterval: 0.44,
+        fireInterval: 0.48,
         magSize: 12,
         reloadDuration: 1.35,
-        speed: 610,
+        speed: 590,
         baseDmg: 22,
         pellets: 1,
-        spread: 0
+        spread: 0,
+        splash: 0
       },
       scatter: {
         id: 'scatter',
         label: 'SCATTER',
         color: '#fb923c',
-        fireInterval: 0.72,
+        fireInterval: 0.78,
         magSize: 6,
         reloadDuration: 1.55,
-        speed: 520,
-        baseDmg: 14,
-        pellets: 4,
-        spread: 0.24
+        speed: 510,
+        baseDmg: 13,
+        pellets: 5,
+        spread: 0.28,
+        splash: 0
       },
       rail: {
         id: 'rail',
         label: 'RAIL',
         color: '#c084fc',
-        fireInterval: 0.88,
+        fireInterval: 0.94,
         magSize: 5,
         reloadDuration: 1.65,
-        speed: 860,
-        baseDmg: 48,
+        speed: 850,
+        baseDmg: 52,
         pellets: 1,
-        spread: 0
+        spread: 0,
+        splash: 0
+      },
+      nova: {
+        id: 'nova',
+        label: 'ARC NOVA',
+        color: '#34d399',
+        fireInterval: 0.86,
+        magSize: 6,
+        reloadDuration: 1.6,
+        speed: 470,
+        baseDmg: 36,
+        pellets: 1,
+        spread: 0,
+        splash: 75
       }
     };
 
     const BIOMES = [
-      { name: 'Whispering Steppe', accent: '#38bdf8', grid: 'rgba(56, 189, 248, 0.06)' },
-      { name: 'Amber Dunes', accent: '#fbbf24', grid: 'rgba(251, 191, 36, 0.06)' },
-      { name: 'Emerald Canopy', accent: '#34d399', grid: 'rgba(52, 211, 153, 0.06)' },
-      { name: 'Violet Rift', accent: '#c084fc', grid: 'rgba(192, 132, 252, 0.06)' }
+      { name: 'Whispering Steppe', accent: '#38bdf8', grid: 'rgba(56, 189, 248, 0.055)' },
+      { name: 'Amber Dunes', accent: '#fbbf24', grid: 'rgba(251, 191, 36, 0.055)' },
+      { name: 'Emerald Canopy', accent: '#34d399', grid: 'rgba(52, 211, 153, 0.055)' },
+      { name: 'Violet Rift', accent: '#c084fc', grid: 'rgba(192, 132, 252, 0.055)' }
     ];
 
     const AURA_COLORS = ['#38bdf8', '#34d399', '#fbbf24', '#f472b6', '#a78bfa', '#fb7185', '#2dd4bf'];
     const randomAdj = ['Swift', 'Calm', 'Bright', 'Nova', 'Solar', 'Lunar', 'Drift', 'Echo'];
-    const randomNoun = ['Voyager', 'Drifter', 'Nomad', 'Seeker', 'Ranger', 'Weaver', 'Strider', 'Beacon'];
+    const randomNoun = ['Voyager', 'Drifter', 'Nomad', 'Seeker', 'Ranger', 'Weaver', 'Strider', 'Warden'];
 
-    function generateFourDigitCode() {
-      return String(Math.floor(1000 + Math.random() * 9000));
+    function generateNodeToken() {
+      return `${Date.now().toString(36).slice(-4)}${Math.random().toString(36).slice(2, 6)}`.toUpperCase();
     }
 
-    function normalizeFourDigitCode(raw) {
-      const digits = String(raw || '').replace(/\D/g, '').slice(0, 4);
-      return digits.length === 4 ? digits : null;
+    function sanitizeKey(str) {
+      return String(str || 'explorer')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, '_')
+        .slice(0, 28) || 'explorer';
     }
 
     const SoundFX = (() => {
@@ -370,35 +415,39 @@
 
       return {
         pickup() { tone(520, 880, 0.14, 'triangle', 0.07); },
+        upgrade() {
+          tone(440, 660, 0.12, 'triangle', 0.07);
+          setTimeout(() => tone(660, 990, 0.18, 'triangle', 0.07), 85);
+        },
         beacon() {
           tone(330, 660, 0.22, 'sine', 0.07);
           setTimeout(() => tone(660, 990, 0.26, 'triangle', 0.06), 90);
         },
         dash() { tone(240, 620, 0.16, 'sawtooth', 0.05); },
-        laser() { tone(780, 260, 0.09, 'sawtooth', 0.035); },
+        laser() { tone(780, 260, 0.09, 'sawtooth', 0.032); },
         hit() { tone(210, 95, 0.08, 'square', 0.04); },
         kill() {
-          tone(440, 140, 0.18, 'sawtooth', 0.06);
-          setTimeout(() => tone(587, 880, 0.14, 'triangle', 0.05), 70);
+          tone(440, 140, 0.16, 'sawtooth', 0.065);
+          setTimeout(() => tone(587, 920, 0.16, 'triangle', 0.06), 75);
+        },
+        ally() {
+          tone(523.25, 659.25, 0.14, 'sine', 0.065);
+          setTimeout(() => tone(659.25, 783.99, 0.18, 'sine', 0.065), 110);
         },
         message() { tone(587.33, 783.99, 0.11, 'sine', 0.05); },
         connect() {
           tone(440, 554.37, 0.12, 'sine', 0.06);
           setTimeout(() => tone(554.37, 659.25, 0.16, 'sine', 0.06), 100);
         },
-        setEnabled(val) {
-          enabled = val;
-        },
-        isEnabled() {
-          return enabled;
-        }
+        setEnabled(val) { enabled = val; },
+        isEnabled() { return enabled; }
       };
     })();
 
     const seedNum = Math.floor(Math.random() * 10000);
     const localPlayer = {
-      id: null,
-      shortCode: '----',
+      peerId: null,
+      profileKey: 'explorer',
       name: `${randomAdj[seedNum % randomAdj.length]}_${randomNoun[(seedNum >> 3) % randomNoun.length]}`,
       gang: 'Solari Vanguard',
       color: AURA_COLORS[seedNum % AURA_COLORS.length],
@@ -408,16 +457,15 @@
       vy: 0,
       aimAngle: 0,
       radius: 16,
-      baseSpeed: 145,
-      speed: 145,
+      speed: 132,
       hp: 100,
       maxHp: 100,
-      hpRegen: 1.5,
+      hpRegen: 1.6,
       weaponId: 'pulse',
       ownedGuns: ['pulse'],
-      gunLevels: { pulse: 1, scatter: 1, rail: 1 },
-      fireInterval: 0.44,
-      autoAimRange: 400,
+      gunLevels: { pulse: 1, scatter: 1, rail: 1, nova: 1 },
+      fireInterval: 0.48,
+      autoAimRange: 410,
       magSize: 12,
       ammo: 12,
       reloadTimer: 0,
@@ -425,18 +473,21 @@
       critChance: 0.08,
       critMult: 1.5,
       kills: 0,
+      assists: 0,
       dashEnergy: 0,
       dashTimer: 0,
       fireCooldown: 0,
       shards: 0,
       hitFlash: 0,
       inSafeZone: true,
-      inOwnBeacon: false,
-      allyBond: new Map(),
+      inFriendlyBeacon: false,
+      inHostileBeacon: false,
+      allyTrust: new Map(),
       powerups: {
         overdrive: 0,
         aegis: 0,
-        magnet: 0
+        magnet: 0,
+        vampiric: 0
       },
       emote: null,
       emoteTimer: 0,
@@ -457,112 +508,182 @@
     const generatedSectors = new Set();
 
     let peerInstance = null;
+    let broadcastBus = null;
     let toastTimeout = null;
-    let idRetryCount = 0;
     let activeColossusCount = 0;
     let lastBeaconDeployTime = -BEACON_COOLDOWN_MS;
     let lastPowerupStripKey = '';
+    let lastArsenalKey = '';
     let worldEntered = false;
-    let lastRegistryHeartbeat = 0;
+    let lastHeartbeatTime = 0;
 
-    // Optional RTDB persistence hook under folder "aetheria"
+    // =========================================================================
+    // FIREBASE RTDB PERSISTENCE & SMART GARBAGE COLLECTOR (STRICTLY "aetheria/")
+    // =========================================================================
     const AetheriaRTDB = (() => {
-      let dbRef = null;
-      let rtdbMod = null;
+      let db = null;
+      let rtdb = null;
       let ready = false;
 
-      async function initIfConfigured() {
-        if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
+      async function init() {
+        const rawCfg = typeof __firebase_config !== 'undefined'
+          ? __firebase_config
+          : (typeof window.FIREBASE_CONFIG !== 'undefined' ? window.FIREBASE_CONFIG : null);
+        if (!rawCfg) return false;
         try {
-          const cfg = JSON.parse(__firebase_config);
-          if (!cfg || !cfg.databaseURL) return;
+          const cfg = typeof rawCfg === 'string' ? JSON.parse(rawCfg) : rawCfg;
+          if (!cfg || !cfg.databaseURL) return false;
           const appMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
           const authMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
-          rtdbMod = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
-          const fbApp = appMod.initializeApp(cfg);
-          const auth = authMod.getAuth(fbApp);
+          rtdb = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
+          const app = appMod.initializeApp(cfg);
+          const auth = authMod.getAuth(app);
           await authMod.signInAnonymously(auth);
-          dbRef = rtdbMod.getDatabase(fbApp);
+          db = rtdb.getDatabase(app);
           ready = true;
+          return true;
         } catch (err) {
           ready = false;
+          return false;
         }
       }
 
-      async function saveExplorer(code, record) {
-        if (!ready || !dbRef || !rtdbMod || !code || code === '----') return;
+      async function loadPersistentProfile(profileKey) {
+        if (!ready || !db || !rtdb) return null;
         try {
-          await rtdbMod.set(rtdbMod.ref(dbRef, `${RTDB_FOLDER}/explorers/${code}`), record);
+          const snap = await rtdb.get(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/profiles/${profileKey}`));
+          return snap.exists() ? snap.val() : null;
+        } catch (err) {
+          return null;
+        }
+      }
+
+      async function savePersistentProfile(profileKey, payload) {
+        if (!ready || !db || !rtdb || !profileKey) return;
+        try {
+          await rtdb.set(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/profiles/${profileKey}`), payload);
         } catch (err) {}
       }
 
-      async function pruneStale() {
-        if (!ready || !dbRef || !rtdbMod) return;
+      async function publishActiveSession(peerId, sessionPayload) {
+        if (!ready || !db || !rtdb || !peerId) return;
         try {
-          const snap = await rtdbMod.get(rtdbMod.ref(dbRef, `${RTDB_FOLDER}/explorers`));
-          if (!snap.exists()) return;
-          const now = Date.now();
-          const data = snap.val() || {};
-          for (const [code, rec] of Object.entries(data)) {
-            if (!rec || !rec.updatedAt || now - rec.updatedAt > STALE_PEER_MS) {
-              await rtdbMod.remove(rtdbMod.ref(dbRef, `${RTDB_FOLDER}/explorers/${code}`));
-            }
+          const sessionRef = rtdb.ref(db, `${RTDB_ROOT_FOLDER}/sessions/${peerId}`);
+          await rtdb.set(sessionRef, sessionPayload);
+          if (rtdb.onDisconnect) {
+            rtdb.onDisconnect(sessionRef).remove();
           }
         } catch (err) {}
       }
 
-      return { initIfConfigured, saveExplorer, pruneStale };
-    })();
+      async function discoverSessionsAndClean() {
+        if (!ready || !db || !rtdb) return [];
+        try {
+          const sessionsRef = rtdb.ref(db, `${RTDB_ROOT_FOLDER}/sessions`);
+          const snap = await rtdb.get(sessionsRef);
+          if (!snap.exists()) return [];
+          const now = Date.now();
+          const all = snap.val() || {};
+          const activeList = [];
 
-    function readCleanRegistry() {
-      const now = Date.now();
-      let parsed = {};
-      try {
-        parsed = JSON.parse(localStorage.getItem(WORLD_REGISTRY_KEY) || '{}') || {};
-      } catch (err) {
-        parsed = {};
-      }
-      const clean = {};
-      for (const [code, entry] of Object.entries(parsed)) {
-        if (entry && typeof entry.updatedAt === 'number' && now - entry.updatedAt <= STALE_PEER_MS) {
-          clean[code] = entry;
+          for (const [pid, rec] of Object.entries(all)) {
+            if (!rec || typeof rec.updatedAt !== 'number' || now - rec.updatedAt > STALE_SESSION_MS) {
+              // Smart cleaner removes stale disconnected sessions inside aetheria/sessions
+              await rtdb.remove(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/sessions/${pid}`));
+            } else {
+              activeList.push(rec);
+            }
+          }
+
+          // Smart cleaner also prunes expired beacons inside aetheria/beacons
+          const beaconsRef = rtdb.ref(db, `${RTDB_ROOT_FOLDER}/beacons`);
+          const bSnap = await rtdb.get(beaconsRef);
+          if (bSnap.exists()) {
+            const bData = bSnap.val() || {};
+            for (const [bid, bRec] of Object.entries(bData)) {
+              if (!bRec || typeof bRec.expiresAt !== 'number' || now > bRec.expiresAt) {
+                await rtdb.remove(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/beacons/${bid}`));
+              }
+            }
+          }
+
+          return activeList;
+        } catch (err) {
+          return [];
         }
       }
-      try {
-        localStorage.setItem(WORLD_REGISTRY_KEY, JSON.stringify(clean));
-      } catch (err) {}
-      return clean;
+
+      async function saveBeacon(beaconId, beaconData) {
+        if (!ready || !db || !rtdb) return;
+        try {
+          await rtdb.set(rtdb.ref(db, `${RTDB_ROOT_FOLDER}/beacons/${beaconId}`), beaconData);
+        } catch (err) {}
+      }
+
+      return {
+        init,
+        loadPersistentProfile,
+        savePersistentProfile,
+        publishActiveSession,
+        discoverSessionsAndClean,
+        saveBeacon,
+        isReady: () => ready
+      };
+    })();
+
+    function saveLocalStateToCloud() {
+      if (!worldEntered) return;
+      const alliesObj = {};
+      localPlayer.allyTrust.forEach((val, key) => {
+        if (val > 0) alliesObj[key] = val;
+      });
+      AetheriaRTDB.savePersistentProfile(localPlayer.profileKey, {
+        name: localPlayer.name,
+        gang: localPlayer.gang,
+        color: localPlayer.color,
+        shards: localPlayer.shards,
+        kills: localPlayer.kills,
+        assists: localPlayer.assists,
+        weaponId: localPlayer.weaponId,
+        ownedGuns: localPlayer.ownedGuns,
+        gunLevels: localPlayer.gunLevels,
+        allies: alliesObj,
+        updatedAt: Date.now()
+      });
     }
 
-    function publishPresenceAndClean() {
-      if (!localPlayer.shortCode || localPlayer.shortCode === '----') return;
+    async function syncWorldPresence() {
+      if (!localPlayer.peerId) return;
       const now = Date.now();
-      const reg = readCleanRegistry();
-      reg[localPlayer.shortCode] = {
-        code: localPlayer.shortCode,
+      const sessionData = {
+        peerId: localPlayer.peerId,
+        profileKey: localPlayer.profileKey,
         name: localPlayer.name,
         gang: localPlayer.gang,
         color: localPlayer.color,
         x: Math.round(localPlayer.x),
         y: Math.round(localPlayer.y),
-        shards: localPlayer.shards,
         kills: localPlayer.kills,
+        shards: localPlayer.shards,
         updatedAt: now
       };
-      try {
-        localStorage.setItem(WORLD_REGISTRY_KEY, JSON.stringify(reg));
-      } catch (err) {}
 
-      AetheriaRTDB.saveExplorer(localPlayer.shortCode, reg[localPlayer.shortCode]);
-      AetheriaRTDB.pruneStale();
+      if (broadcastBus) {
+        try {
+          broadcastBus.postMessage({ type: 'presence', session: sessionData });
+        } catch (err) {}
+      }
 
-      Object.keys(reg).forEach((code) => {
+      await AetheriaRTDB.publishActiveSession(localPlayer.peerId, sessionData);
+      const activeSessions = await AetheriaRTDB.discoverSessionsAndClean();
+      activeSessions.forEach((sess) => {
         if (
-          code !== localPlayer.shortCode &&
-          !dataConnections.has(code) &&
-          localPlayer.shortCode > code
+          sess.peerId &&
+          sess.peerId !== localPlayer.peerId &&
+          !dataConnections.has(sess.peerId) &&
+          localPlayer.peerId > sess.peerId
         ) {
-          connectToPeer(code);
+          connectToPeer(sess.peerId);
         }
       });
     }
@@ -574,82 +695,140 @@
       return Math.hypot(x, y) <= SAFE_ZONE_RADIUS;
     }
 
-    function isInsideOwnBeacon(x, y) {
+    function isAllyByIdentity(peerId, profileKey, gang) {
+      if (gang && gang === localPlayer.gang) return true;
+      if (profileKey && (localPlayer.allyTrust.get(profileKey) || 0) >= 2) return true;
+      if (peerId && (localPlayer.allyTrust.get(peerId) || 0) >= 2) return true;
+      return false;
+    }
+
+    function isPeerAlly(peer) {
+      if (!peer) return false;
+      return isAllyByIdentity(peer.peerId, peer.profileKey, peer.gang);
+    }
+
+    function grantTrust(peerOrNpc, amount = 1, reason = '') {
+      if (!peerOrNpc) return;
+      const key = peerOrNpc.profileKey || peerOrNpc.peerId || peerOrNpc.code;
+      if (!key || key === localPlayer.profileKey || key === localPlayer.peerId) return;
+
+      const prev = localPlayer.allyTrust.get(key) || 0;
+      const next = prev + amount;
+      localPlayer.allyTrust.set(key, next);
+      if (peerOrNpc.peerId) {
+        localPlayer.allyTrust.set(peerOrNpc.peerId, next);
+      }
+
+      if (prev < 2 && next >= 2) {
+        SoundFX.ally();
+        showToast(`🤝 ${peerOrNpc.name || key} is now your ALLY!${reason ? ` (${reason})` : ''}`);
+        saveLocalStateToCloud();
+        if (peerOrNpc.peerId) {
+          broadcastToAll({
+            type: 'trust_grant',
+            targetPeerId: peerOrNpc.peerId,
+            fromProfileKey: localPlayer.profileKey,
+            fromName: localPlayer.name,
+            amount: 2
+          });
+        }
+      }
+    }
+
+    function evaluateBeaconZones() {
       const now = performance.now();
-      return beacons.some((b) => b.ownerCode === localPlayer.shortCode && (now - b.createdAt) <= b.duration && Math.hypot(x - b.x, y - b.y) <= BEACON_RADIUS);
+      let friendly = false;
+      let hostile = false;
+
+      for (const b of beacons) {
+        if (now - b.createdAt > b.duration) continue;
+        if (Math.hypot(localPlayer.x - b.x, localPlayer.y - b.y) <= BEACON_RADIUS) {
+          const isFriendlyBeacon =
+            b.ownerPeerId === localPlayer.peerId ||
+            b.ownerProfileKey === localPlayer.profileKey ||
+            isAllyByIdentity(b.ownerPeerId, b.ownerProfileKey, b.ownerGang);
+          if (isFriendlyBeacon) {
+            friendly = true;
+          } else {
+            hostile = true;
+          }
+        }
+      }
+
+      localPlayer.inFriendlyBeacon = friendly;
+      localPlayer.inHostileBeacon = hostile;
     }
 
     function getGunDamageForPlayer(gunId) {
       const spec = GUN_SPECS[gunId] || GUN_SPECS.pulse;
       const lvl = localPlayer.gunLevels[gunId] || 1;
-      const lvlMult = 1 + (lvl - 1) * 0.22;
-      const beaconMult = localPlayer.inOwnBeacon ? 1.30 : 1.0;
-      return spec.baseDmg * lvlMult * beaconMult;
+      const levelMult = 1 + (lvl - 1) * 0.25;
+      const beaconMult = localPlayer.inFriendlyBeacon ? 1.35 : 1.0;
+      return spec.baseDmg * levelMult * beaconMult;
     }
 
     function recalculatePlayerStats() {
       const s = localPlayer.shards;
       const gun = GUN_SPECS[localPlayer.weaponId] || GUN_SPECS.pulse;
       const overdriveMult = localPlayer.powerups.overdrive > 0 ? 1.35 : 1.0;
+      const beaconFireMult = localPlayer.inFriendlyBeacon ? 1.25 : 1.0;
 
       localPlayer.maxHp = 100 + Math.floor(s / 3) * 15;
-      localPlayer.hpRegen = (1.5 + Math.floor(s / 4) * 0.8) * (localPlayer.inOwnBeacon ? 2.2 : 1.0);
-      localPlayer.speed = Math.min(255, (145 + Math.floor(s / 3) * 4.5) * (localPlayer.powerups.overdrive > 0 ? 1.15 : 1.0));
-      localPlayer.fireInterval = Math.max(0.16, (gun.fireInterval - Math.floor(s / 5) * 0.02) / overdriveMult);
+      localPlayer.hpRegen = (1.6 + Math.floor(s / 4) * 0.8) * (localPlayer.inFriendlyBeacon ? 2.5 : 1.0);
+      localPlayer.speed = Math.min(230, (132 + Math.floor(s / 3) * 4) * (localPlayer.powerups.overdrive > 0 ? 1.15 : 1.0));
+      localPlayer.fireInterval = Math.max(0.16, (gun.fireInterval - Math.floor(s / 5) * 0.02) / (overdriveMult * beaconFireMult));
       localPlayer.magSize = gun.magSize + Math.floor(s / 4) * 2;
       localPlayer.reloadDuration = gun.reloadDuration;
-      localPlayer.critChance = Math.min(0.65, 0.08 + Math.floor(s / 4) * 0.03 + (localPlayer.powerups.overdrive > 0 ? 0.12 : 0) + (localPlayer.inOwnBeacon ? 0.1 : 0));
+      localPlayer.critChance = Math.min(
+        0.65,
+        0.08 +
+          Math.floor(s / 4) * 0.03 +
+          (localPlayer.powerups.overdrive > 0 ? 0.12 : 0) +
+          (localPlayer.inFriendlyBeacon ? 0.15 : 0)
+      );
       localPlayer.critMult = 1.5 + Math.floor(s / 5) * 0.15;
+
       if (localPlayer.ammo > localPlayer.magSize) localPlayer.ammo = localPlayer.magSize;
       if (localPlayer.hp > localPlayer.maxHp) localPlayer.hp = localPlayer.maxHp;
     }
 
-    function swapEquippedGun() {
-      if (!Array.isArray(localPlayer.ownedGuns) || localPlayer.ownedGuns.length <= 1) {
-        showToast('Pick up another gun type in the world to swap!');
-        return;
-      }
-      const idx = localPlayer.ownedGuns.indexOf(localPlayer.weaponId);
-      const nextGun = localPlayer.ownedGuns[(idx + 1) % localPlayer.ownedGuns.length];
-      localPlayer.weaponId = nextGun;
+    function equipGun(gunId) {
+      if (!localPlayer.ownedGuns.includes(gunId)) return;
+      if (localPlayer.weaponId === gunId) return;
+      localPlayer.weaponId = gunId;
       recalculatePlayerStats();
       localPlayer.ammo = localPlayer.magSize;
       localPlayer.reloadTimer = 0;
-      const spec = GUN_SPECS[nextGun];
-      const lvl = localPlayer.gunLevels[nextGun] || 1;
+      const spec = GUN_SPECS[gunId];
+      const lvl = localPlayer.gunLevels[gunId] || 1;
       SoundFX.pickup();
-      showToast(`Swapped to ${spec.label} (Lv.${lvl})`);
+      showToast(`Equipped ${spec.label} (Lv.${lvl} • ${Math.round(getGunDamageForPlayer(gunId))} DMG)`);
       updateCombatAndEnergyUI();
     }
 
-    function recordAllyBond(peerCode, amount = 1) {
-      if (!peerCode || peerCode === localPlayer.shortCode) return;
-      const next = (localPlayer.allyBond.get(peerCode) || 0) + amount;
-      localPlayer.allyBond.set(peerCode, next);
-      if (next === 1) {
-        const peer = remotePeers.get(peerCode);
-        showToast(`${peer ? peer.name : peerCode} is now your Ally!`);
+    function swapToNextGun() {
+      if (localPlayer.ownedGuns.length <= 1) {
+        showToast('Collect another weapon in the world to swap!');
+        return;
       }
-    }
-
-    function isAlly(peerCode) {
-      const peer = remotePeers.get(peerCode);
-      if (peer && peer.gang && peer.gang === localPlayer.gang) return true;
-      return (localPlayer.allyBond.get(peerCode) || 0) >= 1;
+      const idx = localPlayer.ownedGuns.indexOf(localPlayer.weaponId);
+      const nextId = localPlayer.ownedGuns[(idx + 1) % localPlayer.ownedGuns.length];
+      equipGun(nextId);
     }
 
     function initNPCs() {
       const configs = [
-        { code: 'NPC-01', role: 'Scout', gang: 'Solari Vanguard', color: '#60a5fa', x: 150, y: 90, speed: 112 },
-        { code: 'NPC-02', role: 'Harvester', gang: 'Rift Drifters', color: '#34d399', x: -165, y: 110, speed: 102 },
-        { code: 'NPC-03', role: 'Vanguard', gang: 'Aegis Pact', color: '#f472b6', x: 140, y: -150, speed: 108 },
-        { code: 'NPC-04', role: 'Pathfinder', gang: 'Solari Vanguard', color: '#c084fc', x: -155, y: -135, speed: 110 }
+        { code: 'NPC-01', name: 'NPC-01 • Kael', gang: 'Solari Vanguard', color: '#60a5fa', x: 175, y: 95, speed: 106 },
+        { code: 'NPC-02', name: 'NPC-02 • Lyra', gang: 'Rift Drifters', color: '#34d399', x: -185, y: 120, speed: 100 },
+        { code: 'NPC-03', name: 'NPC-03 • Orin', gang: 'Aegis Pact', color: '#f472b6', x: 155, y: -165, speed: 104 },
+        { code: 'NPC-04', name: 'NPC-04 • Vesper', gang: 'Solari Vanguard', color: '#c084fc', x: -165, y: -150, speed: 102 }
       ];
       configs.forEach((cfg, idx) => {
         npcs.push({
           id: `npc_${idx + 1}`,
           code: cfg.code,
-          role: cfg.role,
+          profileKey: cfg.code,
+          name: cfg.name,
           gang: cfg.gang,
           color: cfg.color,
           x: cfg.x,
@@ -658,13 +837,14 @@
           vy: 0,
           radius: 15,
           speed: cfg.speed,
-          hp: 110,
-          maxHp: 110,
-          lastAttacker: null,
+          hp: 120,
+          maxHp: 120,
+          hitFlash: 0,
           waypointX: cfg.x,
           waypointY: cfg.y,
-          decisionTimer: 0.6 + idx * 0.4,
-          fireTimer: 0.8 + idx * 0.25,
+          decisionTimer: 0.7 + idx * 0.4,
+          fireTimer: 0.9 + idx * 0.25,
+          beaconCooldown: 14 + idx * 5,
           emote: null,
           emoteTimer: 0,
           trail: []
@@ -689,51 +869,56 @@
       if (variant === 'colossus') {
         activeColossusCount += 1;
         enemies.push({
-          id: `en_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
-          variant: 'Colossus',
+          id: `boss_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          variant: 'Colossus Boss',
+          isBoss: true,
           x,
           y,
           vx: 0,
           vy: 0,
-          radius: 32,
-          speed: 64,
-          hp: Math.round(310 * scale),
-          maxHp: Math.round(310 * scale),
-          contactDmg: Math.round(28 * scale),
+          radius: 36,
+          speed: 58,
+          hp: Math.round(420 * scale),
+          maxHp: Math.round(420 * scale),
+          contactDmg: Math.round(30 * scale),
           color: '#ef4444',
           fireTimer: 1.4,
-          novaTimer: 4.5,
+          novaTimer: 4.4,
+          gravityTimer: 6.5,
+          gravityPulling: 0,
           hitFlash: 0
         });
       } else if (variant === 'stalker') {
         enemies.push({
           id: `en_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
           variant: 'Stalker',
+          isBoss: false,
           x,
           y,
           vx: 0,
           vy: 0,
           radius: 16,
-          speed: 106,
-          hp: Math.round(62 * scale),
-          maxHp: Math.round(62 * scale),
+          speed: 100,
+          hp: Math.round(64 * scale),
+          maxHp: Math.round(64 * scale),
           contactDmg: Math.round(14 * scale),
           color: '#f97316',
-          fireTimer: 1.35,
+          fireTimer: 1.45,
           hitFlash: 0
         });
       } else {
         enemies.push({
           id: `en_${performance.now()}_${Math.random().toString(36).slice(2, 6)}`,
           variant: 'Swarmer',
+          isBoss: false,
           x,
           y,
           vx: 0,
           vy: 0,
           radius: 12,
-          speed: 126,
-          hp: Math.round(34 * scale),
-          maxHp: Math.round(34 * scale),
+          speed: 118,
+          hp: Math.round(36 * scale),
+          maxHp: Math.round(36 * scale),
           contactDmg: Math.round(11 * scale),
           color: '#fb7185',
           fireTimer: 99,
@@ -757,14 +942,14 @@
 
           const baseX = cx * SECTOR_SIZE;
           const baseY = cy * SECTOR_SIZE;
-          const distFromOrigin = Math.hypot(baseX + SECTOR_SIZE / 2, baseY + SECTOR_SIZE / 2);
-          const difficultyScale = 1 + Math.min(2.5, distFromOrigin / 4500);
+          const sectorDist = Math.hypot(baseX + SECTOR_SIZE / 2, baseY + SECTOR_SIZE / 2);
+          const difficultyScale = 1 + Math.min(2.4, sectorDist / 4800);
 
-          // Spawn shards in this sector
+          // Shards
           const shardCount = 3 + Math.floor(hashCoords(cx, cy, 1) * 3);
           for (let s = 0; s < shardCount; s++) {
-            const sx = baseX + 70 + hashCoords(cx, cy, s * 11 + 2) * (SECTOR_SIZE - 140);
-            const sy = baseY + 70 + hashCoords(cx, cy, s * 11 + 3) * (SECTOR_SIZE - 140);
+            const sx = baseX + 80 + hashCoords(cx, cy, s * 11 + 2) * (SECTOR_SIZE - 160);
+            const sy = baseY + 80 + hashCoords(cx, cy, s * 11 + 3) * (SECTOR_SIZE - 160);
             shards.push({
               id: `sh_${cx}_${cy}_${s}`,
               x: sx,
@@ -775,35 +960,31 @@
             });
           }
 
-          // Keep immediate spawn origin lighter so new explorers can orient
-          const sectorDist = Math.hypot(baseX + SECTOR_SIZE / 2, baseY + SECTOR_SIZE / 2);
-          if (sectorDist > 480) {
-            const packCount = sectorDist > 2200 ? 2 : 1;
-            for (let e = 0; e < packCount; e++) {
-              const r1 = hashCoords(cx, cy, e * 19 + 3);
-              const r2 = hashCoords(cx, cy, e * 19 + 4);
-              const r3 = hashCoords(cx, cy, e * 19 + 5);
-              const ex = baseX + 110 + r1 * (SECTOR_SIZE - 220);
-              const ey = baseY + 110 + r2 * (SECTOR_SIZE - 220);
+          // Sparse, paced enemy spawns (keep exploration rewarding, not overcrowded)
+          if (sectorDist > 520 && hashCoords(cx, cy, 17) > 0.25) {
+            const r1 = hashCoords(cx, cy, 21);
+            const r2 = hashCoords(cx, cy, 22);
+            const r3 = hashCoords(cx, cy, 23);
+            const ex = baseX + 120 + r1 * (SECTOR_SIZE - 240);
+            const ey = baseY + 120 + r2 * (SECTOR_SIZE - 240);
 
-              if (isInSafeZone(ex, ey)) continue;
-
+            if (!isInSafeZone(ex, ey)) {
               let variant = 'swarmer';
-              if (r3 > 0.92 && sectorDist > 1500 && activeColossusCount < 2) {
+              if (r3 > 0.90 && sectorDist > 1250 && activeColossusCount < 2) {
                 variant = 'colossus';
-              } else if (r3 > 0.5) {
+              } else if (r3 > 0.48) {
                 variant = 'stalker';
               }
-
               spawnEnemyVariant(ex, ey, variant, difficultyScale);
             }
           }
 
-          if (sectorDist > 360 && hashCoords(cx, cy, 77) > 0.45) {
-            const gx = baseX + 130 + hashCoords(cx, cy, 78) * (SECTOR_SIZE - 260);
-            const gy = baseY + 130 + hashCoords(cx, cy, 79) * (SECTOR_SIZE - 260);
+          // Collectible Guns (Pulse, Scatter, Rail, Arc Nova)
+          if (sectorDist > 340 && hashCoords(cx, cy, 77) > 0.38) {
+            const gx = baseX + 140 + hashCoords(cx, cy, 78) * (SECTOR_SIZE - 280);
+            const gy = baseY + 140 + hashCoords(cx, cy, 79) * (SECTOR_SIZE - 280);
             const gunRoll = hashCoords(cx, cy, 80);
-            const gunType = gunRoll > 0.68 ? 'rail' : gunRoll > 0.34 ? 'scatter' : 'pulse';
+            const gunType = gunRoll > 0.75 ? 'nova' : gunRoll > 0.50 ? 'rail' : gunRoll > 0.25 ? 'scatter' : 'pulse';
             gunPickups.push({
               id: `gun_${cx}_${cy}`,
               gunType,
@@ -814,11 +995,12 @@
             });
           }
 
-          if (sectorDist > 340 && hashCoords(cx, cy, 91) > 0.4) {
+          // Collectible Powerups (Overdrive, Aegis Shield, Shard Magnet, Vampiric Core)
+          if (sectorDist > 340 && hashCoords(cx, cy, 91) > 0.36) {
             const px = baseX + 140 + hashCoords(cx, cy, 92) * (SECTOR_SIZE - 280);
             const py = baseY + 140 + hashCoords(cx, cy, 93) * (SECTOR_SIZE - 280);
             const pRoll = hashCoords(cx, cy, 94);
-            const pType = pRoll > 0.66 ? 'magnet' : pRoll > 0.33 ? 'aegis' : 'overdrive';
+            const pType = pRoll > 0.75 ? 'vampiric' : pRoll > 0.50 ? 'magnet' : pRoll > 0.25 ? 'aegis' : 'overdrive';
             powerupPickups.push({
               id: `pw_${cx}_${cy}`,
               type: pType,
@@ -831,40 +1013,45 @@
         }
       }
 
-      const cullRadius = 2450;
+      const cullRadius = 2600;
       for (let i = enemies.length - 1; i >= 0; i--) {
         if (Math.hypot(enemies[i].x - wx, enemies[i].y - wy) > cullRadius) {
-          if (enemies[i].variant === 'Colossus') activeColossusCount = Math.max(0, activeColossusCount - 1);
+          if (enemies[i].isBoss) activeColossusCount = Math.max(0, activeColossusCount - 1);
           enemies.splice(i, 1);
         }
       }
       for (let i = shards.length - 1; i >= 0; i--) {
-        if (Math.hypot(shards[i].x - wx, shards[i].y - wy) > cullRadius) {
-          shards.splice(i, 1);
-        }
+        if (Math.hypot(shards[i].x - wx, shards[i].y - wy) > cullRadius) shards.splice(i, 1);
       }
       for (let i = gunPickups.length - 1; i >= 0; i--) {
-        if (Math.hypot(gunPickups[i].x - wx, gunPickups[i].y - wy) > cullRadius) {
-          gunPickups.splice(i, 1);
-        }
+        if (Math.hypot(gunPickups[i].x - wx, gunPickups[i].y - wy) > cullRadius) gunPickups.splice(i, 1);
       }
       for (let i = powerupPickups.length - 1; i >= 0; i--) {
-        if (Math.hypot(powerupPickups[i].x - wx, powerupPickups[i].y - wy) > cullRadius) {
-          powerupPickups.splice(i, 1);
-        }
+        if (Math.hypot(powerupPickups[i].x - wx, powerupPickups[i].y - wy) > cullRadius) powerupPickups.splice(i, 1);
       }
     }
-    function addBeacon(x, y, color, label, ownerCode = localPlayer.shortCode) {
+
+    function addBeacon({ id, x, y, color, label, ownerPeerId, ownerProfileKey, ownerGang, isRival = false }) {
+      const beaconId = id || `bcn_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
       beacons.push({
+        id: beaconId,
         x,
         y,
         color,
         label,
-        ownerCode,
+        ownerPeerId,
+        ownerProfileKey,
+        ownerGang,
+        isRival,
+        hp: 160,
+        maxHp: 160,
+        hitFlash: 0,
+        pulseTimer: 2.5,
         createdAt: performance.now(),
         duration: BEACON_DURATION_MS,
         bonusClaimed: false
       });
+      return beaconId;
     }
 
     function showToast(msg) {
@@ -877,24 +1064,26 @@
       toastTimeout = setTimeout(() => {
         banner.classList.remove('opacity-100');
         banner.classList.add('opacity-0');
-      }, 2600);
+      }, 2800);
     }
 
     function updateConnectionUI(state) {
       const dot = document.getElementById('statusDot');
       const peerCountText = document.getElementById('peerCountText');
       const chatPeerSummary = document.getElementById('chatPeerSummary');
-      const count = dataConnections.size;
+      const totalOnline = 1 + dataConnections.size;
 
-      peerCountText.textContent = `${count} ${count === 1 ? 'peer' : 'peers'}`;
-      chatPeerSummary.textContent = count > 0 ? `${count} linked via WebRTC` : 'No peers linked';
+      peerCountText.textContent = `${totalOnline} ${totalOnline === 1 ? 'explorer' : 'explorers'}`;
+      chatPeerSummary.textContent = dataConnections.size > 0
+        ? `${dataConnections.size} linked in world`
+        : 'World beacon active';
 
       dot.className = 'w-2.5 h-2.5 rounded-full';
       if (state === 'error') {
         dot.classList.add('bg-rose-500');
-      } else if (count > 0) {
+      } else if (dataConnections.size > 0) {
         dot.classList.add('bg-emerald-400');
-      } else if (localPlayer.shortCode !== '----') {
+      } else if (localPlayer.peerId) {
         dot.classList.add('bg-sky-400');
       } else {
         dot.classList.add('bg-amber-400', 'animate-pulse');
@@ -918,7 +1107,7 @@
       }
     }
 
-    function spawnProjectile(x, y, angle, speed, damage, ownerType, color, isCrit = false) {
+    function spawnProjectile(x, y, angle, speed, damage, ownerType, ownerId, color, isCrit = false, splash = 0) {
       projectiles.push({
         x,
         y,
@@ -926,9 +1115,11 @@
         vy: Math.sin(angle) * speed,
         damage,
         ownerType,
+        ownerId,
         color,
         isCrit,
-        life: 1.15
+        splash,
+        life: 1.2
       });
     }
 
@@ -937,33 +1128,36 @@
         x,
         y,
         vy: -42,
-        text: isCrit ? `-${Math.round(amount)}!` : `-${Math.round(amount)}`,
+        text: isCrit ? `-${Math.round(amount)} CRIT!` : `-${Math.round(amount)}`,
         color,
-        life: 0.75,
-        maxLife: 0.75
+        life: 0.78,
+        maxLife: 0.78
       });
     }
 
     function applyDamageToLocalPlayer(rawDmg, sourceColor = '#f43f5e') {
       if (localPlayer.inSafeZone || localPlayer.dashTimer > 0) return;
-      const beaconMitigation = localPlayer.inOwnBeacon ? 0.65 : 1.0;
+      const friendlyBeaconMitigation = localPlayer.inFriendlyBeacon ? 0.60 : 1.0;
+      const hostileBeaconAmplify = localPlayer.inHostileBeacon ? 1.15 : 1.0;
       const aegisMitigation = localPlayer.powerups.aegis > 0 ? 0.35 : 1.0;
-      const finalDmg = rawDmg * beaconMitigation * aegisMitigation;
+      const finalDmg = rawDmg * friendlyBeaconMitigation * hostileBeaconAmplify * aegisMitigation;
+
       localPlayer.hp -= finalDmg;
       localPlayer.hitFlash = 1;
       spawnParticles(localPlayer.x, localPlayer.y, sourceColor, 6, 0.75);
+
       if (localPlayer.hp <= 0) {
         localPlayer.hp = localPlayer.maxHp;
         localPlayer.ammo = localPlayer.magSize;
         localPlayer.x = 0;
         localPlayer.y = 0;
-        showToast('Hull breached! Reconstructed inside Safe Zone.');
+        showToast('Hull breached! Reconstructed inside Safe Sanctuary.');
       }
     }
 
     function triggerDash() {
       if (localPlayer.dashEnergy < DASH_ENERGY_MAX || localPlayer.dashTimer > 0) {
-        showToast('Dash needs 100% Dash Energy!');
+        showToast('Dash requires 100% Dash Energy!');
         return;
       }
       localPlayer.dashEnergy = 0;
@@ -972,7 +1166,7 @@
       const angle = Math.hypot(localPlayer.vx, localPlayer.vy) > 10
         ? Math.atan2(localPlayer.vy, localPlayer.vx)
         : localPlayer.aimAngle;
-      const dashSpeed = Math.max(460, localPlayer.speed * 2.6);
+      const dashSpeed = Math.max(430, localPlayer.speed * 2.5);
       localPlayer.vx = Math.cos(angle) * dashSpeed;
       localPlayer.vy = Math.sin(angle) * dashSpeed;
 
@@ -982,6 +1176,10 @@
     }
 
     function triggerBeacon() {
+      if (localPlayer.inSafeZone) {
+        showToast('Cannot deploy a combat Beacon inside Safe Sanctuary.');
+        return;
+      }
       const now = performance.now();
       const remainingMs = BEACON_COOLDOWN_MS - (now - lastBeaconDeployTime);
       if (remainingMs > 0) {
@@ -992,39 +1190,75 @@
         showToast(`Beacon requires ${BEACON_SHARD_COST} Shards ★`);
         return;
       }
+      if (localPlayer.dashEnergy < BEACON_DASH_COST) {
+        showToast(`Beacon requires ${BEACON_DASH_COST}% Dash Energy`);
+        return;
+      }
 
       localPlayer.shards -= BEACON_SHARD_COST;
+      localPlayer.dashEnergy -= BEACON_DASH_COST;
       recalculatePlayerStats();
       lastBeaconDeployTime = now;
 
-      localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + 28);
+      localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + 35);
 
+      // Initial shockwave pulse on deploy
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
         if (Math.hypot(en.x - localPlayer.x, en.y - localPlayer.y) <= BEACON_RADIUS) {
-          en.hp -= 40;
+          en.hp -= 50;
           en.hitFlash = 1;
-          addDamagePopup(en.x, en.y - 12, 40, '#fbbf24', true);
+          addDamagePopup(en.x, en.y - 12, 50, '#fbbf24', true);
           if (en.hp <= 0) {
-            if (en.variant === 'Colossus') activeColossusCount = Math.max(0, activeColossusCount - 1);
+            if (en.isBoss) activeColossusCount = Math.max(0, activeColossusCount - 1);
             enemies.splice(i, 1);
             localPlayer.kills += 1;
           }
         }
       }
 
-      addBeacon(localPlayer.x, localPlayer.y, '#fbbf24', `${localPlayer.name} (${localPlayer.gang})`, localPlayer.shortCode);
-      SoundFX.beacon();
-      spawnParticles(localPlayer.x, localPlayer.y, '#fbbf24', 20, 1.3);
-      showToast('Resonance Beacon deployed! +30% DMG, -35% DMG Taken, Fast Heal & NPC Rally.');
-      broadcastToAll({
-        type: 'beacon',
+      // Grant trust to any nearby stranger players helped by this beacon
+      remotePeers.forEach((peer) => {
+        if (Math.hypot(peer.x - localPlayer.x, peer.y - localPlayer.y) <= BEACON_RADIUS) {
+          grantTrust(peer, 2, 'Shared Resonance Beacon');
+        }
+      });
+
+      const bId = addBeacon({
         x: localPlayer.x,
         y: localPlayer.y,
         color: '#fbbf24',
-        label: `${localPlayer.name} (${localPlayer.gang})`,
-        ownerCode: localPlayer.shortCode
+        label: `${localPlayer.name} [${localPlayer.gang}]`,
+        ownerPeerId: localPlayer.peerId,
+        ownerProfileKey: localPlayer.profileKey,
+        ownerGang: localPlayer.gang,
+        isRival: false
       });
+
+      AetheriaRTDB.saveBeacon(bId, {
+        id: bId,
+        x: Math.round(localPlayer.x),
+        y: Math.round(localPlayer.y),
+        ownerName: localPlayer.name,
+        ownerGang: localPlayer.gang,
+        expiresAt: Date.now() + BEACON_DURATION_MS
+      });
+
+      SoundFX.beacon();
+      spawnParticles(localPlayer.x, localPlayer.y, '#fbbf24', 22, 1.35);
+      showToast('Resonance Beacon deployed! +35% DMG, -40% DMG Taken, 2.5x Heal & Shard Pull.');
+      broadcastToAll({
+        type: 'beacon',
+        id: bId,
+        x: localPlayer.x,
+        y: localPlayer.y,
+        color: '#fbbf24',
+        label: `${localPlayer.name} [${localPlayer.gang}]`,
+        ownerPeerId: localPlayer.peerId,
+        ownerProfileKey: localPlayer.profileKey,
+        ownerGang: localPlayer.gang
+      });
+      saveLocalStateToCloud();
       updateCombatAndEnergyUI();
     }
 
@@ -1032,9 +1266,49 @@
       localPlayer.emote = emoji;
       localPlayer.emoteTimer = 2.4;
       SoundFX.pickup();
-      broadcastToAll({
-        type: 'emote',
-        emote: emoji
+      broadcastToAll({ type: 'emote', emote: emoji });
+
+      // Waving or offering alliance near a stranger builds community trust
+      if (emoji === '👋' || emoji === '🤝') {
+        remotePeers.forEach((peer) => {
+          if (Math.hypot(peer.x - localPlayer.x, peer.y - localPlayer.y) < 260) {
+            grantTrust(peer, 1, 'Friendly Greeting');
+          }
+        });
+      }
+    }
+
+    function updateArsenalBar() {
+      const bar = document.getElementById('arsenalBar');
+      if (!bar) return;
+      const sig = `${localPlayer.weaponId}|${localPlayer.ownedGuns.map((g) => `${g}:${localPlayer.gunLevels[g] || 1}`).join(',')}`;
+      if (sig === lastArsenalKey) return;
+      lastArsenalKey = sig;
+
+      bar.innerHTML = localPlayer.ownedGuns.map((gId, idx) => {
+        const spec = GUN_SPECS[gId] || GUN_SPECS.pulse;
+        const lvl = localPlayer.gunLevels[gId] || 1;
+        const active = gId === localPlayer.weaponId;
+        return `
+          <button
+            type="button"
+            data-gun-id="${gId}"
+            class="gun-pill-btn px-2.5 py-1 rounded-xl border text-[11px] font-mono-code font-bold transition flex items-center gap-1.5 ${
+              active
+                ? 'bg-slate-800 border-sky-400 text-white shadow-md'
+                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-600'
+            }"
+            title="Equip ${spec.label} (Key ${idx + 1} or Q)"
+          >
+            <span class="w-2 h-2 rounded-full" style="background:${spec.color}"></span>
+            <span>${spec.label}</span>
+            <span class="text-amber-300">Lv.${lvl}</span>
+          </button>
+        `;
+      }).join('');
+
+      bar.querySelectorAll('.gun-pill-btn').forEach((btn) => {
+        btn.addEventListener('click', () => equipGun(btn.dataset.gunId));
       });
     }
 
@@ -1052,18 +1326,21 @@
 
       const cdRemaining = Math.max(0, BEACON_COOLDOWN_MS - (performance.now() - lastBeaconDeployTime));
       if (beaconBtn) {
-        beaconBtn.disabled = cdRemaining > 0 || localPlayer.shards < BEACON_SHARD_COST;
+        beaconBtn.disabled = localPlayer.inSafeZone || cdRemaining > 0 || localPlayer.shards < BEACON_SHARD_COST || localPlayer.dashEnergy < BEACON_DASH_COST;
         beaconBtn.classList.toggle('opacity-45', beaconBtn.disabled);
         beaconBtn.title = cdRemaining > 0
           ? `Beacon Cooldown: ${(cdRemaining / 1000).toFixed(1)}s`
-          : `Deploy Beacon (E) — Costs ${BEACON_SHARD_COST} Shards | Heal + Shockwave + Pull`;
+          : `Deploy Beacon (E) — Costs ${BEACON_SHARD_COST} Shards & ${BEACON_DASH_COST}% Dash`;
       }
 
       const gun = GUN_SPECS[localPlayer.weaponId] || GUN_SPECS.pulse;
       const gunLvl = localPlayer.gunLevels[localPlayer.weaponId] || 1;
+      const dmgNow = Math.round(getGunDamageForPlayer(localPlayer.weaponId));
       const weaponBadge = document.getElementById('weaponBadge');
       if (weaponBadge) {
-        weaponBadge.textContent = localPlayer.inSafeZone ? 'SAFE (NO FIRE)' : `${gun.label} Lv.${gunLvl}`;
+        weaponBadge.textContent = localPlayer.inSafeZone
+          ? 'SAFE (NO FIRE)'
+          : `${gun.label} Lv.${gunLvl} (${dmgNow} DMG)`;
         weaponBadge.className = localPlayer.inSafeZone
           ? 'font-mono-code font-bold text-emerald-300'
           : 'font-mono-code font-bold text-cyan-300';
@@ -1071,32 +1348,70 @@
 
       const gangBadge = document.getElementById('gangBadge');
       if (gangBadge) {
-        const allyCount = Array.from(localPlayer.allyBond.values()).filter((v) => v >= 1).length;
+        let allyCount = 0;
+        localPlayer.allyTrust.forEach((v) => { if (v >= 2) allyCount += 1; });
         gangBadge.textContent = `${localPlayer.gang} • ${allyCount} ${allyCount === 1 ? 'Ally' : 'Allies'}`;
       }
 
-      const ammoLabel = localPlayer.reloadTimer > 0 ? 'RLD' : `${localPlayer.ammo}/${localPlayer.magSize}`;
+      const ammoLabel = localPlayer.reloadTimer > 0 ? 'RELOAD' : `${localPlayer.ammo}/${localPlayer.magSize}`;
       document.getElementById('hullText').textContent = `HP ${Math.max(0, Math.ceil(localPlayer.hp))}/${localPlayer.maxHp} • ${ammoLabel}`;
       document.getElementById('killsText').textContent = `${localPlayer.kills} KILLS`;
       document.getElementById('shardsText').textContent = `${localPlayer.shards} ★`;
 
+      updateArsenalBar();
+
+      // Clear & Detailed Active Powerups Strip
       const strip = document.getElementById('powerupsStrip');
       if (strip) {
         const items = [];
-        if (localPlayer.inOwnBeacon) {
-          items.push({ key: 'beacon_zone', label: '🔆 Beacon Field (+30% DMG / -35% Taken / Fast Heal)', cls: 'bg-amber-500/20 border-amber-400/50 text-amber-200' });
+        if (localPlayer.inFriendlyBeacon) {
+          items.push({
+            key: 'b_ally',
+            label: '🔆 Beacon Aura (+35% DMG • -40% Taken • 2.5x Heal)',
+            cls: 'bg-amber-500/20 border-amber-400/50 text-amber-200'
+          });
+        }
+        if (localPlayer.inHostileBeacon) {
+          items.push({
+            key: 'b_enemy',
+            label: '⚠️ Rival Beacon Field (+15% DMG Taken)',
+            cls: 'bg-rose-500/25 border-rose-400/60 text-rose-200'
+          });
         }
         if (localPlayer.powerups.overdrive > 0) {
-          items.push({ key: `od_${Math.ceil(localPlayer.powerups.overdrive)}`, label: `⚡ Overdrive ${localPlayer.powerups.overdrive.toFixed(1)}s`, cls: 'bg-amber-500/20 border-amber-400/50 text-amber-200' });
+          items.push({
+            key: `od_${Math.ceil(localPlayer.powerups.overdrive)}`,
+            label: `⚡ Overdrive (+35% Fire Rate) ${localPlayer.powerups.overdrive.toFixed(1)}s`,
+            cls: 'bg-amber-500/20 border-amber-400/50 text-amber-200'
+          });
         }
         if (localPlayer.powerups.aegis > 0) {
-          items.push({ key: `ag_${Math.ceil(localPlayer.powerups.aegis)}`, label: `🛡️ Aegis Shield ${localPlayer.powerups.aegis.toFixed(1)}s`, cls: 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200' });
+          items.push({
+            key: `ag_${Math.ceil(localPlayer.powerups.aegis)}`,
+            label: `🛡️ Aegis Shield (-65% DMG Taken) ${localPlayer.powerups.aegis.toFixed(1)}s`,
+            cls: 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200'
+          });
         }
         if (localPlayer.powerups.magnet > 0) {
-          items.push({ key: `mg_${Math.ceil(localPlayer.powerups.magnet)}`, label: `🧲 Shard Magnet ${localPlayer.powerups.magnet.toFixed(1)}s`, cls: 'bg-sky-500/20 border-sky-400/50 text-sky-200' });
+          items.push({
+            key: `mg_${Math.ceil(localPlayer.powerups.magnet)}`,
+            label: `🧲 Shard Magnet (240m Pull) ${localPlayer.powerups.magnet.toFixed(1)}s`,
+            cls: 'bg-sky-500/20 border-sky-400/50 text-sky-200'
+          });
+        }
+        if (localPlayer.powerups.vampiric > 0) {
+          items.push({
+            key: `vp_${Math.ceil(localPlayer.powerups.vampiric)}`,
+            label: `🩸 Vampiric Core (+12 HP/Kill) ${localPlayer.powerups.vampiric.toFixed(1)}s`,
+            cls: 'bg-fuchsia-500/20 border-fuchsia-400/50 text-fuchsia-200'
+          });
         }
         if (localPlayer.inSafeZone) {
-          items.push({ key: 'safe', label: '🕊️ Safe Sanctuary (Weapons Disabled)', cls: 'bg-emerald-950/85 border-emerald-500/50 text-emerald-300' });
+          items.push({
+            key: 'safe',
+            label: '🕊️ Safe Sanctuary (Weapons Disabled • Fast Regen)',
+            cls: 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300'
+          });
         }
 
         const sig = items.map((i) => i.key).join('|');
@@ -1109,7 +1424,90 @@
       }
     }
 
-    function appendChatMessage({ sender, code, text, color = '#38bdf8', self = false }) {
+    function renderCommunityDrawer() {
+      const box = document.getElementById('communityContent');
+      if (!box) return;
+
+      const gangTotals = {
+        'Solari Vanguard': 0,
+        'Rift Drifters': 0,
+        'Aegis Pact': 0
+      };
+      gangTotals[localPlayer.gang] = (gangTotals[localPlayer.gang] || 0) + localPlayer.kills + localPlayer.shards;
+
+      const rows = [];
+      remotePeers.forEach((p) => {
+        const ally = isPeerAlly(p);
+        const trust = localPlayer.allyTrust.get(p.profileKey || p.peerId) || 0;
+        gangTotals[p.gang] = (gangTotals[p.gang] || 0) + (p.kills || 0) + (p.shards || 0);
+        rows.push(`
+          <div class="flex items-center justify-between bg-slate-950/85 border border-slate-800 rounded-xl p-2.5">
+            <div>
+              <div class="font-bold text-white flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full" style="background:${p.color}"></span>
+                <span>${p.name}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded-full ${
+                  ally
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                    : 'bg-amber-500/15 text-amber-300 border border-amber-400/30'
+                }">${ally ? 'ALLY' : `STRANGER (${trust}/2)`}</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5">${p.gang} • ${p.kills || 0} Kills • HP ${Math.ceil(p.hp || 100)}/${p.maxHp || 100}</div>
+            </div>
+            ${!ally ? `<button data-befriend="${p.peerId}" class="befriend-btn px-2 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-200 border border-emerald-400/40 font-semibold text-[11px]">Offer Truce</button>` : ''}
+          </div>
+        `);
+      });
+
+      npcs.forEach((npc) => {
+        const sameGang = npc.gang === localPlayer.gang;
+        gangTotals[npc.gang] = (gangTotals[npc.gang] || 0) + 4;
+        rows.push(`
+          <div class="flex items-center justify-between bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5">
+            <div>
+              <div class="font-semibold text-slate-200 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full" style="background:${npc.color}"></span>
+                <span>${npc.name}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded-full ${
+                  sameGang ? 'bg-indigo-500/20 text-indigo-300' : 'bg-rose-500/15 text-rose-300'
+                }">${sameGang ? 'GANG MATE' : 'RIVAL NPC'}</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5">${npc.gang} • HP ${Math.ceil(npc.hp)}/${npc.maxHp}</div>
+            </div>
+          </div>
+        `);
+      });
+
+      const gangCards = Object.entries(gangTotals).map(([gName, pts]) => `
+        <div class="flex items-center justify-between bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-1.5">
+          <span class="font-semibold text-slate-200">${gName}</span>
+          <span class="font-mono-code font-bold text-amber-300">${pts} Glory</span>
+        </div>
+      `).join('');
+
+      box.innerHTML = `
+        <div class="space-y-1.5">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Community Gang Standings</div>
+          ${gangCards}
+        </div>
+        <div class="space-y-1.5">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Explorers in Shared World</div>
+          ${rows.join('')}
+        </div>
+      `;
+
+      box.querySelectorAll('.befriend-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const peer = remotePeers.get(btn.dataset.befriend);
+          if (peer) {
+            grantTrust(peer, 2, 'Truce Pact');
+            renderCommunityDrawer();
+          }
+        });
+      });
+    }
+
+    function appendChatMessage({ sender, text, color = '#38bdf8', self = false }) {
       const container = document.getElementById('chatMessages');
       if (container.querySelector('.italic')) {
         container.innerHTML = '';
@@ -1119,7 +1517,7 @@
 
       const meta = document.createElement('span');
       meta.className = 'text-[10px] text-slate-400 mb-0.5 px-1 font-mono-code';
-      meta.textContent = self ? `You [${code}]` : `${sender} [${code}]`;
+      meta.textContent = self ? `You (${localPlayer.gang})` : sender;
 
       const bubble = document.createElement('div');
       bubble.className = `px-3 py-1.5 rounded-2xl max-w-[85%] break-words ${
@@ -1141,20 +1539,18 @@
       }
     }
 
-    function broadcastToAll(payload, excludeCode = null) {
+    function broadcastToAll(payload, excludePeerId = null) {
       const msg = JSON.stringify(payload);
-      dataConnections.forEach((conn, code) => {
-        if (code !== excludeCode && conn.open) {
+      dataConnections.forEach((conn, pid) => {
+        if (pid !== excludePeerId && conn.open) {
           try {
             conn.send(msg);
-          } catch (err) {
-            console.warn('P2P send error:', err);
-          }
+          } catch (err) {}
         }
       });
     }
 
-    function handlePeerData(peerCode, rawData) {
+    function handlePeerData(peerId, rawData) {
       let payload;
       try {
         payload = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
@@ -1163,46 +1559,50 @@
       }
       if (!payload || typeof payload !== 'object') return;
 
-      const peer = remotePeers.get(peerCode);
+      const peer = remotePeers.get(peerId);
       if (!peer) return;
 
       switch (payload.type) {
         case 'hello':
           peer.name = payload.name || peer.name;
-          peer.gang = payload.gang || peer.gang || 'Solari Vanguard';
+          peer.profileKey = payload.profileKey || peer.profileKey;
+          peer.gang = payload.gang || peer.gang;
           peer.color = payload.color || peer.color;
           peer.shards = payload.shards ?? peer.shards;
+          peer.kills = payload.kills ?? peer.kills;
           if (typeof payload.hp === 'number') peer.hp = payload.hp;
           if (typeof payload.maxHp === 'number') peer.maxHp = payload.maxHp;
           if (Array.isArray(payload.knownPeers)) {
-            payload.knownPeers.forEach((otherCode) => {
+            payload.knownPeers.forEach((otherId) => {
               if (
-                otherCode &&
-                otherCode !== localPlayer.shortCode &&
-                !dataConnections.has(otherCode) &&
-                localPlayer.shortCode > otherCode
+                otherId &&
+                otherId !== localPlayer.peerId &&
+                !dataConnections.has(otherId) &&
+                localPlayer.peerId > otherId
               ) {
-                connectToPeer(otherCode);
+                connectToPeer(otherId);
               }
             });
           }
           break;
         case 'state':
           peer.name = payload.name || peer.name;
-          peer.gang = payload.gang || peer.gang || 'Solari Vanguard';
+          peer.profileKey = payload.profileKey || peer.profileKey;
+          peer.gang = payload.gang || peer.gang;
           peer.color = payload.color || peer.color;
           peer.targetX = payload.x;
           peer.targetY = payload.y;
           peer.shards = payload.shards ?? peer.shards;
+          peer.kills = payload.kills ?? peer.kills;
           if (typeof payload.hp === 'number') peer.hp = payload.hp;
           if (typeof payload.maxHp === 'number') peer.maxHp = payload.maxHp;
           if (payload.hit) peer.hitFlash = 1;
           break;
         case 'peer_damage':
-          if (payload.targetCode === localPlayer.shortCode) {
+          if (payload.targetPeerId === localPlayer.peerId) {
             applyDamageToLocalPlayer(payload.amount || 14, payload.color || peer.color);
           } else {
-            const otherPeer = remotePeers.get(payload.targetCode);
+            const otherPeer = remotePeers.get(payload.targetPeerId);
             if (otherPeer) {
               otherPeer.hp = Math.max(0, (otherPeer.hp ?? 100) - (payload.amount || 14));
               otherPeer.hitFlash = 1;
@@ -1210,11 +1610,15 @@
             }
           }
           break;
+        case 'trust_grant':
+          if (payload.targetPeerId === localPlayer.peerId) {
+            grantTrust(peer, payload.amount || 2, 'Reciprocated Alliance');
+          }
+          break;
         case 'chat':
           SoundFX.message();
           appendChatMessage({
-            sender: `${peer.name} • ${peer.gang}`,
-            code: peerCode,
+            sender: `${peer.name} [${peer.gang}]`,
             text: String(payload.text || '').slice(0, 240),
             color: peer.color,
             self: false
@@ -1226,16 +1630,20 @@
           SoundFX.pickup();
           break;
         case 'beacon':
-          addBeacon(
-            payload.x,
-            payload.y,
-            payload.color || peer.color,
-            payload.label || `${peer.name} [${peerCode}]`,
-            payload.ownerCode || peerCode
-          );
+          addBeacon({
+            id: payload.id,
+            x: payload.x,
+            y: payload.y,
+            color: payload.color || peer.color,
+            label: payload.label || `${peer.name} [${peer.gang}]`,
+            ownerPeerId: payload.ownerPeerId || peerId,
+            ownerProfileKey: payload.ownerProfileKey || peer.profileKey,
+            ownerGang: payload.ownerGang || peer.gang,
+            isRival: !isPeerAlly(peer)
+          });
           SoundFX.beacon();
           spawnParticles(payload.x, payload.y, payload.color || peer.color, 18, 1.2);
-          showToast(`${peer.name} [${peerCode}] deployed a Resonance Beacon!`);
+          showToast(`${peer.name} deployed a Resonance Beacon!`);
           break;
         case 'shard_claim': {
           const s = shards.find((item) => item.id === payload.shardId);
@@ -1251,14 +1659,15 @@
       }
     }
 
-    function setupDataConnection(conn, targetCode) {
-      dataConnections.set(targetCode, conn);
-      if (!remotePeers.has(targetCode)) {
-        remotePeers.set(targetCode, {
-          code: targetCode,
-          shortCode: targetCode,
-          name: `Explorer_${targetCode}`,
-          color: AURA_COLORS[parseInt(targetCode, 10) % AURA_COLORS.length],
+    function setupDataConnection(conn, targetPeerId) {
+      dataConnections.set(targetPeerId, conn);
+      if (!remotePeers.has(targetPeerId)) {
+        remotePeers.set(targetPeerId, {
+          peerId: targetPeerId,
+          profileKey: targetPeerId,
+          name: `Explorer_${targetPeerId.slice(-4)}`,
+          gang: 'Rift Drifters',
+          color: AURA_COLORS[targetPeerId.charCodeAt(0) % AURA_COLORS.length],
           x: 0,
           y: 0,
           targetX: 0,
@@ -1268,6 +1677,7 @@
           maxHp: 100,
           hitFlash: 0,
           shards: 0,
+          kills: 0,
           emote: null,
           emoteTimer: 0,
           trail: []
@@ -1278,107 +1688,77 @@
       conn.on('open', () => {
         SoundFX.connect();
         updateConnectionUI('connected');
-        showToast(`Linked with Peer ${targetCode}`);
+        const p = remotePeers.get(targetPeerId);
+        showToast(`${p ? p.name : 'An explorer'} entered your sector!`);
         conn.send(JSON.stringify({
           type: 'hello',
           name: localPlayer.name,
+          profileKey: localPlayer.profileKey,
+          gang: localPlayer.gang,
           color: localPlayer.color,
           shards: localPlayer.shards,
+          kills: localPlayer.kills,
           hp: Math.round(localPlayer.hp),
           maxHp: Math.round(localPlayer.maxHp),
           knownPeers: Array.from(dataConnections.keys())
         }));
       });
 
-      conn.on('data', (data) => handlePeerData(targetCode, data));
+      conn.on('data', (data) => handlePeerData(targetPeerId, data));
 
       conn.on('close', () => {
-        dataConnections.delete(targetCode);
-        remotePeers.delete(targetCode);
-        updateConnectionUI(localPlayer.shortCode !== '----' ? 'ready' : 'error');
-        showToast(`Peer ${targetCode} disconnected`);
+        dataConnections.delete(targetPeerId);
+        remotePeers.delete(targetPeerId);
+        updateConnectionUI(localPlayer.peerId ? 'ready' : 'error');
       });
 
       conn.on('error', () => {
-        dataConnections.delete(targetCode);
-        remotePeers.delete(targetCode);
-        updateConnectionUI(localPlayer.shortCode !== '----' ? 'ready' : 'error');
+        dataConnections.delete(targetPeerId);
+        remotePeers.delete(targetPeerId);
+        updateConnectionUI(localPlayer.peerId ? 'ready' : 'error');
       });
     }
 
-    function connectToPeer(rawCode) {
-      const targetCode = normalizeFourDigitCode(rawCode);
-      if (!targetCode) {
-        showToast('Enter a valid 4-digit Peer ID.');
-        return;
-      }
-      if (targetCode === localPlayer.shortCode) {
-        showToast('That is your own 4-digit Peer ID.');
-        return;
-      }
-      if (dataConnections.has(targetCode)) {
-        showToast(`Already linked with ${targetCode}`);
-        return;
-      }
-      if (!peerInstance || peerInstance.disconnected) {
-        showToast('P2P engine not ready yet. Retrying...');
-        initPeer();
-        return;
-      }
-
-      showToast(`Linking to ${targetCode}...`);
-      const conn = peerInstance.connect(`${AETHER_PREFIX}${targetCode}`, { reliable: true });
+    function connectToPeer(targetPeerId) {
+      if (!targetPeerId || targetPeerId === localPlayer.peerId || dataConnections.has(targetPeerId)) return;
+      if (!peerInstance || peerInstance.disconnected) return;
+      const conn = peerInstance.connect(`${WORLD_MESH_PREFIX}${targetPeerId}`, { reliable: true });
       if (conn) {
-        setupDataConnection(conn, targetCode);
+        setupDataConnection(conn, targetPeerId);
       }
     }
 
     function initPeer() {
       if (typeof Peer === 'undefined') {
         updateConnectionUI('error');
-        showToast('PeerJS library unavailable.');
         return;
       }
 
-      const code = generateFourDigitCode();
-      const fullId = `${AETHER_PREFIX}${code}`;
+      const token = generateNodeToken();
+      const fullId = `${WORLD_MESH_PREFIX}${token}`;
       updateConnectionUI('connecting');
 
       try {
         peerInstance = new Peer(fullId, { debug: 0 });
       } catch (err) {
         updateConnectionUI('error');
-        showToast('Failed to initialize PeerJS.');
         return;
       }
 
       peerInstance.on('open', (id) => {
-        idRetryCount = 0;
-        const cleanCode = id.replace(AETHER_PREFIX, '');
-        localPlayer.id = id;
-        localPlayer.shortCode = cleanCode;
-        document.getElementById('myPeerCode').textContent = cleanCode;
+        const cleanId = id.replace(WORLD_MESH_PREFIX, '');
+        localPlayer.peerId = cleanId;
         updateConnectionUI('ready');
+        syncWorldPresence();
       });
 
       peerInstance.on('connection', (conn) => {
-        const remoteCode = normalizeFourDigitCode(conn.peer.replace(AETHER_PREFIX, '')) || '0000';
-        setupDataConnection(conn, remoteCode);
+        const remoteId = conn.peer.replace(WORLD_MESH_PREFIX, '');
+        setupDataConnection(conn, remoteId);
       });
 
-      peerInstance.on('error', (err) => {
-        if (err && err.type === 'unavailable-id' && idRetryCount < 6) {
-          idRetryCount += 1;
-          peerInstance.destroy();
-          initPeer();
-          return;
-        }
-        if (err && err.type === 'peer-unavailable') {
-          showToast('4-digit Peer ID not found online.');
-        } else {
-          updateConnectionUI('error');
-          showToast('P2P connection notice: check network.');
-        }
+      peerInstance.on('error', () => {
+        updateConnectionUI('ready');
       });
     }
 
@@ -1389,11 +1769,17 @@
       let bestDist = localPlayer.autoAimRange;
 
       for (const en of enemies) {
-        if (isInSafeZone(en.x, en.y)) continue;
+        if (en.dead || isInSafeZone(en.x, en.y)) continue;
         const d = Math.hypot(en.x - localPlayer.x, en.y - localPlayer.y);
         if (d < bestDist) {
           bestDist = d;
-          bestTarget = { kind: 'enemy', entity: en };
+          bestTarget = {
+            kind: 'enemy',
+            name: en.variant,
+            hp: en.hp,
+            maxHp: en.maxHp,
+            entity: en
+          };
         }
       }
 
@@ -1403,21 +1789,70 @@
         const d = Math.hypot(npc.x - localPlayer.x, npc.y - localPlayer.y);
         if (d < bestDist) {
           bestDist = d;
-          bestTarget = { kind: 'npc', entity: npc };
+          bestTarget = {
+            kind: 'npc',
+            name: `${npc.name} [${npc.gang}]`,
+            hp: npc.hp,
+            maxHp: npc.maxHp,
+            entity: npc
+          };
         }
       }
 
-      remotePeers.forEach((peer, code) => {
+      remotePeers.forEach((peer, pid) => {
         if (isInSafeZone(peer.x, peer.y)) return;
-        if (isAlly(code)) return;
+        if (isPeerAlly(peer)) return;
         const d = Math.hypot(peer.x - localPlayer.x, peer.y - localPlayer.y);
         if (d < bestDist) {
           bestDist = d;
-          bestTarget = { kind: 'peer', code, entity: peer };
+          bestTarget = {
+            kind: 'peer',
+            peerId: pid,
+            name: `${peer.name} [STRANGER]`,
+            hp: peer.hp ?? 100,
+            maxHp: peer.maxHp ?? 100,
+            entity: peer
+          };
         }
       });
 
+      // Rival beacons can also be targeted and destroyed
+      const now = performance.now();
+      for (const b of beacons) {
+        if (now - b.createdAt > b.duration) continue;
+        const isFriendly =
+          b.ownerPeerId === localPlayer.peerId ||
+          b.ownerProfileKey === localPlayer.profileKey ||
+          isAllyByIdentity(b.ownerPeerId, b.ownerProfileKey, b.ownerGang);
+        if (isFriendly || isInSafeZone(b.x, b.y)) continue;
+        const d = Math.hypot(b.x - localPlayer.x, b.y - localPlayer.y);
+        if (d < bestDist) {
+          bestDist = d;
+          bestTarget = {
+            kind: 'beacon',
+            name: `Rival Beacon (${b.label})`,
+            hp: b.hp,
+            maxHp: b.maxHp,
+            entity: b
+          };
+        }
+      }
+
       return bestTarget;
+    }
+
+    function updateTargetTelemetry(targetInfo) {
+      const box = document.getElementById('targetTelemetryBox');
+      if (!box) return;
+      if (!targetInfo) {
+        box.classList.add('hidden');
+        return;
+      }
+      box.classList.remove('hidden');
+      document.getElementById('targetNameText').textContent = targetInfo.name;
+      document.getElementById('targetHpText').textContent = `${Math.max(0, Math.ceil(targetInfo.hp))}/${Math.ceil(targetInfo.maxHp)}`;
+      const pct = Math.max(0, Math.min(100, (targetInfo.hp / Math.max(1, targetInfo.maxHp)) * 100));
+      document.getElementById('targetHpBar').style.width = `${pct}%`;
     }
 
     function updatePlayerAutoCombat(dt) {
@@ -1426,8 +1861,12 @@
       if (localPlayer.inSafeZone) {
         localPlayer.ammo = localPlayer.magSize;
         localPlayer.reloadTimer = 0;
+        updateTargetTelemetry(null);
         return;
       }
+
+      const targetInfo = getNearestHostileForPlayer();
+      updateTargetTelemetry(targetInfo);
 
       if (localPlayer.reloadTimer > 0) {
         localPlayer.reloadTimer -= dt;
@@ -1443,7 +1882,6 @@
         return;
       }
 
-      const targetInfo = getNearestHostileForPlayer();
       if (!targetInfo) return;
 
       const baseAngle = Math.atan2(targetInfo.entity.y - localPlayer.y, targetInfo.entity.x - localPlayer.x);
@@ -1471,8 +1909,10 @@
             gun.speed,
             dmg,
             'player',
+            localPlayer.peerId,
             isCrit ? '#fde047' : gun.color,
-            isCrit
+            isCrit,
+            gun.splash || 0
           );
         }
         SoundFX.laser();
@@ -1481,30 +1921,34 @@
 
     function updateNPCs(dt) {
       for (const npc of npcs) {
+        if (npc.hitFlash > 0) npc.hitFlash = Math.max(0, npc.hitFlash - dt * 6);
         if (npc.hp <= 0) {
           npc.hp = npc.maxHp;
-          npc.x = localPlayer.x + (Math.random() - 0.5) * 340;
-          npc.y = localPlayer.y + (Math.random() - 0.5) * 340;
+          npc.x = localPlayer.x + (Math.random() - 0.5) * 440;
+          npc.y = localPlayer.y + (Math.random() - 0.5) * 440;
           npc.emote = '♻️';
           npc.emoteTimer = 2.0;
         }
         npc.fireTimer -= dt;
         npc.decisionTimer -= dt;
+        npc.beaconCooldown -= dt;
         if (npc.emoteTimer > 0) {
           npc.emoteTimer -= dt;
           if (npc.emoteTimer <= 0) npc.emote = null;
         }
 
-        let colossusTarget = null;
-        let colossusDist = 750;
+        // Priority 1: Big Bosses (all NPCs unite to fight big bosses!)
+        let bossTarget = null;
+        let bossDist = 800;
         let nearestAnyEnemy = null;
-        let anyEnemyDist = 440;
+        let anyEnemyDist = 460;
 
         for (const en of enemies) {
+          if (en.dead) continue;
           const d = Math.hypot(en.x - npc.x, en.y - npc.y);
-          if (en.variant === 'Colossus' && d < colossusDist) {
-            colossusDist = d;
-            colossusTarget = en;
+          if (en.isBoss && d < bossDist) {
+            bossDist = d;
+            bossTarget = en;
           }
           if (d < anyEnemyDist) {
             anyEnemyDist = d;
@@ -1512,16 +1956,36 @@
           }
         }
 
-        const priorityEnemy = colossusTarget || nearestAnyEnemy;
+        const priorityEnemy = bossTarget || nearestAnyEnemy;
         const playerDist = Math.hypot(localPlayer.x - npc.x, localPlayer.y - npc.y);
-        const canEngagePlayer = playerDist < 340 && !localPlayer.inSafeZone && !isInSafeZone(npc.x, npc.y) && npc.gang !== localPlayer.gang;
+        const canEngagePlayer =
+          playerDist < 340 &&
+          !localPlayer.inSafeZone &&
+          !isInSafeZone(npc.x, npc.y) &&
+          npc.gang !== localPlayer.gang;
+
+        // Rival NPCs can also deploy tactical beacons when fighting!
+        if ((priorityEnemy || canEngagePlayer) && npc.beaconCooldown <= 0 && !isInSafeZone(npc.x, npc.y)) {
+          npc.beaconCooldown = 36 + Math.random() * 16;
+          addBeacon({
+            x: npc.x,
+            y: npc.y,
+            color: npc.color,
+            label: `${npc.name} [${npc.gang}]`,
+            ownerPeerId: npc.code,
+            ownerProfileKey: npc.code,
+            ownerGang: npc.gang,
+            isRival: npc.gang !== localPlayer.gang
+          });
+          spawnParticles(npc.x, npc.y, npc.color, 14, 1.1);
+        }
 
         if (priorityEnemy) {
           const dx = priorityEnemy.x - npc.x;
           const dy = priorityEnemy.y - npc.y;
           const dist = Math.max(1, Math.hypot(dx, dy));
           const ang = Math.atan2(dy, dx);
-          const desiredRange = priorityEnemy.variant === 'Colossus' ? 210 : 165;
+          const desiredRange = priorityEnemy.isBoss ? 225 : 170;
           if (dist > desiredRange) {
             npc.vx = (dx / dist) * npc.speed;
             npc.vy = (dy / dist) * npc.speed;
@@ -1530,14 +1994,15 @@
             npc.vy *= 0.82;
           }
           if (npc.fireTimer <= 0 && !isInSafeZone(npc.x, npc.y)) {
-            npc.fireTimer = priorityEnemy.variant === 'Colossus' ? 0.48 : 0.62;
+            npc.fireTimer = priorityEnemy.isBoss ? 0.52 : 0.68;
             spawnProjectile(
               npc.x + Math.cos(ang) * 16,
               npc.y + Math.sin(ang) * 16,
               ang,
-              500,
-              15,
+              490,
+              14,
               'npc',
+              npc.code,
               npc.color
             );
           }
@@ -1546,36 +2011,37 @@
           const dy = localPlayer.y - npc.y;
           const dist = Math.max(1, playerDist);
           const ang = Math.atan2(dy, dx);
-          if (dist > 175) {
-            npc.vx = (dx / dist) * npc.speed * 0.9;
-            npc.vy = (dy / dist) * npc.speed * 0.9;
+          if (dist > 180) {
+            npc.vx = (dx / dist) * npc.speed * 0.88;
+            npc.vy = (dy / dist) * npc.speed * 0.88;
           } else {
             npc.vx *= 0.82;
             npc.vy *= 0.82;
           }
           if (npc.fireTimer <= 0) {
-            npc.fireTimer = 0.72;
+            npc.fireTimer = 0.78;
             spawnProjectile(
               npc.x + Math.cos(ang) * 16,
               npc.y + Math.sin(ang) * 16,
               ang,
-              460,
+              450,
               9,
               'npc',
+              npc.code,
               npc.color
             );
           }
         } else {
           if (npc.decisionTimer <= 0) {
-            npc.decisionTimer = 2.4 + Math.random() * 2.0;
+            npc.decisionTimer = 2.6 + Math.random() * 2.2;
             const activeBeacon = beacons.length > 0 ? beacons[beacons.length - 1] : null;
             if (activeBeacon) {
               const a = Math.random() * Math.PI * 2;
-              npc.waypointX = activeBeacon.x + Math.cos(a) * 95;
-              npc.waypointY = activeBeacon.y + Math.sin(a) * 95;
+              npc.waypointX = activeBeacon.x + Math.cos(a) * 110;
+              npc.waypointY = activeBeacon.y + Math.sin(a) * 110;
             } else {
               const a = Math.random() * Math.PI * 2;
-              const r = 140 + Math.random() * 340;
+              const r = 160 + Math.random() * 360;
               npc.waypointX = localPlayer.x + Math.cos(a) * r;
               npc.waypointY = localPlayer.y + Math.sin(a) * r;
             }
@@ -1584,8 +2050,8 @@
           const dy = npc.waypointY - npc.y;
           const dist = Math.hypot(dx, dy);
           if (dist > 10) {
-            npc.vx = (dx / dist) * npc.speed * 0.8;
-            npc.vy = (dy / dist) * npc.speed * 0.8;
+            npc.vx = (dx / dist) * npc.speed * 0.78;
+            npc.vy = (dy / dist) * npc.speed * 0.78;
           } else {
             npc.vx *= 0.85;
             npc.vy *= 0.85;
@@ -1608,17 +2074,22 @@
     function updateEnemies(dt) {
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
-        if (en.hitFlash > 0) {
-          en.hitFlash = Math.max(0, en.hitFlash - dt * 6);
+        if (en.dead) {
+          enemies.splice(i, 1);
+          continue;
         }
+        if (en.hitFlash > 0) en.hitFlash = Math.max(0, en.hitFlash - dt * 6);
         en.fireTimer -= dt;
-        if (en.variant === 'Colossus') {
-          en.novaTimer = (en.novaTimer ?? 4.5) - dt;
+
+        if (en.isBoss) {
+          en.novaTimer -= dt;
+          en.gravityTimer -= dt;
+          if (en.gravityPulling > 0) en.gravityPulling = Math.max(0, en.gravityPulling - dt);
         }
 
         let targetX = null;
         let targetY = null;
-        let bestDist = 680;
+        let bestDist = en.isBoss ? 780 : 620;
 
         if (!localPlayer.inSafeZone) {
           const pd = Math.hypot(localPlayer.x - en.x, localPlayer.y - en.y);
@@ -1644,7 +2115,7 @@
           const dist = Math.max(1, bestDist);
           const ang = Math.atan2(dy, dx);
 
-          const stopDist = en.variant === 'Colossus' ? 185 : en.variant === 'Stalker' ? 140 : 12;
+          const stopDist = en.isBoss ? 195 : en.variant === 'Stalker' ? 145 : 12;
           if (dist > stopDist) {
             en.vx = (dx / dist) * en.speed;
             en.vy = (dy / dist) * en.speed;
@@ -1656,19 +2127,45 @@
           en.x += en.vx * dt;
           en.y += en.vy * dt;
 
-          if (en.variant === 'Colossus' && en.novaTimer <= 0 && dist < 420) {
-            en.novaTimer = 5.0;
-            for (let k = 0; k < 8; k++) {
-              const radAng = (Math.PI * 2 * k) / 8;
-              spawnProjectile(en.x, en.y, radAng, 290, 14, 'enemy', '#f87171');
+          // Boss Special Powers: Gravity Vortex + 10-Way Enraged Nova + Twin Lance
+          if (en.isBoss) {
+            if (en.gravityTimer <= 0 && dist < 440) {
+              en.gravityTimer = 8.5;
+              en.gravityPulling = 1.6;
+              spawnParticles(en.x, en.y, '#c084fc', 20, 1.3);
+            }
+            if (en.gravityPulling > 0 && !localPlayer.inSafeZone) {
+              const pdx = en.x - localPlayer.x;
+              const pdy = en.y - localPlayer.y;
+              const pdist = Math.hypot(pdx, pdy);
+              if (pdist > 45 && pdist < 420) {
+                localPlayer.x += (pdx / pdist) * 68 * dt;
+                localPlayer.y += (pdy / pdist) * 68 * dt;
+              }
+            }
+
+            if (en.novaTimer <= 0 && dist < 480) {
+              const enraged = en.hp < en.maxHp * 0.5;
+              en.novaTimer = enraged ? 3.8 : 5.2;
+              const spokes = enraged ? 12 : 8;
+              for (let k = 0; k < spokes; k++) {
+                const radAng = (Math.PI * 2 * k) / spokes;
+                spawnProjectile(en.x, en.y, radAng, enraged ? 310 : 275, 16, 'enemy', en.id, '#f87171');
+              }
             }
           }
 
-          if ((en.variant === 'Colossus' || en.variant === 'Stalker') && en.fireTimer <= 0 && dist < 440) {
-            en.fireTimer = en.variant === 'Colossus' ? 1.55 : 2.1;
-            const dmg = en.variant === 'Colossus' ? 18 : 10;
-            const spd = en.variant === 'Colossus' ? 330 : 350;
-            spawnProjectile(en.x, en.y, ang, spd, dmg, 'enemy', en.color);
+          if ((en.isBoss || en.variant === 'Stalker') && en.fireTimer <= 0 && dist < 450) {
+            const enraged = en.isBoss && en.hp < en.maxHp * 0.5;
+            en.fireTimer = en.isBoss ? (enraged ? 1.15 : 1.55) : 2.2;
+            const dmg = en.isBoss ? 18 : 10;
+            const spd = en.isBoss ? 330 : 340;
+            if (enraged) {
+              spawnProjectile(en.x, en.y, ang - 0.14, spd, dmg, 'enemy', en.id, en.color);
+              spawnProjectile(en.x, en.y, ang + 0.14, spd, dmg, 'enemy', en.id, en.color);
+            } else {
+              spawnProjectile(en.x, en.y, ang, spd, dmg, 'enemy', en.id, en.color);
+            }
           }
 
           const playerDist = Math.hypot(localPlayer.x - en.x, localPlayer.y - en.y);
@@ -1677,6 +2174,38 @@
           }
         }
       }
+    }
+
+    function creditPlayerKill(targetX, targetY, rewardShards = 0) {
+      localPlayer.kills += 1;
+      localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 22);
+      if (rewardShards > 0) {
+        localPlayer.shards += rewardShards;
+        recalculatePlayerStats();
+      }
+      if (localPlayer.powerups.vampiric > 0) {
+        localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + 12);
+      }
+      damagePopups.push({
+        x: targetX,
+        y: targetY - 24,
+        vy: -34,
+        text: rewardShards > 0 ? `+1 KILL • +${rewardShards}★` : '+1 KILL',
+        color: '#34d399',
+        life: 1.0,
+        maxLife: 1.0
+      });
+
+      // Assisting near another explorer builds community trust & turns strangers into allies!
+      remotePeers.forEach((peer) => {
+        if (Math.hypot(peer.x - targetX, peer.y - targetY) < 420) {
+          localPlayer.assists += 1;
+          grantTrust(peer, 1, 'Combat Assist');
+        }
+      });
+
+      saveLocalStateToCloud();
+      updateCombatAndEnergyUI();
     }
 
     function updateProjectiles(dt) {
@@ -1693,26 +2222,44 @@
 
         if (pr.ownerType === 'player' || pr.ownerType === 'npc') {
           let hit = false;
+
+          // 1. Check Enemies & Bosses
           for (let j = enemies.length - 1; j >= 0; j--) {
             const en = enemies[j];
-            if (Math.hypot(pr.x - en.x, pr.y - en.y) < en.radius + 6) {
+            if (en.dead) continue;
+            if (Math.hypot(pr.x - en.x, pr.y - en.y) < en.radius + 7) {
               en.hp -= pr.damage;
               en.hitFlash = 1;
               hit = true;
               addDamagePopup(en.x, en.y - en.radius - 6, pr.damage, pr.isCrit ? '#fde047' : '#fda4af', pr.isCrit);
               spawnParticles(pr.x, pr.y, pr.isCrit ? '#fde047' : en.color, pr.isCrit ? 10 : 6, 0.85);
-              if (en.hp <= 0) {
-                if (en.variant === 'Colossus') activeColossusCount = Math.max(0, activeColossusCount - 1);
-                spawnParticles(en.x, en.y, en.color, 18, 1.3);
+
+              // Splash damage for Arc Nova
+              if (pr.splash > 0) {
+                for (const otherEn of enemies) {
+                  if (otherEn !== en && !otherEn.dead && Math.hypot(otherEn.x - pr.x, otherEn.y - pr.y) <= pr.splash) {
+                    otherEn.hp -= Math.round(pr.damage * 0.55);
+                    otherEn.hitFlash = 1;
+                  }
+                }
+              }
+
+              if (en.hp <= 0 && !en.dead) {
+                en.dead = true;
+                if (en.isBoss) activeColossusCount = Math.max(0, activeColossusCount - 1);
+                spawnParticles(en.x, en.y, en.color, en.isBoss ? 30 : 18, 1.35);
                 SoundFX.kill();
                 enemies.splice(j, 1);
-                localPlayer.kills += 1;
-                localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 20);
-                remotePeers.forEach((p, code) => {
-                  if (Math.hypot(p.x - en.x, p.y - en.y) < 380) {
-                    recordAllyBond(code, 1);
+
+                if (pr.ownerType === 'player') {
+                  creditPlayerKill(en.x, en.y, en.isBoss ? 5 : 1);
+                  if (en.isBoss) {
+                    showToast('Colossus Boss defeated! +1 Kill & +5 Shards ★');
                   }
-                });
+                } else if (Math.hypot(localPlayer.x - en.x, localPlayer.y - en.y) < 360) {
+                  // Assisted NPC takedown
+                  localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 12);
+                }
               } else {
                 SoundFX.hit();
               }
@@ -1720,51 +2267,88 @@
             }
           }
 
+          // 2. Check Hostile NPCs
           if (!hit && pr.ownerType === 'player') {
             for (let k = npcs.length - 1; k >= 0; k--) {
               const npc = npcs[k];
               if (npc.gang === localPlayer.gang) continue;
-              if (Math.hypot(pr.x - npc.x, pr.y - npc.y) < npc.radius + 6) {
+              if (Math.hypot(pr.x - npc.x, pr.y - npc.y) < npc.radius + 7) {
                 npc.hp -= pr.damage;
+                npc.hitFlash = 1;
                 hit = true;
                 addDamagePopup(npc.x, npc.y - 14, pr.damage, npc.color, pr.isCrit);
                 spawnParticles(pr.x, pr.y, npc.color, 6, 0.8);
                 if (npc.hp <= 0) {
-                  localPlayer.kills += 1;
                   SoundFX.kill();
+                  creditPlayerKill(npc.x, npc.y, 1);
                   npc.hp = npc.maxHp;
-                  npc.x = localPlayer.x + (Math.random() - 0.5) * 420;
-                  npc.y = localPlayer.y + (Math.random() - 0.5) * 420;
+                  npc.x = localPlayer.x + (Math.random() - 0.5) * 460;
+                  npc.y = localPlayer.y + (Math.random() - 0.5) * 460;
                 } else {
                   SoundFX.hit();
                 }
                 break;
               }
             }
+          }
 
-            if (!hit) {
-              remotePeers.forEach((peer, code) => {
-                if (hit || isInSafeZone(peer.x, peer.y) || isAlly(code)) return;
-                if (Math.hypot(pr.x - peer.x, pr.y - peer.y) < (peer.radius || 16) + 6) {
-                  const nextHp = Math.max(0, (peer.hp ?? 100) - pr.damage);
-                  if (peer.hp > 0 && nextHp <= 0) {
-                    localPlayer.kills += 1;
-                  }
-                  peer.hp = nextHp;
-                  peer.hitFlash = 1;
-                  hit = true;
-                  addDamagePopup(peer.x, peer.y - 16, pr.damage, '#fb7185', !!pr.isCrit);
-                  spawnParticles(pr.x, pr.y, peer.color, 7, 0.85);
+          // 3. Check Stranger / Rival Peers
+          if (!hit && pr.ownerType === 'player') {
+            remotePeers.forEach((peer, pid) => {
+              if (hit || isInSafeZone(peer.x, peer.y) || isPeerAlly(peer)) return;
+              if (Math.hypot(pr.x - peer.x, pr.y - peer.y) < (peer.radius || 16) + 7) {
+                const prevHp = peer.hp ?? 100;
+                const nextHp = Math.max(0, prevHp - pr.damage);
+                peer.hp = nextHp;
+                peer.hitFlash = 1;
+                hit = true;
+                addDamagePopup(peer.x, peer.y - 16, pr.damage, '#fb7185', !!pr.isCrit);
+                spawnParticles(pr.x, pr.y, peer.color, 7, 0.85);
+                if (prevHp > 0 && nextHp <= 0) {
+                  SoundFX.kill();
+                  creditPlayerKill(peer.x, peer.y, 2);
+                } else {
                   SoundFX.hit();
-                  broadcastToAll({
-                    type: 'peer_damage',
-                    targetCode: code,
-                    amount: pr.damage,
-                    isCrit: pr.isCrit,
-                    color: localPlayer.color
-                  });
                 }
-              });
+                broadcastToAll({
+                  type: 'peer_damage',
+                  targetPeerId: pid,
+                  amount: pr.damage,
+                  isCrit: pr.isCrit,
+                  color: localPlayer.color
+                });
+              }
+            });
+          }
+
+          // 4. Check Rival Beacons (Destructible!)
+          if (!hit && pr.ownerType === 'player') {
+            const now = performance.now();
+            for (let bIdx = beacons.length - 1; bIdx >= 0; bIdx--) {
+              const b = beacons[bIdx];
+              if (now - b.createdAt > b.duration) continue;
+              const isFriendly =
+                b.ownerPeerId === localPlayer.peerId ||
+                b.ownerProfileKey === localPlayer.profileKey ||
+                isAllyByIdentity(b.ownerPeerId, b.ownerProfileKey, b.ownerGang);
+              if (isFriendly) continue;
+              if (Math.hypot(pr.x - b.x, pr.y - b.y) < 22) {
+                b.hp -= pr.damage;
+                b.hitFlash = 1;
+                hit = true;
+                addDamagePopup(b.x, b.y - 18, pr.damage, '#fbbf24', pr.isCrit);
+                if (b.hp <= 0) {
+                  beacons.splice(bIdx, 1);
+                  localPlayer.shards += 2;
+                  recalculatePlayerStats();
+                  SoundFX.kill();
+                  spawnParticles(b.x, b.y, '#fbbf24', 20, 1.3);
+                  showToast('Shattered Rival Beacon! +2 Shards ★');
+                } else {
+                  SoundFX.hit();
+                }
+                break;
+              }
             }
           }
 
@@ -1772,7 +2356,11 @@
             projectiles.splice(i, 1);
           }
         } else if (pr.ownerType === 'enemy' || pr.ownerType === 'npc') {
-          if (Math.hypot(pr.x - localPlayer.x, pr.y - localPlayer.y) < localPlayer.radius + 5 && !localPlayer.inSafeZone && localPlayer.dashTimer <= 0) {
+          if (
+            Math.hypot(pr.x - localPlayer.x, pr.y - localPlayer.y) < localPlayer.radius + 5 &&
+            !localPlayer.inSafeZone &&
+            localPlayer.dashTimer <= 0
+          ) {
             applyDamageToLocalPlayer(pr.damage, pr.ownerType === 'npc' ? pr.color : '#f43f5e');
             SoundFX.hit();
             projectiles.splice(i, 1);
@@ -1783,16 +2371,18 @@
 
     function updateSimulation(dt) {
       localPlayer.inSafeZone = isInSafeZone(localPlayer.x, localPlayer.y);
-      localPlayer.inOwnBeacon = isInsideOwnBeacon(localPlayer.x, localPlayer.y);
+      evaluateBeaconZones();
+
       if (localPlayer.hitFlash > 0) localPlayer.hitFlash = Math.max(0, localPlayer.hitFlash - dt * 5);
 
       if (localPlayer.powerups.overdrive > 0) localPlayer.powerups.overdrive = Math.max(0, localPlayer.powerups.overdrive - dt);
       if (localPlayer.powerups.aegis > 0) localPlayer.powerups.aegis = Math.max(0, localPlayer.powerups.aegis - dt);
       if (localPlayer.powerups.magnet > 0) localPlayer.powerups.magnet = Math.max(0, localPlayer.powerups.magnet - dt);
+      if (localPlayer.powerups.vampiric > 0) localPlayer.powerups.vampiric = Math.max(0, localPlayer.powerups.vampiric - dt);
 
       recalculatePlayerStats();
       if (localPlayer.hp < localPlayer.maxHp) {
-        const regenRate = localPlayer.inSafeZone ? localPlayer.hpRegen * 2.5 : localPlayer.hpRegen;
+        const regenRate = localPlayer.inSafeZone ? localPlayer.hpRegen * 2.8 : localPlayer.hpRegen;
         localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + regenRate * dt);
       }
 
@@ -1837,7 +2427,7 @@
 
       const movedDist = Math.hypot(localPlayer.x - prevX, localPlayer.y - prevY);
       if (movedDist > 0.1 && localPlayer.dashTimer <= 0 && localPlayer.dashEnergy < DASH_ENERGY_MAX) {
-        localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + movedDist * 0.085);
+        localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + movedDist * 0.08);
       }
 
       if (Math.hypot(localPlayer.vx, localPlayer.vy) > 25) {
@@ -1848,15 +2438,45 @@
         if (localPlayer.trail[i].alpha <= 0) localPlayer.trail.splice(i, 1);
       }
 
+      // Active Resonance Beacons: Healing, Harmonic Shockwave Pulse & Shard Pull
       const now = performance.now();
       for (let i = beacons.length - 1; i >= 0; i--) {
         const b = beacons[i];
+        if (b.hitFlash > 0) b.hitFlash = Math.max(0, b.hitFlash - dt * 6);
         if (now - b.createdAt > b.duration) {
           beacons.splice(i, 1);
           continue;
         }
-        if (Math.hypot(localPlayer.x - b.x, localPlayer.y - b.y) <= BEACON_RADIUS) {
-          localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + 4.5 * dt);
+
+        const isFriendly =
+          b.ownerPeerId === localPlayer.peerId ||
+          b.ownerProfileKey === localPlayer.profileKey ||
+          isAllyByIdentity(b.ownerPeerId, b.ownerProfileKey, b.ownerGang);
+
+        if (isFriendly && Math.hypot(localPlayer.x - b.x, localPlayer.y - b.y) <= BEACON_RADIUS) {
+          localPlayer.hp = Math.min(localPlayer.maxHp, localPlayer.hp + 6.5 * dt);
+        }
+
+        // Periodic harmonic pulse inside friendly beacon damages nearby enemies
+        b.pulseTimer -= dt;
+        if (b.pulseTimer <= 0) {
+          b.pulseTimer = 3.0;
+          if (isFriendly) {
+            for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
+              const en = enemies[eIdx];
+              if (!en.dead && Math.hypot(en.x - b.x, en.y - b.y) <= BEACON_RADIUS) {
+                en.hp -= 18;
+                en.hitFlash = 1;
+                addDamagePopup(en.x, en.y - 10, 18, '#fbbf24', false);
+                if (en.hp <= 0 && !en.dead) {
+                  en.dead = true;
+                  if (en.isBoss) activeColossusCount = Math.max(0, activeColossusCount - 1);
+                  enemies.splice(eIdx, 1);
+                  creditPlayerKill(en.x, en.y, en.isBoss ? 5 : 1);
+                }
+              }
+            }
+          }
         }
 
         let pulled = 0;
@@ -1867,75 +2487,92 @@
           const d = Math.hypot(bx, by);
           if (d < BEACON_RADIUS && d > 12) {
             pulled += 1;
-            s.x += (bx / d) * 85 * dt;
-            s.y += (by / d) * 85 * dt;
+            s.x += (bx / d) * 80 * dt;
+            s.y += (by / d) * 80 * dt;
           }
         }
-        if (pulled >= 3 && !b.bonusClaimed) {
+        if (isFriendly && pulled >= 3 && !b.bonusClaimed) {
           b.bonusClaimed = true;
           localPlayer.shards += 2;
           localPlayer.dashEnergy = Math.min(DASH_ENERGY_MAX, localPlayer.dashEnergy + 30);
           SoundFX.pickup();
           spawnParticles(b.x, b.y, '#fbbf24', 18, 1.25);
-          showToast('Beacon Resonance! +2 Shards & +30% Dash Energy');
+          showToast('Beacon Harmonic Convergence! +2 Shards & +30% Dash Energy');
         }
       }
 
+      // Gun Pickups (New weapon unlocks swapping; duplicate weapon upgrades damage!)
       for (const g of gunPickups) {
         if (!g.active) {
           g.respawnTimer -= dt;
           if (g.respawnTimer <= 0) g.active = true;
           continue;
         }
-        if (Math.hypot(localPlayer.x - g.x, localPlayer.y - g.y) < localPlayer.radius + 16) {
+        if (Math.hypot(localPlayer.x - g.x, localPlayer.y - g.y) < localPlayer.radius + 17) {
           g.active = false;
-          g.respawnTimer = 26;
-          if (!localPlayer.ownedGuns.includes(g.gunType)) {
+          g.respawnTimer = 28;
+          const spec = GUN_SPECS[g.gunType] || GUN_SPECS.pulse;
+          const alreadyOwned = localPlayer.ownedGuns.includes(g.gunType);
+
+          if (!alreadyOwned) {
             localPlayer.ownedGuns.push(g.gunType);
+            localPlayer.weaponId = g.gunType;
+            recalculatePlayerStats();
+            localPlayer.ammo = localPlayer.magSize;
+            localPlayer.reloadTimer = 0;
+            SoundFX.pickup();
+            spawnParticles(g.x, g.y, spec.color, 16, 1.1);
+            showToast(`Unlocked ${spec.label}! Press Q or click Arsenal pills to swap guns.`);
           } else {
             localPlayer.gunLevels[g.gunType] = (localPlayer.gunLevels[g.gunType] || 1) + 1;
+            localPlayer.weaponId = g.gunType;
+            recalculatePlayerStats();
+            localPlayer.ammo = localPlayer.magSize;
+            localPlayer.reloadTimer = 0;
+            const newLvl = localPlayer.gunLevels[g.gunType];
+            SoundFX.upgrade();
+            spawnParticles(g.x, g.y, '#fde047', 18, 1.2);
+            showToast(`${spec.label} UPGRADED to Lv.${newLvl}! (+25% Damage)`);
           }
-          localPlayer.weaponId = g.gunType;
-          recalculatePlayerStats();
-          localPlayer.ammo = localPlayer.magSize;
-          localPlayer.reloadTimer = 0;
-          const spec = GUN_SPECS[g.gunType];
-          const lvl = localPlayer.gunLevels[g.gunType] || 1;
-          SoundFX.pickup();
-          spawnParticles(g.x, g.y, spec.color, 14, 1.0);
-          showToast(`Equipped ${spec.label} Lv.${lvl} (+22% DMG/Lv)!`);
+          saveLocalStateToCloud();
         }
       }
 
+      // Powerup Pickups
       for (const pw of powerupPickups) {
         if (!pw.active) {
           pw.respawnTimer -= dt;
           if (pw.respawnTimer <= 0) pw.active = true;
           continue;
         }
-        if (Math.hypot(localPlayer.x - pw.x, localPlayer.y - pw.y) < localPlayer.radius + 16) {
+        if (Math.hypot(localPlayer.x - pw.x, localPlayer.y - pw.y) < localPlayer.radius + 17) {
           pw.active = false;
-          pw.respawnTimer = 24;
+          pw.respawnTimer = 25;
           SoundFX.pickup();
           if (pw.type === 'overdrive') {
-            localPlayer.powerups.overdrive = 12;
+            localPlayer.powerups.overdrive = 14;
             spawnParticles(pw.x, pw.y, '#fbbf24', 14, 1.0);
-            showToast('Overdrive Active: +35% Fire Rate & +15% Speed');
+            showToast('⚡ Overdrive Powerup: +35% Fire Rate & +15% Speed (14s)');
           } else if (pw.type === 'aegis') {
-            localPlayer.powerups.aegis = 12;
+            localPlayer.powerups.aegis = 14;
             spawnParticles(pw.x, pw.y, '#34d399', 14, 1.0);
-            showToast('Aegis Shield Active: 65% Damage Reduction');
+            showToast('🛡️ Aegis Shield Powerup: -65% Damage Taken (14s)');
+          } else if (pw.type === 'vampiric') {
+            localPlayer.powerups.vampiric = 16;
+            spawnParticles(pw.x, pw.y, '#e879f9', 14, 1.0);
+            showToast('🩸 Vampiric Core Powerup: +12 HP on Every Kill (16s)');
           } else {
-            localPlayer.powerups.magnet = 14;
+            localPlayer.powerups.magnet = 16;
             spawnParticles(pw.x, pw.y, '#38bdf8', 14, 1.0);
-            showToast('Shard Magnet Active: Pulls Nearby Shards');
+            showToast('🧲 Shard Magnet Powerup: Pulls Nearby Shards (16s)');
           }
         }
       }
 
-      const magnetRadius = localPlayer.powerups.magnet > 0 ? 220 : 0;
+      // Shards
+      const magnetRadius = localPlayer.powerups.magnet > 0 ? 240 : 0;
       for (const s of shards) {
-        s.phase += dt * 3.2;
+        s.phase += dt * 3.0;
         if (!s.active) {
           s.respawnTimer -= dt;
           if (s.respawnTimer <= 0) s.active = true;
@@ -1945,8 +2582,8 @@
         const dy = localPlayer.y - s.y;
         const dist = Math.hypot(dx, dy);
         if (magnetRadius > 0 && dist < magnetRadius && dist > 8) {
-          s.x += (dx / dist) * 190 * dt;
-          s.y += (dy / dist) * 190 * dt;
+          s.x += (dx / dist) * 185 * dt;
+          s.y += (dy / dist) * 185 * dt;
         }
         if (dist < localPlayer.radius + 14) {
           s.active = false;
@@ -2029,28 +2666,29 @@
       const camY = localPlayer.y - height / 2;
       const biome = getBiomeAt(localPlayer.x, localPlayer.y);
 
-      ctx.fillStyle = '#090d16';
+      ctx.fillStyle = '#070b14';
       ctx.fillRect(0, 0, width, height);
 
       ctx.save();
       ctx.translate(-camX, -camY);
 
+      // Safe Sanctuary Zone at Origin
       ctx.save();
-      ctx.fillStyle = 'rgba(16, 185, 129, 0.06)';
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.065)';
       ctx.beginPath();
       ctx.arc(0, 0, SAFE_ZONE_RADIUS, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(52, 211, 153, 0.45)';
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.48)';
       ctx.lineWidth = 2;
-      ctx.setLineDash([8, 6]);
+      ctx.setLineDash([9, 6]);
       ctx.beginPath();
       ctx.arc(0, 0, SAFE_ZONE_RADIUS, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.fillStyle = 'rgba(110, 231, 183, 0.75)';
+      ctx.fillStyle = 'rgba(110, 231, 183, 0.8)';
       ctx.font = '700 11px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('SAFE SANCTUARY • WEAPONS DISABLED', 0, -SAFE_ZONE_RADIUS + 18);
+      ctx.fillText('SAFE SANCTUARY • WEAPONS DISABLED', 0, -SAFE_ZONE_RADIUS + 20);
       ctx.restore();
 
       const gridStep = 100;
@@ -2077,7 +2715,7 @@
       const startSecY = Math.floor(camY / SECTOR_SIZE) * SECTOR_SIZE;
       const endSecY = camY + height + SECTOR_SIZE;
 
-      ctx.strokeStyle = 'rgba(148, 163, 184, 0.09)';
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.08)';
       ctx.lineWidth = 1.5;
       for (let sx = startSecX; sx <= endSecX; sx += SECTOR_SIZE) {
         for (let sy = startSecY; sy <= endSecY; sy += SECTOR_SIZE) {
@@ -2090,14 +2728,20 @@
         }
       }
 
+      // Resonance Beacons (Friendly & Rival)
       const now = performance.now();
       for (const b of beacons) {
         const elapsed = now - b.createdAt;
         const pulse = 0.5 + 0.5 * Math.sin(elapsed * 0.008);
+        const isFriendly =
+          b.ownerPeerId === localPlayer.peerId ||
+          b.ownerProfileKey === localPlayer.profileKey ||
+          isAllyByIdentity(b.ownerPeerId, b.ownerProfileKey, b.ownerGang);
+
         ctx.save();
         ctx.strokeStyle = b.color;
         ctx.globalAlpha = 0.35 + pulse * 0.35;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.2;
         ctx.beginPath();
         ctx.arc(b.x, b.y, BEACON_RADIUS, 0, Math.PI * 2);
         ctx.stroke();
@@ -2107,18 +2751,27 @@
         ctx.fill();
 
         ctx.globalAlpha = 1;
-        ctx.fillStyle = b.color;
+        ctx.fillStyle = b.hitFlash > 0 ? '#ffffff' : b.color;
         ctx.beginPath();
-        ctx.arc(b.x, b.y, 7 + pulse * 3, 0, Math.PI * 2);
+        ctx.arc(b.x, b.y, 9 + pulse * 3, 0, Math.PI * 2);
         ctx.fill();
 
+        if (!isFriendly) {
+          const bw = 38;
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+          ctx.fillRect(b.x - bw / 2, b.y - 24, bw, 4);
+          ctx.fillStyle = '#fb7185';
+          ctx.fillRect(b.x - bw / 2, b.y - 24, bw * Math.max(0, b.hp / b.maxHp), 4);
+        }
+
         ctx.fillStyle = '#f8fafc';
-        ctx.font = '600 11px Inter, sans-serif';
+        ctx.font = '700 11px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(`Beacon • ${b.label}`, b.x, b.y - 16);
+        ctx.fillText(`${isFriendly ? '🔆 Ally Beacon' : '⚠️ Rival Beacon'} • ${b.label}`, b.x, b.y - 30);
         ctx.restore();
       }
 
+      // Shards
       for (const s of shards) {
         if (!s.active) continue;
         if (s.x < camX - 30 || s.x > camX + width + 30 || s.y < camY - 30 || s.y > camY + height + 30) continue;
@@ -2133,29 +2786,40 @@
         ctx.fill();
       }
 
+      // Gun Pickups
       for (const g of gunPickups) {
         if (!g.active) continue;
         const spec = GUN_SPECS[g.gunType] || GUN_SPECS.pulse;
+        const owned = localPlayer.ownedGuns.includes(g.gunType);
+        const curLvl = localPlayer.gunLevels[g.gunType] || 1;
         ctx.fillStyle = spec.color;
         ctx.strokeStyle = '#090d16';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(g.x - 10, g.y - 6, 20, 12, 4);
+        ctx.roundRect(g.x - 11, g.y - 7, 22, 14, 5);
         ctx.fill();
         ctx.stroke();
+
         ctx.fillStyle = '#f8fafc';
         ctx.font = '700 10px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(spec.label, g.x, g.y - 12);
+        ctx.fillText(owned ? `${spec.label} ↑Lv.${curLvl + 1}` : `${spec.label} GUN`, g.x, g.y - 13);
       }
 
+      // Powerup Pickups
       for (const pw of powerupPickups) {
         if (!pw.active) continue;
-        const pColor = pw.type === 'overdrive' ? '#fbbf24' : pw.type === 'aegis' ? '#34d399' : '#38bdf8';
-        const pTag = pw.type === 'overdrive' ? '⚡ OVERDRIVE' : pw.type === 'aegis' ? '🛡️ AEGIS' : '🧲 MAGNET';
+        const pColor =
+          pw.type === 'overdrive' ? '#fbbf24' :
+          pw.type === 'aegis' ? '#34d399' :
+          pw.type === 'vampiric' ? '#e879f9' : '#38bdf8';
+        const pTag =
+          pw.type === 'overdrive' ? '⚡ OVERDRIVE' :
+          pw.type === 'aegis' ? '🛡️ AEGIS' :
+          pw.type === 'vampiric' ? '🩸 VAMPIRIC' : '🧲 MAGNET';
         ctx.fillStyle = pColor;
         ctx.beginPath();
-        ctx.arc(pw.x, pw.y, 9, 0, Math.PI * 2);
+        ctx.arc(pw.x, pw.y, 9.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#f8fafc';
         ctx.font = '700 10px Inter, sans-serif';
@@ -2163,29 +2827,44 @@
         ctx.fillText(pTag, pw.x, pw.y - 14);
       }
 
+      // Enemies & Multi-Phase Bosses
       for (const en of enemies) {
-        if (en.x < camX - 60 || en.x > camX + width + 60 || en.y < camY - 60 || en.y > camY + height + 60) continue;
-        ctx.fillStyle = (en.hitFlash && en.hitFlash > 0) ? '#ffffff' : en.color;
+        if (en.x < camX - 80 || en.x > camX + width + 80 || en.y < camY - 80 || en.y > camY + height + 80) continue;
+
+        if (en.isBoss) {
+          // Boss Gravity Telegraph Ring
+          ctx.save();
+          ctx.strokeStyle = en.gravityPulling > 0 ? 'rgba(192, 132, 252, 0.7)' : 'rgba(239, 68, 68, 0.22)';
+          ctx.lineWidth = en.gravityPulling > 0 ? 3 : 1.5;
+          ctx.setLineDash([6, 6]);
+          ctx.beginPath();
+          ctx.arc(en.x, en.y, 140, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        ctx.fillStyle = en.hitFlash > 0 ? '#ffffff' : en.color;
         ctx.strokeStyle = '#1f0912';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
 
-        const bw = Math.max(24, en.radius * 1.6);
+        const bw = Math.max(28, en.radius * 1.8);
         const ratio = Math.max(0, en.hp / en.maxHp);
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.fillRect(en.x - bw / 2, en.y - en.radius - 12, bw, 4);
-        ctx.fillStyle = en.color;
-        ctx.fillRect(en.x - bw / 2, en.y - en.radius - 12, bw * ratio, 4);
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.fillRect(en.x - bw / 2, en.y - en.radius - 13, bw, 5);
+        ctx.fillStyle = en.isBoss ? '#f43f5e' : en.color;
+        ctx.fillRect(en.x - bw / 2, en.y - en.radius - 13, bw * ratio, 5);
 
-        ctx.fillStyle = '#fecdd3';
-        ctx.font = '600 10px Inter, sans-serif';
+        ctx.fillStyle = en.isBoss ? '#fde047' : '#fecdd3';
+        ctx.font = `${en.isBoss ? '800' : '600'} 10px Inter, sans-serif`;
         ctx.textAlign = 'center';
-        ctx.fillText(en.variant, en.x, en.y - en.radius - 16);
+        ctx.fillText(`${en.variant} (${Math.max(0, Math.ceil(en.hp))})`, en.x, en.y - en.radius - 18);
       }
 
+      // Projectiles
       for (const pr of projectiles) {
         ctx.fillStyle = pr.color;
         ctx.beginPath();
@@ -2193,6 +2872,7 @@
         ctx.fill();
       }
 
+      // Particles
       for (const p of particles) {
         ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
         ctx.fillStyle = p.color;
@@ -2202,6 +2882,7 @@
       }
       ctx.globalAlpha = 1;
 
+      // Floating Damage & Kill Popups
       for (const dp of damagePopups) {
         ctx.globalAlpha = Math.max(0, dp.life / dp.maxLife);
         ctx.fillStyle = dp.color;
@@ -2210,6 +2891,21 @@
         ctx.fillText(dp.text, dp.x, dp.y);
       }
       ctx.globalAlpha = 1;
+
+      // Ally Tether Lines when fighting together nearby
+      remotePeers.forEach((peer) => {
+        if (isPeerAlly(peer) && Math.hypot(peer.x - localPlayer.x, peer.y - localPlayer.y) < 380) {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(52, 211, 153, 0.28)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 5]);
+          ctx.beginPath();
+          ctx.moveTo(localPlayer.x, localPlayer.y);
+          ctx.lineTo(peer.x, peer.y);
+          ctx.stroke();
+          ctx.restore();
+        }
+      });
 
       for (const npc of npcs) drawExplorerEntity(npc, false, true);
       remotePeers.forEach((peer) => drawExplorerEntity(peer, false, false));
@@ -2230,7 +2926,7 @@
       ctx.globalAlpha = 1;
 
       const r = entity.radius || 16;
-      ctx.fillStyle = (entity.hitFlash && entity.hitFlash > 0) ? '#ffffff' : (entity.color || '#38bdf8');
+      ctx.fillStyle = entity.hitFlash > 0 ? '#ffffff' : (entity.color || '#38bdf8');
       ctx.strokeStyle = isLocal ? '#ffffff' : '#0f172a';
       ctx.lineWidth = isLocal ? 2.5 : 1.75;
       ctx.beginPath();
@@ -2246,30 +2942,34 @@
         ctx.stroke();
       }
 
-      ctx.fillStyle = '#090d16';
+      ctx.fillStyle = '#070b14';
       ctx.beginPath();
       ctx.arc(entity.x, entity.y, r * 0.35, 0, Math.PI * 2);
       ctx.fill();
 
+      // Real-time HP Bar for every NPC & Peer
       if (!isLocal && typeof entity.hp === 'number' && typeof entity.maxHp === 'number' && entity.maxHp > 0) {
-        const bw = 34;
+        const bw = 38;
         const ratio = Math.max(0, Math.min(1, entity.hp / entity.maxHp));
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.fillRect(entity.x - bw / 2, entity.y - r - 11, bw, 4);
-        ctx.fillStyle = isNpc ? entity.color : '#fb7185';
-        ctx.fillRect(entity.x - bw / 2, entity.y - r - 11, bw * ratio, 4);
+        const ally = !isNpc && isPeerAlly(entity);
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.fillRect(entity.x - bw / 2, entity.y - r - 12, bw, 4.5);
+        ctx.fillStyle = ally ? '#34d399' : (isNpc ? entity.color : '#fb7185');
+        ctx.fillRect(entity.x - bw / 2, entity.y - r - 12, bw * ratio, 4.5);
       }
 
       ctx.fillStyle = isNpc ? '#cbd5e1' : '#f8fafc';
-      ctx.font = `${isLocal ? '700' : '600'} 12px Inter, sans-serif`;
+      ctx.font = `${isLocal ? '700' : '600'} 11px Inter, sans-serif`;
       ctx.textAlign = 'center';
-      const yOffset = isLocal ? r + 10 : r + 16;
-      const allyTag = (!isLocal && !isNpc && entity.shortCode && isAlly(entity.shortCode)) ? ' • ALLY' : '';
+      const yOffset = isLocal ? r + 10 : r + 17;
+      const relationTag = !isLocal && !isNpc
+        ? (isPeerAlly(entity) ? ' • ALLY' : ' • STRANGER')
+        : '';
       const label = isLocal
         ? `${entity.name} [${entity.gang}]`
         : isNpc
-          ? `${entity.code} • ${entity.gang}`
-          : `${entity.name} [${entity.gang}]${allyTag}`;
+          ? `${entity.name} [${entity.gang}]`
+          : `${entity.name} [${entity.gang}]${relationTag}`;
       ctx.fillText(label, entity.x, entity.y - yOffset);
 
       if (entity.emote) {
@@ -2282,16 +2982,16 @@
       if (!minimapCtx) return;
       const mw = minimapCanvas.width;
       const mh = minimapCanvas.height;
-      const range = 1600;
+      const range = 1700;
       const scale = (mw * 0.5) / range;
 
       minimapCtx.clearRect(0, 0, mw, mh);
-      minimapCtx.fillStyle = '#070b14';
+      minimapCtx.fillStyle = '#060a12';
       minimapCtx.fillRect(0, 0, mw, mh);
 
       const safeScreenX = mw / 2 + (0 - localPlayer.x) * scale;
       const safeScreenY = mh / 2 + (0 - localPlayer.y) * scale;
-      minimapCtx.strokeStyle = 'rgba(52, 211, 153, 0.45)';
+      minimapCtx.strokeStyle = 'rgba(52, 211, 153, 0.5)';
       minimapCtx.lineWidth = 1;
       minimapCtx.beginPath();
       minimapCtx.arc(safeScreenX, safeScreenY, Math.max(2, SAFE_ZONE_RADIUS * scale), 0, Math.PI * 2);
@@ -2301,9 +3001,9 @@
         const mx = mw / 2 + (en.x - localPlayer.x) * scale;
         const my = mh / 2 + (en.y - localPlayer.y) * scale;
         if (mx < 0 || mx > mw || my < 0 || my > mh) continue;
-        minimapCtx.fillStyle = en.color;
+        minimapCtx.fillStyle = en.isBoss ? '#fde047' : en.color;
         minimapCtx.beginPath();
-        minimapCtx.arc(mx, my, en.variant === 'Colossus' ? 3.5 : 2, 0, Math.PI * 2);
+        minimapCtx.arc(mx, my, en.isBoss ? 4 : 2, 0, Math.PI * 2);
         minimapCtx.fill();
       }
 
@@ -2320,8 +3020,8 @@
       remotePeers.forEach((peer) => {
         const mx = mw / 2 + (peer.x - localPlayer.x) * scale;
         const my = mh / 2 + (peer.y - localPlayer.y) * scale;
-        if (mx < 0 || mx > mw || my < 0 || my > mh) return;
-        minimapCtx.fillStyle = peer.color;
+        if (mx < 0 || mx > mw || my < 0 || my > mh) continue;
+        minimapCtx.fillStyle = isPeerAlly(peer) ? '#34d399' : peer.color;
         minimapCtx.beginPath();
         minimapCtx.arc(mx, my, 3.2, 0, Math.PI * 2);
         minimapCtx.fill();
@@ -2337,13 +3037,23 @@
       window.addEventListener('resize', resizeCanvas);
 
       window.addEventListener('keydown', (e) => {
-        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
         keys.add(e.code);
         if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
           e.preventDefault();
           triggerDash();
         } else if (e.code === 'KeyE') {
           triggerBeacon();
+        } else if (e.code === 'KeyQ') {
+          swapToNextGun();
+        } else if (e.code === 'Digit1' && localPlayer.ownedGuns[0]) {
+          equipGun(localPlayer.ownedGuns[0]);
+        } else if (e.code === 'Digit2' && localPlayer.ownedGuns[1]) {
+          equipGun(localPlayer.ownedGuns[1]);
+        } else if (e.code === 'Digit3' && localPlayer.ownedGuns[2]) {
+          equipGun(localPlayer.ownedGuns[2]);
+        } else if (e.code === 'Digit4' && localPlayer.ownedGuns[3]) {
+          equipGun(localPlayer.ownedGuns[3]);
         }
       });
 
@@ -2353,36 +3063,53 @@
 
       document.getElementById('dashBtn').addEventListener('click', triggerDash);
       document.getElementById('beaconBtn').addEventListener('click', triggerBeacon);
-      document.getElementById('swapGunBtn').addEventListener('click', swapEquippedGun);
 
-      window.addEventListener('keydown', (e) => {
-        if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
-        keys.add(e.code);
-        if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-          e.preventDefault();
-          triggerDash();
-        } else if (e.code === 'KeyE') {
-          triggerBeacon();
-        } else if (e.code === 'KeyQ') {
-          swapEquippedGun();
-        }
-      });
-
-      document.getElementById('enterWorldBtn').addEventListener('click', () => {
+      document.getElementById('enterWorldBtn').addEventListener('click', async () => {
         const nameVal = document.getElementById('usernameInput').value.trim();
         const gangVal = document.getElementById('gangSelect').value;
         if (nameVal) {
           localPlayer.name = nameVal.slice(0, 18);
         }
+        localPlayer.profileKey = sanitizeKey(localPlayer.name);
         if (gangVal) {
           localPlayer.gang = gangVal;
         }
+
+        // Restore persistent progression from Firebase RTDB folder "aetheria/profiles/{profileKey}" if present
+        const saved = await AetheriaRTDB.loadPersistentProfile(localPlayer.profileKey);
+        if (saved && typeof saved === 'object') {
+          if (typeof saved.shards === 'number') localPlayer.shards = saved.shards;
+          if (typeof saved.kills === 'number') localPlayer.kills = saved.kills;
+          if (typeof saved.assists === 'number') localPlayer.assists = saved.assists;
+          if (Array.isArray(saved.ownedGuns) && saved.ownedGuns.length > 0) {
+            localPlayer.ownedGuns = saved.ownedGuns.filter((g) => GUN_SPECS[g]);
+          }
+          if (saved.gunLevels && typeof saved.gunLevels === 'object') {
+            localPlayer.gunLevels = { ...localPlayer.gunLevels, ...saved.gunLevels };
+          }
+          if (saved.weaponId && localPlayer.ownedGuns.includes(saved.weaponId)) {
+            localPlayer.weaponId = saved.weaponId;
+          }
+          if (saved.allies && typeof saved.allies === 'object') {
+            Object.entries(saved.allies).forEach(([k, v]) => {
+              localPlayer.allyTrust.set(k, Number(v) || 2);
+            });
+          }
+        }
+
+        recalculatePlayerStats();
+        localPlayer.hp = localPlayer.maxHp;
+        localPlayer.ammo = localPlayer.magSize;
+
         document.getElementById('explorerNameBadge').textContent = localPlayer.name;
         document.getElementById('usernameModal').classList.add('hidden');
         worldEntered = true;
-        publishPresenceAndClean();
+        saveLocalStateToCloud();
+        syncWorldPresence();
         updateCombatAndEnergyUI();
-        showToast(`Welcome to Aetheria, ${localPlayer.name} (${localPlayer.gang})`);
+        showToast(saved
+          ? `Welcome back, ${localPlayer.name}! Restored ${localPlayer.kills} kills & Lv.${localPlayer.gunLevels[localPlayer.weaponId] || 1} arsenal.`
+          : `Welcome to Aetheria, ${localPlayer.name} (${localPlayer.gang})`);
       });
 
       const soundBtn = document.getElementById('soundToggleBtn');
@@ -2396,17 +3123,31 @@
         showToast(next ? 'Sound effects enabled' : 'Sound effects muted');
       });
 
-      const drawer = document.getElementById('chatDrawer');
+      const communityDrawer = document.getElementById('communityDrawer');
+      const chatDrawer = document.getElementById('chatDrawer');
       const unreadBadge = document.getElementById('unreadBadge');
+
+      document.getElementById('communityToggleBtn').addEventListener('click', () => {
+        chatDrawer.classList.add('hidden');
+        communityDrawer.classList.toggle('hidden');
+        if (!communityDrawer.classList.contains('hidden')) {
+          renderCommunityDrawer();
+        }
+      });
+      document.getElementById('closeCommunityBtn').addEventListener('click', () => {
+        communityDrawer.classList.add('hidden');
+      });
+
       document.getElementById('chatToggleBtn').addEventListener('click', () => {
-        drawer.classList.toggle('hidden');
-        if (!drawer.classList.contains('hidden')) {
+        communityDrawer.classList.add('hidden');
+        chatDrawer.classList.toggle('hidden');
+        if (!chatDrawer.classList.contains('hidden')) {
           unreadBadge.classList.add('hidden');
           document.getElementById('chatInput').focus();
         }
       });
       document.getElementById('closeChatBtn').addEventListener('click', () => {
-        drawer.classList.add('hidden');
+        chatDrawer.classList.add('hidden');
       });
 
       document.getElementById('chatForm').addEventListener('submit', (e) => {
@@ -2418,7 +3159,6 @@
         SoundFX.message();
         appendChatMessage({
           sender: localPlayer.name,
-          code: localPlayer.shortCode,
           text,
           color: localPlayer.color,
           self: true
@@ -2506,20 +3246,23 @@
         broadcastToAll({
           type: 'state',
           name: localPlayer.name,
+          profileKey: localPlayer.profileKey,
           gang: localPlayer.gang,
           color: localPlayer.color,
           x: localPlayer.x,
           y: localPlayer.y,
           shards: localPlayer.shards,
+          kills: localPlayer.kills,
           hp: Math.round(localPlayer.hp),
           maxHp: Math.round(localPlayer.maxHp),
           hit: localPlayer.hitFlash > 0.4
         });
       }
 
-      if (worldEntered && now - lastRegistryHeartbeat >= 4000) {
-        lastRegistryHeartbeat = now;
-        publishPresenceAndClean();
+      if (worldEntered && now - lastHeartbeatTime >= 5000) {
+        lastHeartbeatTime = now;
+        syncWorldPresence();
+        saveLocalStateToCloud();
       }
 
       requestAnimationFrame(mainLoop);
@@ -2532,7 +3275,28 @@
       ensureInfiniteSectorsAround(localPlayer.x, localPlayer.y);
       bindEvents();
       updateCombatAndEnergyUI();
-      await AetheriaRTDB.initIfConfigured();
+
+      // Same-browser instant peer discovery via BroadcastChannel (no localStorage needed)
+      if (typeof BroadcastChannel !== 'undefined') {
+        broadcastBus = new BroadcastChannel('aetheria_shared_world_bus');
+        broadcastBus.onmessage = (ev) => {
+          const msg = ev.data;
+          if (
+            msg &&
+            msg.type === 'presence' &&
+            msg.session &&
+            msg.session.peerId &&
+            msg.session.peerId !== localPlayer.peerId &&
+            !dataConnections.has(msg.session.peerId) &&
+            localPlayer.peerId &&
+            localPlayer.peerId > msg.session.peerId
+          ) {
+            connectToPeer(msg.session.peerId);
+          }
+        };
+      }
+
+      await AetheriaRTDB.init();
       initPeer();
       requestAnimationFrame(mainLoop);
     });
