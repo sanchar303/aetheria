@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="description" content="Aetheria — Shared-world P2P multiplayer open-world space combat, gang diplomacy, ruby mining, and progression." />
-  <meta name="theme-color" content="#070910" />
+  <meta name="description" content="Aetheria — Real-time P2P multiplayer open-world space combat, gang diplomacy, ruby mining, and progression." />
+  <meta name="theme-color" content="#05070e" />
   <title>Aetheria</title>
   <link rel="icon" type="image/png" href="favicon.png" />
 
@@ -14,19 +14,20 @@
 
   <style>
     :root {
-      --bg-deep: #06080f;
-      --bg-panel: rgba(13, 17, 29, 0.78);
-      --bg-panel-solid: #0e1322;
-      --border-glass: rgba(255, 255, 255, 0.11);
-      --border-glow: rgba(99, 179, 237, 0.35);
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --accent-cyan: #38bdf8;
-      --accent-gold: #fbbf24;
-      --accent-ruby: #f43f5e;
-      --accent-green: #22c55e;
-      --accent-purple: #a855f7;
-      --shadow-3d: 0 12px 32px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      --bg-void: #04060c;
+      --silk-surface: linear-gradient(145deg, rgba(19, 25, 42, 0.84), rgba(9, 12, 22, 0.92));
+      --silk-well: rgba(4, 6, 13, 0.72);
+      --border-aniso: rgba(255, 255, 255, 0.14);
+      --border-highlight: rgba(125, 211, 252, 0.42);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --cyan: #38bdf8;
+      --gold: #fbbf24;
+      --ruby: #fb7185;
+      --emerald: #34d399;
+      --violet: #c084fc;
+      --shadow-silk: 0 16px 40px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -1px 0 rgba(0, 0, 0, 0.45);
+      --shadow-recessed: inset 0 2px 6px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     * {
@@ -43,8 +44,8 @@
       width: 100%;
       height: 100dvh;
       overflow: hidden;
-      background: var(--bg-deep);
-      color: var(--text-main);
+      background: var(--bg-void);
+      color: var(--text-primary);
     }
 
     #gameCanvas {
@@ -57,26 +58,57 @@
       z-index: 1;
     }
 
-    /* Glass & Silk-Morphism Capsule Utilities */
-    .glass-pill {
-      background: var(--bg-panel);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--border-glass);
-      box-shadow: var(--shadow-3d);
+    /* 4-Tier Silk-Morphism Surfaces */
+    .silk-pill {
+      position: relative;
+      background: var(--silk-surface);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid var(--border-aniso);
+      box-shadow: var(--shadow-silk);
       border-radius: 999px;
     }
 
-    .glass-card {
-      background: var(--bg-panel);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-glass);
-      box-shadow: var(--shadow-3d);
-      border-radius: 22px;
+    .silk-card {
+      position: relative;
+      background: var(--silk-surface);
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      border: 1px solid var(--border-aniso);
+      box-shadow: var(--shadow-silk);
+      border-radius: 26px;
+    }
+
+    .silk-card::before, .silk-pill::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.02) 45%, rgba(56, 189, 248, 0.18));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.55);
     }
 
     .btn-pill {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -84,58 +116,59 @@
       padding: 8px 14px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      background: linear-gradient(180deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
-      color: var(--text-main);
+      background: linear-gradient(160deg, rgba(30, 41, 64, 0.92), rgba(12, 17, 30, 0.96));
+      color: var(--text-primary);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease, opacity 0.14s ease;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.18);
       white-space: nowrap;
     }
 
     .btn-pill:hover {
-      transform: translateY(-1px);
-      border-color: rgba(56, 189, 248, 0.5);
+      transform: translateY(-1.5px);
+      border-color: var(--border-highlight);
+      box-shadow: 0 10px 24px rgba(2, 132, 199, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
     .btn-pill:active {
-      transform: scale(0.96);
+      transform: scale(0.95);
     }
 
     .btn-pill.disabled {
-      opacity: 0.45;
+      opacity: 0.42;
       pointer-events: none;
     }
 
     .btn-pill.primary {
-      background: linear-gradient(135deg, #0284c7, #1d4ed8);
-      border-color: rgba(125, 211, 252, 0.45);
+      background: linear-gradient(135deg, #0284c7, #1e40af);
+      border-color: rgba(125, 211, 252, 0.5);
     }
 
     .btn-pill.ruby-btn {
       background: linear-gradient(135deg, #e11d48, #881337);
-      border-color: rgba(253, 164, 175, 0.45);
+      border-color: rgba(253, 164, 175, 0.5);
     }
 
     .btn-pill.gold-btn {
-      background: linear-gradient(135deg, #d97706, #92400e);
-      border-color: rgba(253, 224, 71, 0.45);
+      background: linear-gradient(135deg, #d97706, #78350f);
+      border-color: rgba(253, 224, 71, 0.5);
     }
 
     /* Gang Gradients */
-    .gang-astro-nuts { background: linear-gradient(135deg, #9c5a25, #4a2508) !important; border-color: #d99b66 !important; }
-    .gang-dork-side { background: linear-gradient(135deg, #333745, #090a0f) !important; border-color: #64748b !important; }
-    .gang-homo-spacian { background: linear-gradient(135deg, #2563eb, #0d2563) !important; border-color: #60a5fa !important; }
-    .gang-martian { background: linear-gradient(135deg, #dc2626, #630d0d) !important; border-color: #f87171 !important; }
-    .gang-bancroft { background: linear-gradient(135deg, #16a34a, #0a421e) !important; border-color: #4ade80 !important; }
+    .gang-astro-nuts { background: linear-gradient(135deg, #a15c24, #452106) !important; border-color: #e0a96d !important; }
+    .gang-dork-side { background: linear-gradient(135deg, #333847, #08090e) !important; border-color: #94a3b8 !important; }
+    .gang-homo-spacian { background: linear-gradient(135deg, #2563eb, #0c225c) !important; border-color: #60a5fa !important; }
+    .gang-martian { background: linear-gradient(135deg, #dc2626, #5c0b0b) !important; border-color: #f87171 !important; }
+    .gang-bancroft { background: linear-gradient(135deg, #16a34a, #083b1a) !important; border-color: #4ade80 !important; }
 
-    /* Top HUD */
+    /* Top Telemetry Bar */
     #hudTopBar {
       position: fixed;
       top: 12px;
-      left: 12px;
-      right: 12px;
+      left: 14px;
+      right: 14px;
       z-index: 10;
       display: flex;
       flex-wrap: wrap;
@@ -154,7 +187,7 @@
     }
 
     .stat-chip {
-      padding: 6px 12px;
+      padding: 6px 13px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -162,40 +195,55 @@
       font-weight: 700;
     }
 
-    .bar-wrap {
-      width: 84px;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
+    .bar-well {
+      width: 86px;
+      height: 9px;
+      background: var(--silk-well);
       border-radius: 999px;
       overflow: hidden;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+      padding: 1px;
+      box-shadow: var(--shadow-recessed);
     }
 
     .bar-fill {
       height: 100%;
       border-radius: 999px;
-      transition: width 0.15s ease;
+      transition: width 0.14s ease-out;
     }
 
-    #hpFill { background: linear-gradient(90deg, #ef4444, #22c55e); width: 100%; }
-    #dashFill { background: linear-gradient(90deg, #0ea5e9, #38bdf8); width: 0%; }
+    #hpFill { background: linear-gradient(90deg, #f43f5e, #34d399); width: 100%; box-shadow: 0 0 10px rgba(52, 211, 153, 0.4); }
+    #dashFill { background: linear-gradient(90deg, #0284c7, #38bdf8); width: 0%; box-shadow: 0 0 10px rgba(56, 189, 248, 0.45); }
 
     .gang-badge {
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 700;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.28);
       color: #fff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
     }
 
-    /* Powerups & Zone Strip */
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: pulseDot 1.8s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.8); }
+    }
+
+    /* Status & Buffs Strip */
     #statusStrip {
       position: fixed;
       top: 62px;
-      left: 12px;
-      right: 12px;
+      left: 14px;
+      right: 14px;
       z-index: 9;
       display: flex;
       flex-wrap: wrap;
@@ -213,12 +261,13 @@
     }
 
     .powerup-pill {
-      padding: 4px 10px;
+      padding: 4px 11px;
       border-radius: 999px;
       font-size: 11px;
       font-weight: 700;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(11, 16, 29, 0.86);
       border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
       color: #e0f2fe;
       display: flex;
       align-items: center;
@@ -226,28 +275,28 @@
     }
 
     #zoneIndicator {
-      padding: 5px 13px;
+      padding: 5px 14px;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.45px;
       pointer-events: auto;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    /* Live Target Telemetry */
+    /* Target Lock Telemetry */
     #targetHud {
       position: fixed;
       top: 102px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 9;
-      padding: 7px 16px;
-      min-width: 240px;
+      padding: 8px 16px;
+      min-width: 248px;
       display: none;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
       pointer-events: none;
     }
 
@@ -256,31 +305,32 @@
       justify-content: space-between;
       align-items: center;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       gap: 12px;
     }
 
     .target-bar-bg {
       width: 100%;
       height: 7px;
-      background: rgba(255, 255, 255, 0.12);
+      background: var(--silk-well);
       border-radius: 999px;
       overflow: hidden;
+      box-shadow: var(--shadow-recessed);
     }
 
     #targetHpFill {
       height: 100%;
       background: linear-gradient(90deg, #f43f5e, #fb923c);
       width: 100%;
-      transition: width 0.1s linear;
+      transition: width 0.08s linear;
     }
 
-    /* Bottom Arsenal & Action Dock */
+    /* Bottom Arsenal & Controls */
     #bottomHud {
       position: fixed;
       bottom: 14px;
-      left: 12px;
-      right: 12px;
+      left: 14px;
+      right: 14px;
       z-index: 10;
       display: flex;
       flex-direction: column;
@@ -301,23 +351,24 @@
     .gun-slot {
       padding: 6px 12px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--silk-well);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow-recessed);
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
+      transition: all 0.16s ease;
     }
 
     .gun-slot.active {
-      background: linear-gradient(135deg, rgba(14, 165, 233, 0.35), rgba(37, 99, 235, 0.45));
-      border-color: #38bdf8;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.32), rgba(37, 99, 235, 0.44));
+      border-color: var(--cyan);
       color: #fff;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
     #actionDock {
@@ -329,13 +380,13 @@
       pointer-events: auto;
     }
 
-    /* Modals & Overlays */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
       z-index: 30;
-      background: rgba(3, 6, 14, 0.78);
-      backdrop-filter: blur(10px);
+      background: rgba(2, 4, 10, 0.78);
+      backdrop-filter: blur(12px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -349,7 +400,7 @@
     .modal-box {
       width: 100%;
       max-width: 540px;
-      max-height: 85dvh;
+      max-height: 84dvh;
       overflow-y: auto;
       padding: 22px;
       display: flex;
@@ -361,12 +412,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border-glass);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 10px;
     }
 
     .modal-header h2 {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: 0.3px;
     }
@@ -376,8 +427,11 @@
       position: fixed;
       inset: 0;
       z-index: 50;
-      background: radial-gradient(circle at 50% 30%, rgba(14, 165, 233, 0.16), rgba(4, 6, 13, 0.96) 70%);
-      backdrop-filter: blur(16px);
+      background:
+        radial-gradient(circle at 25% 20%, rgba(56, 189, 248, 0.16), transparent 45%),
+        radial-gradient(circle at 80% 75%, rgba(244, 63, 94, 0.14), transparent 50%),
+        rgba(4, 6, 13, 0.96);
+      backdrop-filter: blur(18px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -387,7 +441,7 @@
     .onboard-card {
       width: 100%;
       max-width: 480px;
-      padding: 26px;
+      padding: 28px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -398,7 +452,8 @@
       padding: 12px 16px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(7, 10, 19, 0.88);
+      background: var(--silk-well);
+      box-shadow: var(--shadow-recessed);
       color: #fff;
       font-size: 14px;
       font-weight: 600;
@@ -408,8 +463,8 @@
     }
 
     .input-capsule:focus {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+      border-color: var(--cyan);
+      box-shadow: var(--shadow-recessed), 0 0 0 3px rgba(56, 189, 248, 0.22);
     }
 
     .gang-grid {
@@ -419,30 +474,29 @@
     }
 
     .gang-option {
-      padding: 10px 12px;
-      border-radius: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.15);
+      padding: 11px 13px;
+      border-radius: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.14);
       color: #fff;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       gap: 2px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
     }
 
     .gang-option.selected {
       transform: scale(1.03);
-      box-shadow: 0 0 0 2px #fff, 0 8px 20px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 0 2px #fff, 0 10px 24px rgba(0, 0, 0, 0.65);
     }
 
-    /* List Items inside Modals */
     .row-card {
-      padding: 11px 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -455,23 +509,16 @@
       gap: 3px;
     }
 
-    .row-title {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .row-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
+    .row-title { font-size: 13px; font-weight: 700; }
+    .row-sub { font-size: 11px; color: var(--text-secondary); }
 
     /* Respawn Overlay */
     #respawnOverlay {
       position: fixed;
       inset: 0;
       z-index: 40;
-      background: rgba(15, 4, 8, 0.76);
-      backdrop-filter: blur(8px);
+      background: rgba(12, 3, 7, 0.8);
+      backdrop-filter: blur(10px);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -480,23 +527,21 @@
       text-align: center;
     }
 
-    /* Chat Drawer */
+    /* Comms Drawer */
     #chatDrawer {
       position: fixed;
-      right: 12px;
-      bottom: 98px;
+      right: 14px;
+      bottom: 102px;
       width: 300px;
-      max-width: calc(100vw - 24px);
+      max-width: calc(100vw - 28px);
       z-index: 20;
-      padding: 12px;
+      padding: 14px;
       display: none;
       flex-direction: column;
       gap: 8px;
     }
 
-    #chatDrawer.open {
-      display: flex;
-    }
+    #chatDrawer.open { display: flex; }
 
     #chatMessages {
       height: 150px;
@@ -510,39 +555,33 @@
 
     .chat-line {
       background: rgba(255, 255, 255, 0.05);
-      padding: 5px 9px;
+      padding: 6px 10px;
       border-radius: 12px;
       line-height: 1.35;
       word-break: break-word;
     }
 
-    /* Toast Notifications */
+    /* Single Non-Intrusive Status Toast (No Stacking Spam) */
     #toastContainer {
       position: fixed;
-      top: 145px;
-      right: 14px;
+      bottom: 106px;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 60;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
       pointer-events: none;
     }
 
     .toast-msg {
-      padding: 8px 14px;
+      padding: 7px 15px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.92);
-      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(11, 16, 29, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.42);
       color: #f8fafc;
-      font-size: 12px;
-      font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-      animation: fadeSlide 0.2s ease;
-    }
-
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
+      font-size: 11.5px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      white-space: nowrap;
     }
 
     #moveBuildingBanner {
@@ -557,18 +596,18 @@
       gap: 10px;
       font-size: 12px;
       font-weight: 700;
-      border-color: #fbbf24;
+      border-color: var(--gold);
     }
 
     .brand-footer {
       font-size: 10px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       text-align: center;
       opacity: 0.75;
     }
 
     @media (max-width: 640px) {
-      .bar-wrap { width: 58px; }
+      .bar-well { width: 58px; }
       .stat-chip { padding: 5px 9px; font-size: 11px; }
       .btn-pill { padding: 7px 11px; font-size: 11px; }
       .gang-grid { grid-template-columns: 1fr; }
@@ -582,41 +621,41 @@
   <!-- Top Telemetry HUD -->
   <div id="hudTopBar">
     <div class="hud-group">
-      <div class="glass-pill stat-chip">
+      <div class="silk-pill stat-chip">
         <span id="playerNameDisplay">Explorer</span>
         <span id="playerGangTag" class="gang-badge gang-astro-nuts">Astro Nuts</span>
       </div>
 
-      <div class="glass-pill stat-chip">
+      <div class="silk-pill stat-chip">
         <span>HP</span>
-        <div class="bar-wrap"><div id="hpFill" class="bar-fill"></div></div>
+        <div class="bar-well"><div id="hpFill" class="bar-fill"></div></div>
         <span id="hpText">120/120</span>
       </div>
 
-      <div class="glass-pill stat-chip">
+      <div class="silk-pill stat-chip">
         <span>DASH</span>
-        <div class="bar-wrap"><div id="dashFill" class="bar-fill"></div></div>
-        <span id="dashText">0%</span>
+        <div class="bar-well"><div id="dashFill" class="bar-fill"></div></div>
+        <span id="dashText">40%</span>
       </div>
     </div>
 
     <div class="hud-group">
-      <div class="glass-pill stat-chip" style="color:#fbbf24;">
+      <div class="silk-pill stat-chip" style="color:#fbbf24;">
         <span>🪙</span>
-        <span id="coinCount">0</span>
+        <span id="coinCount">15</span>
       </div>
-      <div class="glass-pill stat-chip" style="color:#fb7185;">
+      <div class="silk-pill stat-chip" style="color:#fb7185;">
         <span>💎</span>
         <span id="rubyCount">0</span>
       </div>
-      <div class="glass-pill stat-chip" style="color:#38bdf8;">
+      <div class="silk-pill stat-chip" style="color:#38bdf8;">
         <span>⚔️</span>
         <span id="killCount">0</span>
       </div>
-      <div class="glass-pill stat-chip">
-        <span>🌐</span>
+      <div class="silk-pill stat-chip">
+        <span class="live-dot"></span>
         <span id="onlineCount">1</span>
-        <span id="syncStatusBadge" style="font-size:10px;color:#4ade80;">LIVE</span>
+        <span id="syncStatusBadge" style="font-size:10px;color:#34d399;">P2P LIVE</span>
       </div>
     </div>
   </div>
@@ -624,13 +663,13 @@
   <!-- Active Powerups & Zone Indicator -->
   <div id="statusStrip">
     <div id="powerupBar"></div>
-    <div id="zoneIndicator" class="glass-pill">
+    <div id="zoneIndicator" class="silk-pill">
       <span id="zoneText">🛡️ CENTRAL SANCTUARY • WEAPONS DISABLED</span>
     </div>
   </div>
 
   <!-- Real-Time Target HP Telemetry -->
-  <div id="targetHud" class="glass-card">
+  <div id="targetHud" class="silk-card">
     <div class="target-top">
       <span id="targetName">Target</span>
       <span id="targetMeta" style="color:#94a3b8;">Lv.1</span>
@@ -642,44 +681,44 @@
   </div>
 
   <!-- Move Building Banner -->
-  <div id="moveBuildingBanner" class="glass-pill">
-    <span>📍 Tap/Click anywhere in space to place building</span>
+  <div id="moveBuildingBanner" class="silk-pill">
+    <span>📍 Click or tap anywhere in space to place building</span>
     <div id="cancelMoveBuildingBtn" class="btn-pill">Cancel</div>
   </div>
 
-  <!-- Toast Stack -->
+  <!-- Single Subtle Toast Container -->
   <div id="toastContainer"></div>
 
   <!-- Bottom Arsenal & Controls -->
   <div id="bottomHud">
     <div id="arsenalBar"></div>
     <div id="actionDock">
-      <div id="dashBtn" class="btn-pill primary">⚡ Dash (Space)</div>
-      <div id="beaconBtn" class="btn-pill">📡 Beacon (4🪙 + 50%⚡)</div>
-      <div id="buildMineBtn" class="btn-pill gold-btn">⛏️ Build Ruby Mine (100🪙)</div>
-      <div id="treatyBtn" class="btn-pill">📜 Treaty Board</div>
-      <div id="shopBtn" class="btn-pill ruby-btn">💎 Ruby Shop</div>
-      <div id="gangPanelBtn" class="btn-pill">🏴 Gangs</div>
-      <div id="chatToggleBtn" class="btn-pill">💬 Comms</div>
+      <div id="dashBtn" class="btn-pill primary">⚡ Dash <kbd>Space</kbd></div>
+      <div id="beaconBtn" class="btn-pill">📡 Beacon (4🪙+50%⚡) <kbd>B</kbd></div>
+      <div id="buildMineBtn" class="btn-pill gold-btn">⛏️ Ruby Mine (100🪙) <kbd>M</kbd></div>
+      <div id="treatyBtn" class="btn-pill">📜 Treaty <kbd>T</kbd></div>
+      <div id="shopBtn" class="btn-pill ruby-btn">💎 Shop <kbd>R</kbd></div>
+      <div id="gangPanelBtn" class="btn-pill">🏴 Gangs <kbd>G</kbd></div>
+      <div id="chatToggleBtn" class="btn-pill">💬 Comms <kbd>C</kbd></div>
     </div>
   </div>
 
   <!-- Global Comms Drawer -->
-  <div id="chatDrawer" class="glass-card">
+  <div id="chatDrawer" class="silk-card">
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:12px;font-weight:800;">🌐 Shared World Comms</span>
       <div id="closeChatBtn" class="btn-pill" style="padding:3px 9px;">✕</div>
     </div>
     <div id="chatMessages"></div>
     <div style="display:flex;gap:6px;">
-      <input id="chatInput" class="input-capsule" style="padding:7px 12px;font-size:12px;" placeholder="Message world..." maxlength="120" />
+      <input id="chatInput" class="input-capsule" style="padding:7px 12px;font-size:12px;" placeholder="Message shared world..." maxlength="120" />
       <div id="chatSendBtn" class="btn-pill primary">Send</div>
     </div>
   </div>
 
   <!-- Treaty Board Modal -->
   <div id="treatyModal" class="modal-backdrop">
-    <div class="glass-card modal-box">
+    <div class="silk-card modal-box">
       <div class="modal-header">
         <h2>📜 Treaty Board — Gang & Explorer Diplomacy</h2>
         <div id="closeTreatyBtn" class="btn-pill">✕</div>
@@ -691,7 +730,7 @@
 
   <!-- Ruby Shop Modal -->
   <div id="shopModal" class="modal-backdrop">
-    <div class="glass-card modal-box">
+    <div class="silk-card modal-box">
       <div class="modal-header">
         <h2>💎 Ruby Exchange Shop</h2>
         <div style="display:flex;align-items:center;gap:10px;">
@@ -700,44 +739,44 @@
         </div>
       </div>
       <div id="shopZoneNote" style="font-size:12px;color:#fda4af;"></div>
-      <div style="font-size:12px;font-weight:800;color:#38bdf8;margin-top:4px;">PERMANENT UPGRADES (Persist Across Respawns)</div>
+      <div style="font-size:11px;font-weight:800;color:#38bdf8;letter-spacing:0.4px;">PERMANENT UPGRADES (Persist Across Respawns)</div>
       <div id="shopUpgradesList" style="display:flex;flex-direction:column;gap:8px;"></div>
-      <div style="font-size:12px;font-weight:800;color:#fbbf24;margin-top:6px;">PLACEABLE & MOVABLE PASSIVE INCOME BUILDINGS</div>
+      <div style="font-size:11px;font-weight:800;color:#fbbf24;letter-spacing:0.4px;margin-top:4px;">PLACEABLE & MOVABLE PASSIVE INCOME BUILDINGS</div>
       <div id="shopBuildingsList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
   <!-- Gangs & Roster Modal -->
   <div id="gangModal" class="modal-backdrop">
-    <div class="glass-card modal-box">
+    <div class="silk-card modal-box">
       <div class="modal-header">
         <h2>🏴 Balanced Gang Rosters & World Entities</h2>
         <div id="closeGangBtn" class="btn-pill">✕</div>
       </div>
-      <div style="font-size:11px;color:#94a3b8;">All 5 gangs maintain equal active member counts across the shared world.</div>
+      <div style="font-size:11px;color:#94a3b8;">All 5 gangs maintain equal active member counts across the singular shared world.</div>
       <div id="gangRosterList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
   <!-- Respawn Overlay -->
   <div id="respawnOverlay">
-    <div style="font-size:28px;font-weight:900;color:#f43f5e;letter-spacing:1px;">HULL DESTROYED</div>
+    <div style="font-size:28px;font-weight:900;color:#f43f5e;letter-spacing:1.2px;">HULL DESTROYED</div>
     <div id="respawnKillerText" style="font-size:13px;color:#cbd5e1;">Run inventory reset. Permanent Ruby upgrades retained.</div>
     <div style="font-size:18px;font-weight:800;color:#38bdf8;">Resummoning in <span id="respawnTimerText">3.0</span>s...</div>
   </div>
 
   <!-- Onboarding Overlay -->
   <div id="onboardingOverlay">
-    <div class="glass-card onboard-card">
+    <div class="silk-card onboard-card">
       <div style="text-align:center;">
-        <div style="font-size:26px;font-weight:900;letter-spacing:1.5px;background:linear-gradient(90deg,#38bdf8,#a855f7,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AETHERIA</div>
-        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Singular Shared Open-World P2P Multiplayer</div>
+        <div style="font-size:28px;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#38bdf8,#c084fc,#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AETHERIA</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Real-Time P2P Shared Open-World Multiplayer</div>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:6px;">
         <label style="font-size:11px;font-weight:700;color:#cbd5e1;">EXPLORER USERNAME (Auto-loads saved progress)</label>
         <input id="usernameInput" class="input-capsule" type="text" placeholder="Enter your username..." maxlength="18" autocomplete="off" />
-        <div id="savedProfileBanner" style="font-size:11px;color:#4ade80;min-height:16px;"></div>
+        <div id="savedProfileBanner" style="font-size:11px;color:#34d399;min-height:16px;"></div>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:6px;">
@@ -783,8 +822,8 @@
 
       const SAFE_ZONES = [
         { id: 'sanctuary', name: 'Central Sanctuary', x: 0, y: 0, radius: 245, color: '#38bdf8', icon: '🛡️' },
-        { id: 'treaty', name: 'Treaty Board', x: -480, y: -260, radius: 155, color: '#a855f7', icon: '📜' },
-        { id: 'shop', name: 'Ruby Shop', x: 480, y: -260, radius: 155, color: '#f43f5e', icon: '💎' }
+        { id: 'treaty', name: 'Treaty Board', x: -480, y: -260, radius: 155, color: '#c084fc', icon: '📜' },
+        { id: 'shop', name: 'Ruby Shop', x: 480, y: -260, radius: 155, color: '#fb7185', icon: '💎' }
       ];
 
       const GUN_CATALOG = {
@@ -799,12 +838,12 @@
           magSize: 8, reloadTime: 1.4, spread: 0.28, pellets: 5, radius: 4
         },
         rail: {
-          id: 'rail', name: 'Rail Lance', color: '#a855f7',
+          id: 'rail', name: 'Rail Lance', color: '#c084fc',
           baseDamage: 42, fireInterval: 0.95, range: 500, speed: 920,
           magSize: 6, reloadTime: 1.6, spread: 0.01, pellets: 1, radius: 5
         },
         arc: {
-          id: 'arc', name: 'Arc Nova', color: '#22c55e',
+          id: 'arc', name: 'Arc Nova', color: '#34d399',
           baseDamage: 26, fireInterval: 0.52, range: 400, speed: 600,
           magSize: 12, reloadTime: 1.3, spread: 0.08, pellets: 2, radius: 6
         }
@@ -820,15 +859,15 @@
       ];
 
       const BUILDING_CATALOG = [
-        { id: 'solar_extractor', name: 'Solar Coin Extractor', desc: 'Generates +3 Coins every 5s (Movable)', cost: 3, coinRate: 3, rubyRate: 0, color: '#fbbf24' },
-        { id: 'aether_refinery', name: 'Aether Synthesis Rig', desc: 'Generates +6 Coins & +1 Ruby every 10s (Movable)', cost: 7, coinRate: 6, rubyRate: 1, color: '#38bdf8' },
-        { id: 'crimson_forge', name: 'Crimson Ruby Forge', desc: 'Generates +2 Rubies every 12s (Movable)', cost: 12, coinRate: 2, rubyRate: 2, color: '#f43f5e' }
+        { id: 'solar_extractor', name: 'Solar Coin Extractor', desc: '+3 Coins every 5s (Movable)', cost: 3, coinRate: 3, rubyRate: 0, color: '#fbbf24' },
+        { id: 'aether_refinery', name: 'Aether Synthesis Rig', desc: '+6 Coins & +1 Ruby every 10s (Movable)', cost: 7, coinRate: 6, rubyRate: 1, color: '#38bdf8' },
+        { id: 'crimson_forge', name: 'Crimson Ruby Forge', desc: '+2 Rubies every 12s (Movable)', cost: 12, coinRate: 2, rubyRate: 2, color: '#fb7185' }
       ];
 
-      const MEMBERS_PER_GANG = 3; // Equal member count across all 5 gangs (15 total gang units)
+      const MEMBERS_PER_GANG = 3;
 
       // =========================================================================
-      // 2. AUDIO ENGINE (Synthesized Web Audio)
+      // 2. AUDIO ENGINE
       // =========================================================================
       const SoundFX = (() => {
         let ctx = null;
@@ -839,7 +878,7 @@
           }
           if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
         }
-        function play(freq, type = 'sine', dur = 0.08, vol = 0.05, slide = 0) {
+        function play(freq, type = 'sine', dur = 0.08, vol = 0.045, slide = 0) {
           try {
             ensure();
             if (!ctx) return;
@@ -858,22 +897,22 @@
         }
         return {
           shoot: (gunId) => {
-            if (gunId === 'rail') play(620, 'sawtooth', 0.12, 0.04, -340);
-            else if (gunId === 'scatter') play(210, 'triangle', 0.1, 0.05, -110);
-            else if (gunId === 'arc') play(480, 'sine', 0.11, 0.04, 180);
-            else play(390, 'triangle', 0.07, 0.035, -150);
+            if (gunId === 'rail') play(620, 'sawtooth', 0.12, 0.035, -340);
+            else if (gunId === 'scatter') play(210, 'triangle', 0.1, 0.045, -110);
+            else if (gunId === 'arc') play(480, 'sine', 0.11, 0.035, 180);
+            else play(390, 'triangle', 0.07, 0.03, -150);
           },
-          pickup: () => play(740, 'sine', 0.09, 0.05, 260),
+          pickup: () => play(740, 'sine', 0.08, 0.045, 260),
           ruby: () => play(980, 'sine', 0.16, 0.06, 420),
-          dash: () => play(240, 'sine', 0.18, 0.06, 220),
-          beacon: () => play(520, 'triangle', 0.25, 0.06, 280),
-          hit: () => play(150, 'sawtooth', 0.07, 0.04, -60),
-          kill: () => play(540, 'triangle', 0.22, 0.07, 360)
+          dash: () => play(240, 'sine', 0.16, 0.055, 220),
+          beacon: () => play(520, 'triangle', 0.22, 0.055, 280),
+          hit: () => play(150, 'sawtooth', 0.06, 0.035, -60),
+          kill: () => play(540, 'triangle', 0.2, 0.065, 360)
         };
       })();
 
       // =========================================================================
-      // 3. FIREBASE RTDB + REST FALLBACK (Strictly under "aetheria/")
+      // 3. FIREBASE RTDB + REAL-TIME CHILD EVENTS & REST FALLBACK
       // =========================================================================
       const AetheriaDB = (() => {
         let db = null;
@@ -888,7 +927,7 @@
               db = firebase.database();
               sdkReady = true;
             }
-          } catch (err) {
+          } catch (_) {
             sdkReady = false;
           }
         }
@@ -909,26 +948,6 @@
           try {
             await fetch(`${RTDB_URL}/${fullPath}.json`, {
               method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            });
-            return true;
-          } catch (_) {
-            return false;
-          }
-        }
-
-        async function update(subPath, data) {
-          const fullPath = cleanPath(subPath);
-          if (sdkReady && db) {
-            try {
-              await db.ref(fullPath).update(data);
-              return true;
-            } catch (_) {}
-          }
-          try {
-            await fetch(`${RTDB_URL}/${fullPath}.json`, {
-              method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(data)
             });
@@ -971,21 +990,32 @@
           }
         }
 
-        function onValue(subPath, callback) {
+        function onValue(subPath, callback, pollMs = 900) {
           const fullPath = cleanPath(subPath);
           if (sdkReady && db) {
             try {
               db.ref(fullPath).on('value', (snap) => callback(snap.val()));
             } catch (_) {}
           }
-          // Also run resilient polling fallback every 1.4s so Canvas/restricted WebSockets still sync
           setInterval(async () => {
             const val = await get(subPath);
             if (val !== undefined) callback(val);
-          }, 1400);
+          }, pollMs);
         }
 
-        return { init, set, update, remove, get, onValue };
+        function onChildEvents(subPath, onAddOrChange, onRemove) {
+          const fullPath = cleanPath(subPath);
+          if (sdkReady && db) {
+            try {
+              const ref = db.ref(fullPath);
+              ref.on('child_added', (s) => onAddOrChange(s.key, s.val()));
+              ref.on('child_changed', (s) => onAddOrChange(s.key, s.val()));
+              if (onRemove) ref.on('child_removed', (s) => onRemove(s.key));
+            } catch (_) {}
+          }
+        }
+
+        return { init, set, remove, get, onValue, onChildEvents };
       })();
 
       // =========================================================================
@@ -996,6 +1026,9 @@
       let selectedGangId = 'astro-nuts';
       let isWorldHost = false;
       let movingBuildingId = null;
+
+      // Local mining progress per mine ID (never overwritten by RTDB syncs)
+      const localMineProgress = {};
 
       const player = {
         id: myPeerId,
@@ -1019,8 +1052,6 @@
         kills: 0,
         critChance: 0.10,
         critMult: 1.6,
-        fireRateBonus: 0,
-        magBonus: 0,
         guns: {
           pulse: { level: 1, ammo: 18, maxAmmo: 18, reloading: 0 }
         },
@@ -1039,9 +1070,9 @@
           permRegen: 0
         },
         buildings: [],
-        allies: {},   // targetId -> true
-        enemies: {},  // targetId -> true
-        gangTreaties: {}, // gangId -> 'ally' | 'enemy' | 'neutral'
+        allies: {},
+        enemies: {},
+        gangTreaties: {},
         powerups: {
           overdrive: 0,
           shield: 0,
@@ -1063,8 +1094,7 @@
         projectiles: [],
         particles: [],
         floatTexts: [],
-        remotePeers: new Map(),
-        chat: []
+        remotePeers: new Map()
       };
 
       // =========================================================================
@@ -1141,20 +1171,19 @@
       };
 
       // =========================================================================
-      // 6. HELPERS & STAT COMPUTATION
+      // 6. HELPERS & STAT COMPUTATION (Non-Spammy Single Status Toast)
       // =========================================================================
+      let toastTimeout = null;
       function showToast(msg) {
-        const el = document.createElement('div');
-        el.className = 'toast-msg';
-        el.textContent = msg;
-        ui.toastContainer.appendChild(el);
-        setTimeout(() => {
-          if (el.parentNode) el.parentNode.removeChild(el);
-        }, 3200);
+        clearTimeout(toastTimeout);
+        ui.toastContainer.innerHTML = `<div class="toast-msg">${msg}</div>`;
+        toastTimeout = setTimeout(() => {
+          ui.toastContainer.innerHTML = '';
+        }, 1900);
       }
 
       function addFloatText(x, y, text, color = '#fff', size = 13) {
-        world.floatTexts.push({ x, y, text, color, size, life: 1.0, vy: -34 });
+        world.floatTexts.push({ x, y, text, color, size, life: 0.95, vy: -34 });
       }
 
       function spawnParticles(x, y, color, count = 8, speed = 90) {
@@ -1166,9 +1195,9 @@
             vx: Math.cos(ang) * spd,
             vy: Math.sin(ang) * spd,
             color,
-            life: 0.45 + Math.random() * 0.35,
-            maxLife: 0.8,
-            size: 2 + Math.random() * 3
+            life: 0.4 + Math.random() * 0.3,
+            maxLife: 0.7,
+            size: 2 + Math.random() * 2.5
           });
         }
       }
@@ -1250,7 +1279,7 @@
         if (!joined) return;
         const key = sanitizeUsername(player.username).toLowerCase();
         if (!key) return;
-        const payload = {
+        await AetheriaDB.set(`usernames/${key}`, {
           username: player.username,
           gang: player.gang,
           kills: player.kills,
@@ -1259,33 +1288,33 @@
           upgrades: player.upgrades,
           buildings: player.buildings,
           updatedAt: Date.now()
-        };
-        await AetheriaDB.set(`usernames/${key}`, payload);
+        });
       }
 
       // =========================================================================
-      // 8. NATIVE WEBRTC P2P + BROADCASTCHANNEL + RTDB SHARED WORLD MESH
+      // 8. INSTANT 30HZ WEBRTC P2P MESH (TRICKLE ICE) + REAL-TIME RTDB SYNC
       // =========================================================================
       const P2PMesh = (() => {
-        const rtcPeers = new Map(); // peerId -> { pc, dc }
-        const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('aetheria_singular_world') : null;
+        const rtcPeers = new Map(); // peerId -> { pc, dc, pendingIce, lastAttempt }
+        const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('aetheria_singular_world_v2') : null;
         const rtcConfig = {
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' }
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' }
           ]
         };
 
         function handleIncomingPacket(msg) {
           if (!msg || !msg.from || msg.from === myPeerId) return;
           if (msg.type === 'state') {
-            upsertRemotePeer(msg.from, msg.data);
+            upsertRemotePeer(msg.from, msg.data, true);
           } else if (msg.type === 'shot') {
             spawnVisualProjectile(msg.data);
           } else if (msg.type === 'pvp_hit' && msg.targetId === myPeerId) {
             damagePlayer(msg.damage, msg.attackerName, msg.attackerId);
-          } else if (msg.type === 'mine_mine' && msg.mineId && world.mines[msg.mineId]) {
-            world.mines[msg.mineId].progress = (world.mines[msg.mineId].progress || 0) + 0.25;
+          } else if (msg.type === 'beacon_deploy' && msg.data) {
+            world.beacons[msg.data.id] = msg.data;
           } else if (msg.type === 'world_sync' && !isWorldHost && msg.data) {
             applyHostWorldSnapshot(msg.data);
           }
@@ -1300,16 +1329,17 @@
           if (bc) {
             try { bc.postMessage(packet); } catch (_) {}
           }
+          const raw = JSON.stringify(packet);
           for (const entry of rtcPeers.values()) {
             if (entry.dc && entry.dc.readyState === 'open') {
-              try { entry.dc.send(JSON.stringify(packet)); } catch (_) {}
+              try { entry.dc.send(raw); } catch (_) {}
             }
           }
         }
 
         function bindDataChannel(remoteId, dc) {
           dc.onopen = () => {
-            ui.syncStatusBadge.textContent = 'P2P+RTDB';
+            ui.syncStatusBadge.textContent = 'P2P INSTANT';
           };
           dc.onmessage = (ev) => {
             try {
@@ -1322,82 +1352,99 @@
         }
 
         async function initiateCall(remoteId) {
-          if (remoteId === myPeerId || rtcPeers.has(remoteId)) return;
-          if (myPeerId > remoteId) return; // Deterministic caller election
+          if (remoteId === myPeerId) return;
+          if (myPeerId > remoteId) return; // Deterministic caller role
+
+          const existing = rtcPeers.get(remoteId);
+          if (existing) {
+            if (existing.dc && existing.dc.readyState === 'open') return;
+            if (Date.now() - existing.lastAttempt < 4500) return;
+            try { existing.pc.close(); } catch (_) {}
+          }
+
           try {
             const pc = new RTCPeerConnection(rtcConfig);
-            const dc = pc.createDataChannel('aetheria', { ordered: false, maxRetransmits: 0 });
-            rtcPeers.set(remoteId, { pc, dc });
+            const dc = pc.createDataChannel('aetheria_rt', { ordered: false, maxRetransmits: 0 });
+            const entry = { pc, dc, pendingIce: [], lastAttempt: Date.now() };
+            rtcPeers.set(remoteId, entry);
             bindDataChannel(remoteId, dc);
 
-            const candidates = [];
+            let iceIdx = 0;
             pc.onicecandidate = (e) => {
-              if (e.candidate) candidates.push(e.candidate.toJSON());
+              if (e.candidate) {
+                AetheriaDB.set(`signals/${remoteId}/${myPeerId}/ice/${iceIdx++}`, e.candidate.toJSON());
+              }
             };
 
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
-
-            setTimeout(async () => {
-              await AetheriaDB.set(`signals/${remoteId}/${myPeerId}`, {
-                type: 'offer',
-                sdp: pc.localDescription.sdp,
-                candidates,
-                ts: Date.now()
-              });
-            }, 350);
+            await AetheriaDB.set(`signals/${remoteId}/${myPeerId}/desc`, {
+              type: 'offer',
+              sdp: pc.localDescription.sdp,
+              ts: Date.now()
+            });
           } catch (_) {}
         }
 
-        async function processSignal(senderId, sig) {
-          if (!sig || !sig.type) return;
+        async function processSignal(senderId, sigNode) {
+          if (!sigNode || typeof sigNode !== 'object') return;
+          const desc = sigNode.desc;
+          const iceMap = sigNode.ice || {};
+
           try {
-            if (sig.type === 'offer') {
+            if (desc && desc.type === 'offer') {
               let entry = rtcPeers.get(senderId);
-              if (entry && entry.pc) entry.pc.close();
-              const pc = new RTCPeerConnection(rtcConfig);
-              entry = { pc, dc: null };
-              rtcPeers.set(senderId, entry);
-
-              pc.ondatachannel = (ev) => {
-                entry.dc = ev.channel;
-                bindDataChannel(senderId, ev.channel);
-              };
-
-              const candidates = [];
-              pc.onicecandidate = (e) => {
-                if (e.candidate) candidates.push(e.candidate.toJSON());
-              };
-
-              await pc.setRemoteDescription({ type: 'offer', sdp: sig.sdp });
-              if (Array.isArray(sig.candidates)) {
-                for (const c of sig.candidates) {
-                  await pc.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
+              if (!entry || entry.offerTs !== desc.ts) {
+                if (entry && entry.pc) {
+                  try { entry.pc.close(); } catch (_) {}
                 }
-              }
-              const answer = await pc.createAnswer();
-              await pc.setLocalDescription(answer);
+                const pc = new RTCPeerConnection(rtcConfig);
+                entry = { pc, dc: null, pendingIce: [], offerTs: desc.ts, appliedIce: {}, lastAttempt: Date.now() };
+                rtcPeers.set(senderId, entry);
 
-              setTimeout(async () => {
-                await AetheriaDB.set(`signals/${senderId}/${myPeerId}`, {
+                pc.ondatachannel = (ev) => {
+                  entry.dc = ev.channel;
+                  bindDataChannel(senderId, ev.channel);
+                };
+
+                let iceIdx = 0;
+                pc.onicecandidate = (e) => {
+                  if (e.candidate) {
+                    AetheriaDB.set(`signals/${senderId}/${myPeerId}/ice/${iceIdx++}`, e.candidate.toJSON());
+                  }
+                };
+
+                await pc.setRemoteDescription({ type: 'offer', sdp: desc.sdp });
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+                await AetheriaDB.set(`signals/${senderId}/${myPeerId}/desc`, {
                   type: 'answer',
                   sdp: pc.localDescription.sdp,
-                  candidates,
                   ts: Date.now()
                 });
-              }, 350);
-              await AetheriaDB.remove(`signals/${myPeerId}/${senderId}`);
-            } else if (sig.type === 'answer') {
+              }
+
+              // Apply any trickle ICE candidates
+              for (const k of Object.keys(iceMap)) {
+                if (!entry.appliedIce[k] && iceMap[k]) {
+                  entry.appliedIce[k] = true;
+                  await entry.pc.addIceCandidate(new RTCIceCandidate(iceMap[k])).catch(() => {});
+                }
+              }
+            } else if (desc && desc.type === 'answer') {
               const entry = rtcPeers.get(senderId);
-              if (entry && entry.pc && entry.pc.signalingState === 'have-local-offer') {
-                await entry.pc.setRemoteDescription({ type: 'answer', sdp: sig.sdp });
-                if (Array.isArray(sig.candidates)) {
-                  for (const c of sig.candidates) {
-                    await entry.pc.addIceCandidate(new RTCIceCandidate(c)).catch(() => {});
+              if (entry && entry.pc) {
+                if (entry.pc.signalingState === 'have-local-offer') {
+                  await entry.pc.setRemoteDescription({ type: 'answer', sdp: desc.sdp });
+                }
+                entry.appliedIce = entry.appliedIce || {};
+                for (const k of Object.keys(iceMap)) {
+                  if (!entry.appliedIce[k] && iceMap[k]) {
+                    entry.appliedIce[k] = true;
+                    await entry.pc.addIceCandidate(new RTCIceCandidate(iceMap[k])).catch(() => {});
                   }
                 }
               }
-              await AetheriaDB.remove(`signals/${myPeerId}/${senderId}`);
             }
           } catch (_) {}
         }
@@ -1405,12 +1452,20 @@
         return { broadcast, initiateCall, processSignal, rtcPeers };
       })();
 
-      function upsertRemotePeer(id, data) {
+      function upsertRemotePeer(id, data, isDirectP2P = false) {
         if (!data || id === myPeerId) return;
+        const now = Date.now();
         const existing = world.remotePeers.get(id);
         if (existing) {
+          // Ignore stale RTDB packet if a direct WebRTC P2P packet arrived within the last 180ms
+          if (!isDirectP2P && existing.lastP2P && (now - existing.lastP2P < 180)) {
+            return;
+          }
+          if (isDirectP2P) existing.lastP2P = now;
           existing.targetX = data.x;
           existing.targetY = data.y;
+          existing.vx = data.vx ?? 0;
+          existing.vy = data.vy ?? 0;
           existing.username = data.username || existing.username;
           existing.gang = data.gang || existing.gang;
           existing.hp = data.hp ?? existing.hp;
@@ -1419,7 +1474,7 @@
           existing.activeGun = data.activeGun || existing.activeGun;
           existing.gunLevel = data.gunLevel || existing.gunLevel;
           existing.dead = !!data.dead;
-          existing.lastSeen = Date.now();
+          existing.lastSeen = now;
         } else {
           world.remotePeers.set(id, {
             id,
@@ -1429,21 +1484,23 @@
             y: data.y || 0,
             targetX: data.x || 0,
             targetY: data.y || 0,
+            vx: data.vx || 0,
+            vy: data.vy || 0,
             hp: data.hp || 120,
             maxHp: data.maxHp || 120,
             kills: data.kills || 0,
             activeGun: data.activeGun || 'pulse',
             gunLevel: data.gunLevel || 1,
             dead: !!data.dead,
-            lastSeen: Date.now()
+            lastSeen: now,
+            lastP2P: isDirectP2P ? now : 0
           });
-          showToast(`🌐 ${data.username || 'Explorer'} joined the shared world`);
           rebalanceGangRosters();
         }
       }
 
       // =========================================================================
-      // 9. SHARED WORLD ENTITIES, EQUAL GANG NPCs & SMART CLEANING
+      // 9. SHARED WORLD ENTITIES & EQUAL GANG ROSTERS
       // =========================================================================
       function createNpc(index, gangId) {
         const angle = (index / 15) * Math.PI * 2;
@@ -1456,19 +1513,19 @@
           gang: gangId,
           x: Math.cos(angle) * dist,
           y: Math.sin(angle) * dist,
+          targetX: Math.cos(angle) * dist,
+          targetY: Math.sin(angle) * dist,
           vx: 0,
           vy: 0,
           radius: 16,
           hp: 130,
           maxHp: 130,
           coins: 12,
-          rubies: 0,
           kills: 0,
           guns: { [startGun]: 1 },
           activeGun: startGun,
           fireCooldown: Math.random() * 0.5,
           beaconCooldown: 8 + Math.random() * 10,
-          aiState: 'roam',
           wanderAngle: Math.random() * Math.PI * 2,
           wanderTimer: 1 + Math.random() * 2,
           dead: false,
@@ -1485,8 +1542,6 @@
             world.npcs.push(createNpc(idx++, g.id));
           }
         }
-
-        // Spawn initial Coins, Gun Pickups, and Powerup Orbs across open space
         for (let i = 0; i < 42; i++) spawnCoin(true);
         for (let i = 0; i < 10; i++) spawnGunDrop();
         for (let i = 0; i < 8; i++) spawnPowerupDrop();
@@ -1496,7 +1551,6 @@
       }
 
       function rebalanceGangRosters() {
-        // Count human players per gang
         const counts = {};
         for (const g of GANGS) counts[g.id] = 0;
         if (joined) counts[player.gang] = (counts[player.gang] || 0) + 1;
@@ -1504,7 +1558,6 @@
           if (counts[peer.gang] !== undefined) counts[peer.gang]++;
         }
 
-        // Adjust NPC gang assignments so total (players + NPCs) is equal across all 5 gangs
         const targetTotal = Math.max(MEMBERS_PER_GANG, Math.max(...Object.values(counts)) + 1);
         const neededNpcs = {};
         for (const g of GANGS) {
@@ -1598,10 +1651,8 @@
           radius: 42,
           speed: 58,
           fireCooldown: 1.4,
-          novaCooldown: 5.5,
-          vortexTimer: 0
+          novaCooldown: 5.5
         });
-        showToast('⚠️ A COLOSSUS BOSS has entered deep space! All gangs prioritize it!');
       }
 
       // =========================================================================
@@ -1623,12 +1674,12 @@
       }
 
       // =========================================================================
-      // 11. COMBAT, AUTO-AIM, BEACONS, RUBY MINES & BUILDINGS
+      // 11. COMBAT, BEACONS, RUBY MINES & BUILDINGS
       // =========================================================================
       function triggerDash() {
         if (player.dead) return;
         if (player.dashEnergy < 35) {
-          showToast('⚡ Build up at least 35% Dash Energy first!');
+          showToast('⚡ Need 35% Dash Energy');
           return;
         }
         player.dashEnergy -= 35;
@@ -1641,18 +1692,18 @@
         if (isPlayer) {
           if (player.dead) return;
           if (player.beaconCooldown > 0) {
-            showToast(`📡 Beacon recharging (${player.beaconCooldown.toFixed(1)}s)`);
+            showToast(`📡 Beacon cooldown: ${player.beaconCooldown.toFixed(1)}s`);
             return;
           }
           if (player.coins < 4 || player.dashEnergy < 50) {
-            showToast('📡 Requires 4 Coins (🪙) & 50% Dash Energy (⚡)');
+            showToast('📡 Requires 4 Coins (🪙) & 50% Dash (⚡)');
             return;
           }
           player.coins -= 4;
           player.dashEnergy -= 50;
           player.beaconCooldown = 14;
           SoundFX.beacon();
-          showToast('📡 Resonance Beacon deployed! (+35% DMG, -40% DMG Taken, 2.5x Regen)');
+          addFloatText(player.x, player.y - 28, '📡 BEACON ACTIVE', '#38bdf8', 14);
         }
 
         const id = 'b_' + ownerId + '_' + Date.now();
@@ -1662,21 +1713,22 @@
           ownerId,
           ownerName,
           gang: gangId,
-          x,
-          y,
+          x: Math.round(x),
+          y: Math.round(y),
           radius: 155,
           color: gMeta.stroke,
           pulseTimer: 0,
           expiresAt: Date.now() + 26000
         };
         world.beacons[id] = beaconObj;
+        P2PMesh.broadcast({ type: 'beacon_deploy', data: beaconObj });
         AetheriaDB.set(`beacons/${id}`, beaconObj);
       }
 
       function buildRubyMine() {
         if (player.dead) return;
         if (player.coins < 100) {
-          showToast('⛏️ You need 100 Coins (🪙) to construct a Ruby Mine!');
+          showToast('⛏️ Need 100 Coins (🪙) to build a Ruby Mine');
           return;
         }
         player.coins -= 100;
@@ -1692,16 +1744,14 @@
           hp: 450,
           maxHp: 450,
           protected: !!safeZone,
-          progress: 0,
           createdAt: Date.now()
         };
         world.mines[id] = mineObj;
+        localMineProgress[id] = 0;
         AetheriaDB.set(`mines/${id}`, mineObj);
         saveUserProfile();
         SoundFX.beacon();
-        showToast(safeZone
-          ? '⛏️ Protected Ruby Mine built inside Safe Zone! Anyone can mine Rubies here.'
-          : '⛏️ Ruby Mine built in open space! Defend it from rivals.');
+        addFloatText(player.x, player.y - 32, '⛏️ RUBY MINE BUILT', '#fb7185', 14);
       }
 
       function spawnVisualProjectile(p) {
@@ -1753,9 +1803,9 @@
         if (isLocalPlayer) SoundFX.shoot(gunId);
       }
 
-      function damagePlayer(amount, attackerName, attackerId) {
+      function damagePlayer(amount, attackerName) {
         if (player.dead) return;
-        if (getSafeZoneAt(player.x, player.y)) return; // Weapons disabled in safe zones
+        if (getSafeZoneAt(player.x, player.y)) return;
 
         const stats = getComputedStats();
         const finalDmg = Math.max(1, Math.round(amount * (1 - stats.dmgReduction)));
@@ -1767,9 +1817,10 @@
         if (player.hp <= 0) {
           player.hp = 0;
           player.dead = true;
+          player.vx = 0;
+          player.vy = 0;
           player.respawnTimer = 3.0;
           player.killerName = attackerName || 'Hostile Force';
-          // Restart gathered run items on death (keep permanent Ruby Shop upgrades!)
           player.coins = 0;
           player.dashEnergy = 0;
           player.guns = { pulse: { level: 1, ammo: 18, maxAmmo: 18, reloading: 0 } };
@@ -1782,7 +1833,7 @@
         }
       }
 
-      function registerKill(victimName, rewardCoins = 5) {
+      function registerKill(rewardCoins = 5) {
         player.kills += 1;
         player.coins += rewardCoins;
         if (player.powerups.vamp > 0) {
@@ -1790,22 +1841,53 @@
           player.hp = Math.min(stats.maxHp, player.hp + 25);
         }
         SoundFX.kill();
-        addFloatText(player.x, player.y - 34, `+1 KILL (+${rewardCoins}🪙)`, '#4ade80', 15);
+        addFloatText(player.x, player.y - 34, `+1 KILL (+${rewardCoins}🪙)`, '#34d399', 15);
         saveUserProfile();
       }
 
       // =========================================================================
-      // 12. INPUT HANDLING (Keyboard, Mouse & Touch)
+      // 12. KEYBOARD SHORTCUTS & POINTER INPUT
       // =========================================================================
       const keys = {};
       window.addEventListener('keydown', (e) => {
-        if (document.activeElement === ui.usernameInput || document.activeElement === ui.chatInput) return;
-        keys[e.key.toLowerCase()] = true;
-        if (e.code === 'Space') {
+        if (document.activeElement === ui.usernameInput || document.activeElement === ui.chatInput) {
+          if (e.key === 'Escape') document.activeElement.blur();
+          return;
+        }
+        const k = e.key.toLowerCase();
+        keys[k] = true;
+
+        if (e.code === 'Space' || k === 'shift') {
           e.preventDefault();
           triggerDash();
-        } else if (e.key.toLowerCase() === 'q') {
+        } else if (k === 'b' || k === 'e') {
+          e.preventDefault();
+          deployBeacon(player.id, player.username, player.gang, player.x, player.y, true);
+        } else if (k === 'm') {
+          e.preventDefault();
+          buildRubyMine();
+        } else if (k === 'q') {
+          e.preventDefault();
           cycleGun();
+        } else if (k === 't') {
+          e.preventDefault();
+          ui.treatyModal.classList.contains('open') ? ui.treatyModal.classList.remove('open') : openTreatyModal();
+        } else if (k === 'r') {
+          e.preventDefault();
+          ui.shopModal.classList.contains('open') ? ui.shopModal.classList.remove('open') : openShopModal();
+        } else if (k === 'g') {
+          e.preventDefault();
+          ui.gangModal.classList.contains('open') ? ui.gangModal.classList.remove('open') : openGangModal();
+        } else if (k === 'c') {
+          e.preventDefault();
+          ui.chatDrawer.classList.toggle('open');
+        } else if (e.key === 'Escape') {
+          ui.treatyModal.classList.remove('open');
+          ui.shopModal.classList.remove('open');
+          ui.gangModal.classList.remove('open');
+          ui.chatDrawer.classList.remove('open');
+          movingBuildingId = null;
+          ui.moveBuildingBanner.style.display = 'none';
         } else if (['1', '2', '3', '4'].includes(e.key)) {
           const owned = Object.keys(player.guns);
           const idx = parseInt(e.key, 10) - 1;
@@ -1815,6 +1897,7 @@
           }
         }
       });
+
       window.addEventListener('keyup', (e) => {
         keys[e.key.toLowerCase()] = false;
       });
@@ -1832,7 +1915,7 @@
             b.x = Math.round(wx);
             b.y = Math.round(wy);
             saveUserProfile();
-            showToast(`📍 Relocated ${b.name} to (${b.x}, ${b.y})`);
+            addFloatText(b.x, b.y - 24, '📍 RELOCATED', '#fbbf24', 13);
           }
           movingBuildingId = null;
           ui.moveBuildingBanner.style.display = 'none';
@@ -1855,18 +1938,17 @@
         const idx = (owned.indexOf(player.activeGun) + 1) % owned.length;
         player.activeGun = owned[idx];
         renderArsenalBar();
-        showToast(`🔫 Switched to ${GUN_CATALOG[player.activeGun].name} Lv.${player.guns[player.activeGun].level}`);
       }
 
       // =========================================================================
-      // 13. SIMULATION UPDATE LOOP
+      // 13. SIMULATION LOOP
       // =========================================================================
       let currentTargetEntity = null;
 
       function updateSimulation(dt) {
         if (!joined) return;
 
-        // 1. Player Respawn Countdown (3 seconds -> random space location)
+        // 1. Respawn Countdown (3 seconds -> random location in space)
         if (player.dead) {
           player.respawnTimer -= dt;
           ui.respawnTimerText.textContent = Math.max(0, player.respawnTimer).toFixed(1);
@@ -1879,7 +1961,6 @@
             player.dead = false;
             player.targetPoint = null;
             ui.respawnOverlay.style.display = 'none';
-            showToast('✨ Resummoned in deep space!');
           }
           return;
         }
@@ -1898,7 +1979,7 @@
           if (player.powerups[pKey] > 0) player.powerups[pKey] = Math.max(0, player.powerups[pKey] - dt);
         }
 
-        // 2. Player Movement (Keyboard WASD/Arrows or Tap Waypoint)
+        // 2. Player Movement & Instant Velocity Tracking
         let mx = 0;
         let my = 0;
         if (keys['w'] || keys['arrowup']) my -= 1;
@@ -1911,39 +1992,44 @@
           const len = Math.hypot(mx, my);
           mx /= len;
           my /= len;
-          player.x += mx * stats.speed * dt;
-          player.y += my * stats.speed * dt;
+          player.vx = mx * stats.speed;
+          player.vy = my * stats.speed;
+          player.x += player.vx * dt;
+          player.y += player.vy * dt;
           player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 7.5 * dt);
         } else if (player.targetPoint) {
           const dx = player.targetPoint.x - player.x;
           const dy = player.targetPoint.y - player.y;
           const dist = Math.hypot(dx, dy);
           if (dist > 8) {
-            player.x += (dx / dist) * stats.speed * dt;
-            player.y += (dy / dist) * stats.speed * dt;
+            player.vx = (dx / dist) * stats.speed;
+            player.vy = (dy / dist) * stats.speed;
+            player.x += player.vx * dt;
+            player.y += player.vy * dt;
             player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 7.5 * dt);
           } else {
+            player.vx = 0;
+            player.vy = 0;
             player.targetPoint = null;
           }
         } else {
-          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 2.2 * dt);
+          player.vx = 0;
+          player.vy = 0;
+          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 2.4 * dt);
         }
 
         if (stats.beacon) {
           player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 6 * dt);
         }
 
-        // 3. Safe Zone Check
+        // 3. Auto-Aim & Auto-Fire (Disabled inside Safe Zones)
         const activeZone = getSafeZoneAt(player.x, player.y);
-
-        // 4. Player Auto-Aim & Auto-Fire (Disabled inside Safe Zones!)
         const gunState = player.guns[player.activeGun];
         const gunSpec = GUN_CATALOG[player.activeGun];
+
         if (gunState.reloading > 0) {
           gunState.reloading -= dt;
-          if (gunState.reloading <= 0) {
-            gunState.ammo = gunState.maxAmmo;
-          }
+          if (gunState.reloading <= 0) gunState.ammo = gunState.maxAmmo;
         }
         if (player.fireCooldown > 0) player.fireCooldown -= dt;
 
@@ -1952,7 +2038,6 @@
           let bestTarget = null;
           let bestScore = Infinity;
 
-          // Prioritize Colossus Bosses first if in range
           for (const boss of world.bosses) {
             const d = Math.hypot(boss.x - player.x, boss.y - player.y);
             if (d <= gunSpec.range + boss.radius) {
@@ -2000,31 +2085,27 @@
 
           if (bestTarget) {
             currentTargetEntity = bestTarget;
-            if (player.fireCooldown <= 0 && gunState.reloading <= 0) {
-              if (gunState.ammo > 0) {
-                fireWeapon(
-                  player,
-                  bestTarget.entity.x,
-                  bestTarget.entity.y,
-                  player.activeGun,
-                  gunState.level,
-                  stats.dmgMult,
-                  stats.critChance,
-                  stats.critMult,
-                  true
-                );
-                gunState.ammo -= 1;
-                player.fireCooldown = gunSpec.fireInterval / stats.fireRateMult;
-                if (gunState.ammo <= 0) {
-                  gunState.reloading = gunSpec.reloadTime;
-                }
-              }
+            if (player.fireCooldown <= 0 && gunState.reloading <= 0 && gunState.ammo > 0) {
+              fireWeapon(
+                player,
+                bestTarget.entity.x,
+                bestTarget.entity.y,
+                player.activeGun,
+                gunState.level,
+                stats.dmgMult,
+                stats.critChance,
+                stats.critMult,
+                true
+              );
+              gunState.ammo -= 1;
+              player.fireCooldown = gunSpec.fireInterval / stats.fireRateMult;
+              if (gunState.ammo <= 0) gunState.reloading = gunSpec.reloadTime;
             }
           }
         }
 
-        // 5. Collect Coins, Guns & Powerups
-        const magnetRange = player.powerups.magnet > 0 ? 150 : 34;
+        // 4. Collect Coins, Guns & Powerups
+        const magnetRange = player.powerups.magnet > 0 ? 155 : 34;
         for (let i = world.coins.length - 1; i >= 0; i--) {
           const c = world.coins[i];
           const d = Math.hypot(c.x - player.x, c.y - player.y);
@@ -2050,11 +2131,11 @@
               player.guns[g.gunId].level += 1;
               player.guns[g.gunId].maxAmmo += 2;
               player.guns[g.gunId].ammo = player.guns[g.gunId].maxAmmo;
-              showToast(`⬆️ ${spec.name} upgraded to Lv.${player.guns[g.gunId].level} (+25% DMG)!`);
+              addFloatText(player.x, player.y - 24, `${spec.name} Lv.${player.guns[g.gunId].level}`, spec.color, 13);
             } else {
               player.guns[g.gunId] = { level: 1, ammo: spec.magSize, maxAmmo: spec.magSize, reloading: 0 };
               player.activeGun = g.gunId;
-              showToast(`🔫 Acquired ${spec.name}! Press Q or tap slot to swap.`);
+              addFloatText(player.x, player.y - 24, `+ ${spec.name}`, spec.color, 13);
             }
             SoundFX.pickup();
             renderArsenalBar();
@@ -2067,37 +2148,33 @@
           const p = world.powerupDrops[i];
           if (Math.hypot(p.x - player.x, p.y - player.y) <= player.radius + 16) {
             player.powerups[p.type] = 16;
-            const labels = {
-              overdrive: '⚡ Overdrive (+35% Fire Rate & Speed)',
-              shield: '🛡️ Aegis Shield (-35% Damage Taken)',
-              magnet: '🧲 Coin Magnet (Wide Pickup)',
-              vamp: '🩸 Vampiric Core (+25 HP per Kill)'
-            };
-            showToast(labels[p.type] || 'Powerup Active!');
+            addFloatText(player.x, player.y - 24, `${p.type.toUpperCase()} BOOST`, '#38bdf8', 13);
             SoundFX.pickup();
             world.powerupDrops.splice(i, 1);
             spawnPowerupDrop();
           }
         }
 
-        // 6. Ruby Mine Channeling (Works inside AND outside Safe Zones!)
+        // 5. Ruby Mine Channeling (Local progress isolated from RTDB overwrites so it ALWAYS completes!)
         for (const mId of Object.keys(world.mines)) {
           const m = world.mines[mId];
           if (!m) continue;
           const d = Math.hypot(m.x - player.x, m.y - player.y);
-          if (d <= 115) {
-            m.progress = (m.progress || 0) + dt * 0.24;
-            if (m.progress >= 1) {
-              m.progress = 0;
+          if (d <= 125) {
+            localMineProgress[mId] = (localMineProgress[mId] || 0) + dt * 0.30;
+            if (localMineProgress[mId] >= 1) {
+              localMineProgress[mId] = 0;
               player.rubies += 1;
               SoundFX.ruby();
-              addFloatText(m.x, m.y - 26, '+1 💎 RUBY', '#fb7185', 14);
+              addFloatText(m.x, m.y - 28, '+1 💎 RUBY', '#fb7185', 15);
               saveUserProfile();
             }
+          } else if (localMineProgress[mId] > 0) {
+            localMineProgress[mId] = Math.max(0, localMineProgress[mId] - dt * 0.12);
           }
         }
 
-        // 7. Passive Income from Player Buildings
+        // 6. Passive Income from Player Buildings
         for (const b of player.buildings) {
           b._timer = (b._timer || 0) + dt;
           const interval = b.id === 'solar_extractor' ? 5 : (b.id === 'aether_refinery' ? 10 : 12);
@@ -2109,18 +2186,27 @@
           }
         }
 
-        // 8. Update Intelligent NPCs (Active inside AND outside Safe Zones!)
+        // 7. Update NPCs, Hostiles, Projectiles & Smooth Remote Peer Dead-Reckoning
         updateNpcs(dt);
-
-        // 9. Update Raiders & Colossus Bosses
         updateHostiles(dt);
-
-        // 10. Update Projectiles, Beacons, Particles & Remote Peer Interpolation
         updateProjectiles(dt);
-        updateBeaconsAndEffects(dt);
+        updateBeaconsAndPeers(dt);
       }
 
       function updateNpcs(dt) {
+        if (!isWorldHost && world.remotePeers.size > 0) {
+          // Non-host peers smoothly interpolate NPCs from host's 20Hz P2P stream
+          for (const npc of world.npcs) {
+            if (npc.dead) continue;
+            npc.x += (npc.vx || 0) * dt;
+            npc.y += (npc.vy || 0) * dt;
+            const blend = 1 - Math.exp(-12 * dt);
+            npc.x += ((npc.targetX ?? npc.x) - npc.x) * blend;
+            npc.y += ((npc.targetY ?? npc.y) - npc.y) * blend;
+          }
+          return;
+        }
+
         for (const npc of world.npcs) {
           if (npc.dead) {
             npc.respawnTimer -= dt;
@@ -2141,7 +2227,6 @@
           if (npc.fireCooldown > 0) npc.fireCooldown -= dt;
           if (npc.beaconCooldown > 0) npc.beaconCooldown -= dt;
 
-          // Build Ruby Mine if NPC reaches 100 Coins
           if (npc.coins >= 100 && Object.keys(world.mines).length < 10) {
             npc.coins -= 100;
             const id = 'mine_' + npc.id + '_' + Date.now();
@@ -2149,76 +2234,51 @@
             const mineObj = {
               id, ownerId: npc.id, ownerName: npc.name, gang: npc.gang,
               x: Math.round(npc.x), y: Math.round(npc.y),
-              hp: 450, maxHp: 450, protected: !!sz, progress: 0, createdAt: Date.now()
+              hp: 450, maxHp: 450, protected: !!sz, createdAt: Date.now()
             };
             world.mines[id] = mineObj;
             AetheriaDB.set(`mines/${id}`, mineObj);
           }
 
-          // Smart Loot Seeking (Coins, Guns, Powerups)
           let moveTarget = null;
           for (const g of world.gunDrops) {
-            if (Math.hypot(g.x - npc.x, g.y - npc.y) < 220) {
-              moveTarget = { x: g.x, y: g.y };
-              break;
-            }
+            if (Math.hypot(g.x - npc.x, g.y - npc.y) < 220) { moveTarget = { x: g.x, y: g.y }; break; }
           }
           if (!moveTarget) {
             for (const p of world.powerupDrops) {
-              if (Math.hypot(p.x - npc.x, p.y - npc.y) < 220) {
-                moveTarget = { x: p.x, y: p.y };
-                break;
-              }
+              if (Math.hypot(p.x - npc.x, p.y - npc.y) < 220) { moveTarget = { x: p.x, y: p.y }; break; }
             }
           }
           if (!moveTarget) {
             for (const c of world.coins) {
-              if (Math.hypot(c.x - npc.x, c.y - npc.y) < 190) {
-                moveTarget = { x: c.x, y: c.y };
-                break;
-              }
+              if (Math.hypot(c.x - npc.x, c.y - npc.y) < 190) { moveTarget = { x: c.x, y: c.y }; break; }
             }
           }
 
-          // Target Priority: 1. Colossus Boss -> 2. Raiders -> 3. Hostile Players/NPCs
           let combatTarget = null;
           let targetDist = Infinity;
 
           for (const boss of world.bosses) {
             const d = Math.hypot(boss.x - npc.x, boss.y - npc.y);
-            if (d < 520) {
-              combatTarget = boss;
-              targetDist = d;
-              break;
-            }
+            if (d < 520) { combatTarget = boss; targetDist = d; break; }
           }
 
           if (!combatTarget) {
             for (const r of world.enemies) {
               const d = Math.hypot(r.x - npc.x, r.y - npc.y);
-              if (d < 380 && d < targetDist) {
-                combatTarget = r;
-                targetDist = d;
-              }
+              if (d < 380 && d < targetDist) { combatTarget = r; targetDist = d; }
             }
             if (!player.dead && !getSafeZoneAt(player.x, player.y) && isHostileToPlayer(npc.id, npc.gang)) {
               const d = Math.hypot(player.x - npc.x, player.y - npc.y);
-              if (d < 380 && d < targetDist) {
-                combatTarget = player;
-                targetDist = d;
-              }
+              if (d < 380 && d < targetDist) { combatTarget = player; targetDist = d; }
             }
             for (const other of world.npcs) {
               if (other === npc || other.dead || other.gang === npc.gang || getSafeZoneAt(other.x, other.y)) continue;
               const d = Math.hypot(other.x - npc.x, other.y - npc.y);
-              if (d < 360 && d < targetDist) {
-                combatTarget = other;
-                targetDist = d;
-              }
+              if (d < 360 && d < targetDist) { combatTarget = other; targetDist = d; }
             }
           }
 
-          // Intelligent Weapon Switching based on distance & boss priority
           const ownedGuns = Object.keys(npc.guns);
           if (ownedGuns.length > 1 && combatTarget) {
             if (targetDist < 175 && npc.guns.scatter) npc.activeGun = 'scatter';
@@ -2227,31 +2287,30 @@
             else npc.activeGun = ownedGuns[0];
           }
 
-          // Movement (NPCs always roam freely both inside and outside Safe Zones!)
           if (moveTarget) {
-            const d = Math.hypot(moveTarget.x - npc.x, moveTarget.y - npc.y);
-            if (d > 6) {
-              npc.x += ((moveTarget.x - npc.x) / d) * 125 * dt;
-              npc.y += ((moveTarget.y - npc.y) / d) * 125 * dt;
-            }
+            const d = Math.hypot(moveTarget.x - npc.x, moveTarget.y - npc.y) || 1;
+            npc.vx = ((moveTarget.x - npc.x) / d) * 125;
+            npc.vy = ((moveTarget.y - npc.y) / d) * 125;
+            npc.x += npc.vx * dt;
+            npc.y += npc.vy * dt;
           } else if (combatTarget && !getSafeZoneAt(npc.x, npc.y)) {
             const preferredRange = (GUN_CATALOG[npc.activeGun]?.range || 320) * 0.72;
             const dx = combatTarget.x - npc.x;
             const dy = combatTarget.y - npc.y;
             const d = Math.hypot(dx, dy) || 1;
             if (d > preferredRange) {
-              npc.x += (dx / d) * 112 * dt;
-              npc.y += (dy / d) * 112 * dt;
+              npc.vx = (dx / d) * 112;
+              npc.vy = (dy / d) * 112;
             } else {
-              // Strafe tactically
-              npc.x += (-dy / d) * 75 * dt;
-              npc.y += (dx / d) * 75 * dt;
+              npc.vx = (-dy / d) * 75;
+              npc.vy = (dx / d) * 75;
             }
+            npc.x += npc.vx * dt;
+            npc.y += npc.vy * dt;
           } else {
             npc.wanderTimer -= dt;
             if (npc.wanderTimer <= 0) {
               npc.wanderTimer = 2.2 + Math.random() * 2.5;
-              // Occasionally visit Treaty Board or Shop or roam deep space
               if (Math.random() < 0.18) {
                 const dest = SAFE_ZONES[Math.floor(Math.random() * SAFE_ZONES.length)];
                 npc.wanderAngle = Math.atan2(dest.y - npc.y, dest.x - npc.x);
@@ -2259,11 +2318,12 @@
                 npc.wanderAngle += (Math.random() - 0.5) * 2.4;
               }
             }
-            npc.x += Math.cos(npc.wanderAngle) * 95 * dt;
-            npc.y += Math.sin(npc.wanderAngle) * 95 * dt;
+            npc.vx = Math.cos(npc.wanderAngle) * 95;
+            npc.vy = Math.sin(npc.wanderAngle) * 95;
+            npc.x += npc.vx * dt;
+            npc.y += npc.vy * dt;
           }
 
-          // NPC Pickup Items
           for (let i = world.coins.length - 1; i >= 0; i--) {
             const c = world.coins[i];
             if (Math.hypot(c.x - npc.x, c.y - npc.y) <= npc.radius + 14) {
@@ -2291,14 +2351,12 @@
             }
           }
 
-          // NPC Deploy Beacon when fighting outside safe zone
           if (combatTarget && !getSafeZoneAt(npc.x, npc.y) && npc.coins >= 6 && npc.beaconCooldown <= 0 && Math.random() < 0.015) {
             npc.coins -= 4;
             npc.beaconCooldown = 28;
             deployBeacon(npc.id, npc.name, npc.gang, npc.x, npc.y, false);
           }
 
-          // NPC Combat Firing (Only outside Safe Zones)
           if (combatTarget && !getSafeZoneAt(npc.x, npc.y) && npc.fireCooldown <= 0) {
             const spec = GUN_CATALOG[npc.activeGun] || GUN_CATALOG.pulse;
             if (targetDist <= spec.range + (combatTarget.radius || 16)) {
@@ -2311,7 +2369,7 @@
                 npc.powerupTimer > 0 ? 1.25 : 0.95,
                 0.08,
                 1.5,
-                false
+                true
               );
               npc.fireCooldown = spec.fireInterval * 1.35;
             }
@@ -2320,7 +2378,8 @@
       }
 
       function updateHostiles(dt) {
-        // Raiders
+        if (!isWorldHost && world.remotePeers.size > 0) return;
+
         for (const r of world.enemies) {
           r.fireCooldown -= dt;
           let target = null;
@@ -2345,14 +2404,13 @@
             if (r.fireCooldown <= 0 && d < 280) {
               fireWeapon(
                 { id: r.id, name: r.name, gang: 'raider', x: r.x, y: r.y, radius: r.radius },
-                target.x, target.y, 'pulse', 1, 0.75, 0.05, 1.4, false
+                target.x, target.y, 'pulse', 1, 0.75, 0.05, 1.4, true
               );
               r.fireCooldown = r.type === 'stalker' ? 1.3 : 1.7;
             }
           }
         }
 
-        // Colossus Bosses (Multi-phase powers: Gravity Vortex + Radial Plasma Nova)
         for (const boss of world.bosses) {
           boss.fireCooldown -= dt;
           boss.novaCooldown -= dt;
@@ -2379,7 +2437,6 @@
               boss.y += (dy / d) * boss.speed * (isEnraged ? 1.35 : 1) * dt;
             }
 
-            // Gravity Vortex pull on nearby non-safe-zone entities
             if (!player.dead && !getSafeZoneAt(player.x, player.y)) {
               const pd = Math.hypot(boss.x - player.x, boss.y - player.y);
               if (pd < 290 && pd > 65) {
@@ -2391,29 +2448,30 @@
             if (boss.fireCooldown <= 0) {
               fireWeapon(
                 { id: boss.id, name: boss.name, gang: 'boss', x: boss.x, y: boss.y, radius: boss.radius },
-                target.x, target.y, 'rail', isEnraged ? 3 : 2, 1.0, 0.15, 1.6, false
+                target.x, target.y, 'rail', isEnraged ? 3 : 2, 1.0, 0.15, 1.6, true
               );
               boss.fireCooldown = isEnraged ? 0.95 : 1.4;
             }
 
-            // Radial Nova Barrage
             if (boss.novaCooldown <= 0) {
               const rays = isEnraged ? 14 : 9;
               for (let i = 0; i < rays; i++) {
                 const ang = (i / rays) * Math.PI * 2;
-                spawnVisualProjectile({
+                const proj = {
                   x: boss.x + Math.cos(ang) * (boss.radius + 8),
                   y: boss.y + Math.sin(ang) * (boss.radius + 8),
                   vx: Math.cos(ang) * 360,
                   vy: Math.sin(ang) * 360,
                   radius: 6,
-                  color: '#f43f5e',
+                  color: '#fb7185',
                   damage: isEnraged ? 28 : 20,
                   ownerId: boss.id,
                   ownerName: boss.name,
                   ownerGang: 'boss',
                   life: 1.25
-                });
+                };
+                spawnVisualProjectile(proj);
+                P2PMesh.broadcast({ type: 'shot', data: proj });
               }
               boss.novaCooldown = isEnraged ? 4.2 : 6.2;
             }
@@ -2428,7 +2486,6 @@
           p.y += p.vy * dt;
           p.life -= dt;
 
-          // Disappear if entering any Safe Zone
           if (getSafeZoneAt(p.x, p.y) || p.life <= 0) {
             world.projectiles.splice(i, 1);
             continue;
@@ -2436,15 +2493,13 @@
 
           let hit = false;
 
-          // Hit Local Player
           if (p.ownerId !== player.id && !player.dead && isHostileToPlayer(p.ownerId, p.ownerGang)) {
             if (Math.hypot(p.x - player.x, p.y - player.y) <= player.radius + p.radius) {
-              damagePlayer(p.damage, p.ownerName, p.ownerId);
+              damagePlayer(p.damage, p.ownerName);
               hit = true;
             }
           }
 
-          // Hit Remote Peers (if fired by local player)
           if (!hit && p.ownerId === player.id) {
             for (const peer of world.remotePeers.values()) {
               if (peer.dead || !isHostileToPlayer(peer.id, peer.gang)) continue;
@@ -2463,7 +2518,6 @@
             }
           }
 
-          // Hit NPCs
           if (!hit) {
             for (const npc of world.npcs) {
               if (npc.dead || npc.id === p.ownerId || npc.gang === p.ownerGang) continue;
@@ -2475,7 +2529,7 @@
                   npc.dead = true;
                   npc.respawnTimer = 3.0;
                   spawnParticles(npc.x, npc.y, '#fb923c', 16, 130);
-                  if (p.ownerId === player.id) registerKill(npc.name, 6);
+                  if (p.ownerId === player.id) registerKill(6);
                 }
                 hit = true;
                 break;
@@ -2483,7 +2537,6 @@
             }
           }
 
-          // Hit Raiders
           if (!hit && p.ownerGang !== 'raider') {
             for (let j = world.enemies.length - 1; j >= 0; j--) {
               const r = world.enemies[j];
@@ -2492,7 +2545,7 @@
                 addFloatText(r.x, r.y - 16, `-${p.damage}`, '#38bdf8', 11);
                 if (r.hp <= 0) {
                   spawnParticles(r.x, r.y, '#38bdf8', 14, 120);
-                  if (p.ownerId === player.id) registerKill(r.name, 4);
+                  if (p.ownerId === player.id) registerKill(4);
                   world.enemies.splice(j, 1);
                   spawnRaider();
                 }
@@ -2502,7 +2555,6 @@
             }
           }
 
-          // Hit Colossus Boss
           if (!hit && p.ownerGang !== 'boss') {
             for (let j = world.bosses.length - 1; j >= 0; j--) {
               const boss = world.bosses[j];
@@ -2510,11 +2562,10 @@
                 boss.hp -= p.damage;
                 addFloatText(boss.x, boss.y - 34, p.isCrit ? `CRIT -${p.damage}!` : `-${p.damage}`, '#fbbf24', 14);
                 if (boss.hp <= 0) {
-                  spawnParticles(boss.x, boss.y, '#f43f5e', 40, 220);
+                  spawnParticles(boss.x, boss.y, '#fb7185', 40, 220);
                   if (p.ownerId === player.id) {
                     player.rubies += 5;
-                    registerKill(boss.name, 35);
-                    showToast('🏆 COLOSSUS DEFEATED! +35 Coins & +5 Rubies!');
+                    registerKill(35);
                   }
                   world.bosses.splice(j, 1);
                   setTimeout(spawnColossusBoss, 18000);
@@ -2525,7 +2576,6 @@
             }
           }
 
-          // Hit Unprotected Ruby Mines outside Safe Zones
           if (!hit) {
             for (const mId of Object.keys(world.mines)) {
               const m = world.mines[mId];
@@ -2535,12 +2585,12 @@
                 addFloatText(m.x, m.y - 22, `-${p.damage}`, '#fb7185', 12);
                 if (m.hp <= 0) {
                   delete world.mines[mId];
+                  delete localMineProgress[mId];
                   AetheriaDB.remove(`mines/${mId}`);
-                  spawnParticles(m.x, m.y, '#f43f5e', 24, 150);
+                  spawnParticles(m.x, m.y, '#fb7185', 24, 150);
                   if (p.ownerId === player.id) {
                     player.rubies += 4;
-                    registerKill(`${m.ownerName}'s Ruby Mine`, 15);
-                    showToast('💥 Destroyed rival Ruby Mine! Looted +4 Rubies!');
+                    registerKill(15);
                   }
                 }
                 hit = true;
@@ -2553,7 +2603,7 @@
         }
       }
 
-      function updateBeaconsAndEffects(dt) {
+      function updateBeaconsAndPeers(dt) {
         const now = Date.now();
         for (const id of Object.keys(world.beacons)) {
           const b = world.beacons[id];
@@ -2564,27 +2614,35 @@
           b.pulseTimer = (b.pulseTimer || 0) + dt;
           if (b.pulseTimer >= 2.2) {
             b.pulseTimer = 0;
-            // Shockwave damages nearby enemies
             for (const r of world.enemies) {
-              if (Math.hypot(r.x - b.x, r.y - b.y) <= b.radius) {
-                r.hp -= 14;
-              }
+              if (Math.hypot(r.x - b.x, r.y - b.y) <= b.radius) r.hp -= 14;
             }
           }
         }
 
-        // Interpolate Remote Peers smoothly
+        // Smooth 60fps Dead-Reckoning Velocity Extrapolation + Drift Correction (Zero Teleporting!)
         for (const [id, peer] of world.remotePeers.entries()) {
-          if (now - peer.lastSeen > 18000) {
+          if (now - peer.lastSeen > 16000) {
             world.remotePeers.delete(id);
             rebalanceGangRosters();
             continue;
           }
-          peer.x += (peer.targetX - peer.x) * Math.min(1, dt * 10);
-          peer.y += (peer.targetY - peer.y) * Math.min(1, dt * 10);
+          peer.x += (peer.vx || 0) * dt;
+          peer.y += (peer.vy || 0) * dt;
+
+          const errX = peer.targetX - peer.x;
+          const errY = peer.targetY - peer.y;
+          const errDist = Math.hypot(errX, errY);
+          if (errDist > 260) {
+            peer.x = peer.targetX;
+            peer.y = peer.targetY;
+          } else {
+            const blend = 1 - Math.exp(-14 * dt);
+            peer.x += errX * blend;
+            peer.y += errY * blend;
+          }
         }
 
-        // Particles & Floating Texts
         for (let i = world.particles.length - 1; i >= 0; i--) {
           const pt = world.particles[i];
           pt.x += pt.vx * dt;
@@ -2602,6 +2660,20 @@
 
       function applyHostWorldSnapshot(snap) {
         if (!snap) return;
+        if (Array.isArray(snap.npcs)) {
+          for (const sn of snap.npcs) {
+            const local = world.npcs.find(n => n.id === sn.id);
+            if (local) {
+              local.targetX = sn.x;
+              local.targetY = sn.y;
+              local.vx = sn.vx || 0;
+              local.vy = sn.vy || 0;
+              local.hp = sn.hp;
+              local.gang = sn.gang;
+              local.dead = !!sn.dead;
+            }
+          }
+        }
         if (Array.isArray(snap.bosses)) world.bosses = snap.bosses;
       }
 
@@ -2618,7 +2690,7 @@
       function renderWorld() {
         const w = canvas.width;
         const h = canvas.height;
-        ctx.fillStyle = '#06080f';
+        ctx.fillStyle = '#04060c';
         ctx.fillRect(0, 0, w, h);
 
         ctx.save();
@@ -2631,7 +2703,7 @@
         const startY = Math.floor((player.y - h / 2) / gridSize) * gridSize;
         const endY = player.y + h / 2 + gridSize;
 
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.06)';
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.055)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let gx = startX; gx <= endX; gx += gridSize) {
@@ -2644,7 +2716,7 @@
         }
         ctx.stroke();
 
-        // 2. Safe Zones (Central Sanctuary, Treaty Board, Ruby Shop)
+        // 2. Safe Zones
         for (const z of SAFE_ZONES) {
           const grad = ctx.createRadialGradient(z.x, z.y, 15, z.x, z.y, z.radius);
           grad.addColorStop(0, z.color + '28');
@@ -2661,7 +2733,7 @@
           ctx.setLineDash([]);
 
           ctx.fillStyle = z.color;
-          ctx.font = '700 13px Inter, sans-serif';
+          ctx.font = '800 13px Inter, sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText(`${z.icon} ${z.name.toUpperCase()}`, z.x, z.y - z.radius + 24);
           ctx.fillStyle = 'rgba(226, 232, 240, 0.65)';
@@ -2693,14 +2765,15 @@
           ctx.fillText(`📡 ${b.ownerName}'s Beacon`, b.x, b.y - 14);
         }
 
-        // 4. Ruby Mines & Mining Beams
+        // 4. Ruby Mines & Live Mining Channel Ring
         for (const mId of Object.keys(world.mines)) {
           const m = world.mines[mId];
           if (!m) continue;
+          const prog = localMineProgress[mId] || 0;
+          const isMining = !player.dead && Math.hypot(m.x - player.x, m.y - player.y) <= 125;
 
-          // Mining beam if player is near
-          if (!player.dead && Math.hypot(m.x - player.x, m.y - player.y) <= 115) {
-            ctx.strokeStyle = 'rgba(244, 63, 94, 0.7)';
+          if (isMining) {
+            ctx.strokeStyle = 'rgba(251, 113, 133, 0.78)';
             ctx.lineWidth = 2.5;
             ctx.beginPath();
             ctx.moveTo(player.x, player.y);
@@ -2709,26 +2782,25 @@
           }
 
           ctx.fillStyle = '#1e1b2e';
-          ctx.strokeStyle = m.protected ? '#38bdf8' : '#f43f5e';
+          ctx.strokeStyle = m.protected ? '#38bdf8' : '#fb7185';
           ctx.lineWidth = 3;
           ctx.beginPath();
           ctx.arc(m.x, m.y, 20, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
 
-          // Progress ring
-          if (m.progress > 0) {
+          if (prog > 0) {
             ctx.strokeStyle = '#fb7185';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 3.5;
             ctx.beginPath();
-            ctx.arc(m.x, m.y, 25, -Math.PI / 2, -Math.PI / 2 + m.progress * Math.PI * 2);
+            ctx.arc(m.x, m.y, 26, -Math.PI / 2, -Math.PI / 2 + prog * Math.PI * 2);
             ctx.stroke();
           }
 
           ctx.fillStyle = '#fb7185';
-          ctx.font = '700 11px Inter, sans-serif';
+          ctx.font = '800 11px Inter, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('💎 RUBY MINE', m.x, m.y - 29);
+          ctx.fillText(isMining ? `💎 MINING ${Math.round(prog * 100)}%` : '💎 RUBY MINE', m.x, m.y - 31);
           ctx.fillStyle = '#cbd5e1';
           ctx.font = '600 9px Inter, sans-serif';
           ctx.fillText(`${m.ownerName} • ${m.protected ? 'SAFE' : Math.round(m.hp) + ' HP'}`, m.x, m.y + 34);
@@ -2773,7 +2845,7 @@
           ctx.fillText(`🔫 ${spec.name}`, g.x, g.y - 17);
         }
 
-        const pColors = { overdrive: '#38bdf8', shield: '#22c55e', magnet: '#a855f7', vamp: '#f43f5e' };
+        const pColors = { overdrive: '#38bdf8', shield: '#34d399', magnet: '#c084fc', vamp: '#fb7185' };
         for (const p of world.powerupDrops) {
           const col = pColors[p.type] || '#38bdf8';
           ctx.fillStyle = col;
@@ -2791,7 +2863,7 @@
           drawUnit(r.x, r.y, r.radius, '#991b1b', '#ef4444', r.name, r.hp, r.maxHp, 'HOSTILE');
         }
         for (const boss of world.bosses) {
-          drawUnit(boss.x, boss.y, boss.radius, '#4c0519', '#f43f5e', boss.name, boss.hp, boss.maxHp, 'BOSS');
+          drawUnit(boss.x, boss.y, boss.radius, '#4c0519', '#fb7185', boss.name, boss.hp, boss.maxHp, 'BOSS');
         }
 
         // 8. Intelligent NPCs
@@ -2833,10 +2905,9 @@
             'YOU'
           );
 
-          // Auto-Aim Lock Reticle
           if (currentTargetEntity && currentTargetEntity.entity) {
             const te = currentTargetEntity.entity;
-            ctx.strokeStyle = '#f43f5e';
+            ctx.strokeStyle = '#fb7185';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(te.x, te.y, (te.radius || 18) + 8, 0, Math.PI * 2);
@@ -2882,15 +2953,14 @@
         ctx.fill();
         ctx.stroke();
 
-        // Real-time HP bar above unit
         const barW = Math.max(36, radius * 2.2);
         const barH = 5;
         const bx = x - barW / 2;
         const by = y - radius - 14;
-        ctx.fillStyle = 'rgba(0,0,0,0.65)';
+        ctx.fillStyle = 'rgba(0,0,0,0.68)';
         ctx.fillRect(bx, by, barW, barH);
         const pct = Math.max(0, Math.min(1, hp / (maxHp || 1)));
-        ctx.fillStyle = tag === 'ALLY' || tag === 'YOU' ? '#22c55e' : '#ef4444';
+        ctx.fillStyle = tag === 'ALLY' || tag === 'YOU' ? '#34d399' : '#f43f5e';
         ctx.fillRect(bx, by, barW * pct, barH);
 
         ctx.fillStyle = '#f8fafc';
@@ -2900,7 +2970,7 @@
       }
 
       // =========================================================================
-      // 15. HUD & MODAL UI UPDATES
+      // 15. HUD & MODALS
       // =========================================================================
       function updateHud() {
         const stats = getComputedStats();
@@ -2919,7 +2989,6 @@
         ui.beaconBtn.classList.toggle('disabled', player.coins < 4 || player.dashEnergy < 50 || player.beaconCooldown > 0);
         ui.dashBtn.classList.toggle('disabled', player.dashEnergy < 35);
 
-        // Zone Indicator
         const sz = getSafeZoneAt(player.x, player.y);
         if (sz) {
           ui.zoneText.textContent = `${sz.icon} ${sz.name.toUpperCase()} • WEAPONS DISABLED`;
@@ -2929,7 +2998,6 @@
           ui.zoneText.style.color = '#e2e8f0';
         }
 
-        // Powerup Strip
         const badges = [];
         if (stats.beacon) badges.push(`📡 Beacon (+35% DMG, -40% Taken, 2.5x Regen)`);
         if (stats.coinTier > 0) badges.push(`📈 Tier ${stats.coinTier} (+${stats.coinTier * 8} HP, +${Math.round(stats.coinTier * 2.5)}% RoF)`);
@@ -2940,7 +3008,6 @@
 
         ui.powerupBar.innerHTML = badges.map(b => `<div class="powerup-pill">${b}</div>`).join('');
 
-        // Target Telemetry Bar
         if (currentTargetEntity && currentTargetEntity.entity) {
           const te = currentTargetEntity.entity;
           ui.targetHud.style.display = 'flex';
@@ -2959,9 +3026,9 @@
           const spec = GUN_CATALOG[gId];
           const st = player.guns[gId];
           const active = player.activeGun === gId ? 'active' : '';
-          const ammoStr = st.reloading > 0 ? 'RELOADING...' : `${st.ammo}/${st.maxAmmo}`;
+          const ammoStr = st.reloading > 0 ? 'RELOAD' : `${st.ammo}/${st.maxAmmo}`;
           return `<div class="gun-slot ${active}" data-gun="${gId}">
-            <span>[${idx + 1}]</span>
+            <kbd>${idx + 1}</kbd>
             <span style="color:${spec.color};">●</span>
             <span>${spec.name} Lv.${st.level}</span>
             <span style="opacity:0.75;">(${ammoStr})</span>
@@ -2979,8 +3046,8 @@
       function openTreatyModal() {
         const sz = getSafeZoneAt(player.x, player.y);
         ui.treatyZoneNote.textContent = sz && sz.id === 'treaty'
-          ? '📜 You are inside Treaty Board Plaza — Full gang & explorer diplomacy unlocked.'
-          : '💡 Tip: Visit Treaty Board Plaza (-480, -260) safe zone for official diplomacy.';
+          ? '📜 Inside Treaty Board Plaza — Full gang & explorer diplomacy active.'
+          : '💡 Treaty Board Plaza is at (-480, -260).';
 
         let html = '';
         for (const g of GANGS) {
@@ -2989,7 +3056,7 @@
           html += `<div class="row-card">
             <div class="row-info">
               <div class="row-title"><span class="gang-badge ${g.css}">${g.name}</span></div>
-              <div class="row-sub">Current Stance: <strong>${status.toUpperCase()}</strong></div>
+              <div class="row-sub">Stance: <strong>${status.toUpperCase()}</strong></div>
             </div>
             <div style="display:flex;gap:6px;">
               <div class="btn-pill ${status === 'ally' ? 'primary' : ''}" data-gang="${g.id}" data-act="ally">🤝 Ally</div>
@@ -3019,7 +3086,6 @@
             const act = btn.getAttribute('data-act');
             player.gangTreaties[gId] = act;
             AetheriaDB.set(`diplomacy/${player.gang}_${gId}`, { from: player.gang, to: gId, status: act, ts: Date.now() });
-            showToast(`📜 Declared ${act.toUpperCase()} with ${getGangMeta(gId).name}`);
             openTreatyModal();
           });
         });
@@ -3046,7 +3112,7 @@
         ui.shopRubyBalance.textContent = player.rubies;
         ui.shopZoneNote.textContent = sz && sz.id === 'shop'
           ? '💎 Inside Ruby Shop Safe Zone — Spend Rubies on permanent boosts & movable buildings.'
-          : '💡 Visit Ruby Shop (480, -260) or trade directly via your Ruby Vault.';
+          : '💡 Ruby Shop Safe Zone is at (480, -260).';
 
         ui.shopUpgradesList.innerHTML = SHOP_UPGRADES.map(u => {
           const lvl = player.upgrades[u.id] || 0;
@@ -3071,7 +3137,6 @@
             player.upgrades[id] = (player.upgrades[id] || 0) + 1;
             saveUserProfile();
             SoundFX.ruby();
-            showToast(`✨ Upgraded ${item.name}!`);
             openShopModal();
           });
         });
@@ -3089,7 +3154,7 @@
         }).join('');
 
         if (player.buildings.length > 0) {
-          bHtml += `<div style="font-size:11px;font-weight:800;color:#4ade80;margin-top:6px;">YOUR ACTIVE BUILDINGS (Click Relocate to Move Anywhere)</div>`;
+          bHtml += `<div style="font-size:11px;font-weight:800;color:#34d399;margin-top:6px;">YOUR ACTIVE BUILDINGS</div>`;
           bHtml += player.buildings.map(owned => `
             <div class="row-card">
               <div class="row-info">
@@ -3108,7 +3173,7 @@
             const spec = BUILDING_CATALOG.find(x => x.id === bId);
             if (!spec || player.rubies < spec.cost) return;
             player.rubies -= spec.cost;
-            const newB = {
+            player.buildings.push({
               id: 'bld_' + Date.now(),
               type: spec.id,
               name: spec.name,
@@ -3117,11 +3182,9 @@
               color: spec.color,
               x: Math.round(player.x + 40),
               y: Math.round(player.y + 40)
-            };
-            player.buildings.push(newB);
+            });
             saveUserProfile();
             SoundFX.beacon();
-            showToast(`🏛️ Built ${spec.name}! You can relocate it anytime.`);
             openShopModal();
           });
         });
@@ -3159,30 +3222,48 @@
       }
 
       // =========================================================================
-      // 16. NETWORK SYNC & SMART RTDB CLEANING LOOP
+      // 16. REAL-TIME 30HZ P2P + RTDB NETWORK LOOPS
       // =========================================================================
       function startNetworkLoops() {
-        // 1. High-frequency WebRTC P2P + BroadcastChannel state broadcast (60ms)
+        // 1. Instant 30Hz (33ms) P2P State Broadcast (Position + Velocity)
         setInterval(() => {
           if (!joined) return;
           const stats = getComputedStats();
-          const statePacket = {
-            username: player.username,
-            gang: player.gang,
-            x: Math.round(player.x),
-            y: Math.round(player.y),
-            hp: Math.round(player.hp),
-            maxHp: Math.round(stats.maxHp),
-            kills: player.kills,
-            activeGun: player.activeGun,
-            gunLevel: player.guns[player.activeGun]?.level || 1,
-            dead: player.dead,
-            ts: Date.now()
-          };
-          P2PMesh.broadcast({ type: 'state', data: statePacket });
-        }, 65);
+          P2PMesh.broadcast({
+            type: 'state',
+            data: {
+              username: player.username,
+              gang: player.gang,
+              x: player.x,
+              y: player.y,
+              vx: player.vx,
+              vy: player.vy,
+              hp: Math.round(player.hp),
+              maxHp: Math.round(stats.maxHp),
+              kills: player.kills,
+              activeGun: player.activeGun,
+              gunLevel: player.guns[player.activeGun]?.level || 1,
+              dead: player.dead,
+              ts: Date.now()
+            }
+          });
+        }, 33);
 
-        // 2. Firebase RTDB Live Session Heartbeat & Host Election (950ms)
+        // 2. Host 20Hz (50ms) NPC Position & Velocity Sync over P2P
+        setInterval(() => {
+          if (!joined || !isWorldHost || world.remotePeers.size === 0) return;
+          P2PMesh.broadcast({
+            type: 'world_sync',
+            data: {
+              npcs: world.npcs.map(n => ({
+                id: n.id, x: n.x, y: n.y, vx: n.vx, vy: n.vy, hp: n.hp, gang: n.gang, dead: n.dead
+              })),
+              bosses: world.bosses
+            }
+          });
+        }, 50);
+
+        // 3. Fast 280ms RTDB Session Heartbeat with Velocity
         setInterval(async () => {
           if (!joined) return;
           const stats = getComputedStats();
@@ -3192,6 +3273,8 @@
             gang: player.gang,
             x: Math.round(player.x),
             y: Math.round(player.y),
+            vx: Math.round(player.vx),
+            vy: Math.round(player.vy),
             hp: Math.round(player.hp),
             maxHp: Math.round(stats.maxHp),
             kills: player.kills,
@@ -3200,37 +3283,49 @@
             dead: player.dead,
             ts: Date.now()
           });
-        }, 950);
+        }, 280);
 
-        // 3. Listen to Shared Sessions, Mines, Beacons, Signals & Chat in RTDB
+        // 4. Real-Time Child Listeners for Immediate Session & WebRTC Signaling Updates
+        AetheriaDB.onChildEvents(
+          'sessions',
+          (id, s) => {
+            if (!s || !s.ts || Date.now() - s.ts > 16000) return;
+            if (id !== myPeerId) {
+              upsertRemotePeer(id, s, false);
+              P2PMesh.initiateCall(id);
+            }
+          },
+          (removedId) => {
+            world.remotePeers.delete(removedId);
+            rebalanceGangRosters();
+          }
+        );
+
         AetheriaDB.onValue('sessions', (sessions) => {
           if (!sessions || typeof sessions !== 'object') return;
           const now = Date.now();
           const activeIds = [];
-
           for (const id of Object.keys(sessions)) {
             const s = sessions[id];
-            if (!s || !s.ts || now - s.ts > 18000) {
-              // Smart cleanup of stale sessions
+            if (!s || !s.ts || now - s.ts > 16000) {
               AetheriaDB.remove(`sessions/${id}`);
               continue;
             }
             activeIds.push(id);
             if (id !== myPeerId) {
-              upsertRemotePeer(id, s);
+              upsertRemotePeer(id, s, false);
               P2PMesh.initiateCall(id);
             }
           }
-
           activeIds.sort();
           isWorldHost = activeIds.length === 0 || activeIds[0] === myPeerId;
-        });
+        }, 700);
 
         AetheriaDB.onValue('mines', (mines) => {
           if (mines && typeof mines === 'object') {
             world.mines = mines;
           }
-        });
+        }, 1200);
 
         AetheriaDB.onValue('beacons', (beacons) => {
           if (!beacons || typeof beacons !== 'object') return;
@@ -3244,6 +3339,10 @@
               world.beacons[id] = b;
             }
           }
+        }, 1200);
+
+        AetheriaDB.onChildEvents(`signals/${myPeerId}`, (senderId, sigNode) => {
+          P2PMesh.processSignal(senderId, sigNode);
         });
 
         AetheriaDB.onValue(`signals/${myPeerId}`, (sigs) => {
@@ -3251,7 +3350,7 @@
           for (const senderId of Object.keys(sigs)) {
             P2PMesh.processSignal(senderId, sigs[senderId]);
           }
-        });
+        }, 750);
 
         AetheriaDB.onValue('chat', (chatData) => {
           if (!chatData || typeof chatData !== 'object') return;
@@ -3265,15 +3364,15 @@
             return `<div class="chat-line"><strong style="color:${gm.stroke};">${m.username}:</strong> ${escapeHtml(m.text)}</div>`;
           }).join('');
           ui.chatMessages.scrollTop = ui.chatMessages.scrollHeight;
-        });
+        }, 1200);
 
-        // 4. Periodic user profile autosave (8s)
         setInterval(() => {
           if (joined) saveUserProfile();
         }, 8000);
 
         window.addEventListener('beforeunload', () => {
           AetheriaDB.remove(`sessions/${myPeerId}`);
+          AetheriaDB.remove(`signals/${myPeerId}`);
         });
       }
 
@@ -3314,7 +3413,7 @@
           lookupTimer = setTimeout(async () => {
             const saved = await loadUserProfile(val);
             if (saved) {
-              ui.savedProfileBanner.textContent = `✓ Saved profile found: ${saved.kills || 0} Kills • ${saved.rubies || 0} Rubies • ${getGangMeta(saved.gang).name}`;
+              ui.savedProfileBanner.textContent = `✓ Saved profile: ${saved.kills || 0} Kills • ${saved.rubies || 0} Rubies • ${getGangMeta(saved.gang).name}`;
               if (saved.gang) {
                 selectedGangId = saved.gang;
                 ui.gangGrid.querySelectorAll('.gang-option').forEach(x => {
@@ -3322,15 +3421,14 @@
                 });
               }
             } else {
-              ui.savedProfileBanner.textContent = '✨ New Explorer username ready to register in Aetheria.';
+              ui.savedProfileBanner.textContent = '✨ New Explorer username ready.';
             }
-          }, 350);
+          }, 300);
         });
 
         ui.enterWorldBtn.addEventListener('click', async () => {
           const rawName = ui.usernameInput.value.trim();
           if (!rawName) {
-            showToast('Please enter your Explorer username first!');
             ui.usernameInput.focus();
             return;
           }
@@ -3345,9 +3443,6 @@
             player.coins = Math.max(15, saved.coins || 15);
             if (saved.upgrades) player.upgrades = { ...player.upgrades, ...saved.upgrades };
             if (Array.isArray(saved.buildings)) player.buildings = saved.buildings;
-            showToast(`Welcome back, ${player.username}! Progress restored.`);
-          } else {
-            showToast(`Welcome to Aetheria, ${player.username}!`);
           }
 
           const gm = getGangMeta(player.gang);
@@ -3427,7 +3522,6 @@
         requestAnimationFrame(mainLoop);
       }
 
-      // Boot Application
       AetheriaDB.init();
       initWorldEntities();
       initOnboarding();
