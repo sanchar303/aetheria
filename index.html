@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="description" content="Aetheria — multiplayer space combat." />
+  <meta name="description" content="Aetheria — Multiplayer open-world space combat, gang diplomacy, ruby mining, live leaderboard, and spatial teleportation." />
   <meta name="theme-color" content="#04060c" />
   <title>Aetheria</title>
   <link rel="icon" type="image/png" href="favicon.png" />
@@ -59,7 +59,7 @@
       z-index: 1;
     }
 
-    /* Surfaces */
+    /* Dark Silk-Morphism Surfaces */
     .silk-pill {
       position: relative;
       background: var(--silk-tier-1);
@@ -162,14 +162,14 @@
       border-color: rgba(196, 181, 253, 0.55);
     }
 
-    /* Gang colors */
+    /* 5 Custom Gang Gradients */
     .gang-astro-nuts { background: linear-gradient(135deg, #a15c24, #452106) !important; border-color: #e0a96d !important; }
     .gang-dork-side { background: linear-gradient(135deg, #333847, #08090e) !important; border-color: #94a3b8 !important; }
     .gang-homo-spacian { background: linear-gradient(135deg, #2563eb, #0c225c) !important; border-color: #60a5fa !important; }
     .gang-martian { background: linear-gradient(135deg, #dc2626, #5c0b0b) !important; border-color: #f87171 !important; }
     .gang-bancroft { background: linear-gradient(135deg, #16a34a, #083b1a) !important; border-color: #4ade80 !important; }
 
-    /* Top bar */
+    /* Top Telemetry Bar */
     #hudTopBar {
       position: fixed;
       top: 12px;
@@ -244,7 +244,7 @@
       50% { opacity: 0.45; transform: scale(0.8); }
     }
 
-    /* Status strip */
+    /* Status & Buffs Strip */
     #statusStrip {
       position: fixed;
       top: 62px;
@@ -295,6 +295,20 @@
       animation: bountyPulse 2s infinite;
     }
 
+    .hunter-buff-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.9), rgba(2, 132, 199, 0.9));
+      border: 1px solid rgba(110, 231, 183, 0.65);
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.35);
+      color: #ecfdf5;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     @keyframes bountyPulse {
       0%, 100% { box-shadow: 0 0 14px rgba(251, 191, 36, 0.35); }
       50% { box-shadow: 0 0 24px rgba(251, 191, 36, 0.75); }
@@ -311,7 +325,7 @@
       gap: 8px;
     }
 
-    /* Target HUD */
+    /* Target Lock Telemetry */
     #targetHud {
       position: fixed;
       top: 102px;
@@ -351,7 +365,7 @@
       transition: width 0.08s linear;
     }
 
-    /* Radar minimap */
+    /* Circular Radar Minimap */
     #minimapShell {
       position: fixed;
       top: 104px;
@@ -401,7 +415,7 @@
       transform: translateX(-50%) scale(1.05);
     }
 
-    /* Bottom bar */
+    /* Bottom Arsenal & Controls */
     #bottomHud {
       position: fixed;
       bottom: 14px;
@@ -498,7 +512,7 @@
       letter-spacing: 0.3px;
     }
 
-    /* Leaderboard */
+    /* Leaderboard Styling */
     .lb-row {
       padding: 11px 14px;
       border-radius: 18px;
@@ -542,13 +556,60 @@
       box-shadow: 0 0 14px rgba(251, 191, 36, 0.55);
     }
 
-    /* Teleporter */
+    /* Spatial Teleporter Modal Styling */
     .tp-card {
       max-width: 440px;
       background:
         radial-gradient(circle at 18% 15%, rgba(192, 132, 252, 0.2), transparent 52%),
         radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.18), transparent 52%),
         var(--silk-tier-1);
+    }
+
+    .tp-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .silk-switch {
+      width: 46px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--silk-well);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: var(--shadow-well);
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .silk-switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #94a3b8;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
+    }
+
+    .silk-switch.active {
+      background: linear-gradient(135deg, #7c3aed, #0284c7);
+      border-color: rgba(196, 181, 253, 0.65);
+    }
+
+    .silk-switch.active::after {
+      transform: translateX(20px);
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.75);
     }
 
     .tp-coord-grid {
@@ -600,51 +661,6 @@
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-    }
-
-    .tp-toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 14px;
-      border-radius: 18px;
-      background: var(--silk-well);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: var(--shadow-well);
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 42px;
-      height: 24px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background 0.16s ease, border-color 0.16s ease;
-    }
-
-    .toggle-switch::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #e2e8f0;
-      transition: transform 0.16s ease;
-    }
-
-    .toggle-switch.on {
-      background: linear-gradient(135deg, #7c3aed, #4c1d95);
-      border-color: rgba(196, 181, 253, 0.55);
-    }
-
-    .toggle-switch.on::after {
-      transform: translateX(18px);
     }
 
     /* Onboarding */
@@ -737,7 +753,7 @@
     .row-title { font-size: 13px; font-weight: 700; }
     .row-sub { font-size: 11px; color: var(--text-secondary); }
 
-    /* Respawn */
+    /* Respawn Overlay */
     #respawnOverlay {
       position: fixed;
       inset: 0;
@@ -752,7 +768,7 @@
       text-align: center;
     }
 
-    /* Chat */
+    /* Comms Drawer */
     #chatDrawer {
       position: fixed;
       left: 14px;
@@ -786,7 +802,7 @@
       word-break: break-word;
     }
 
-    /* Toast */
+    /* Single Status Toast */
     #toastContainer {
       position: fixed;
       bottom: 106px;
@@ -846,7 +862,7 @@
 
   <canvas id="gameCanvas"></canvas>
 
-  <!-- Top bar -->
+  <!-- Top Telemetry HUD -->
   <div id="hudTopBar">
     <div class="hud-group">
       <div class="silk-pill stat-chip">
@@ -870,7 +886,7 @@
     <div class="hud-group">
       <div class="silk-pill stat-chip" style="color:#fbbf24;">
         <span>🪙</span>
-        <span id="coinCount">15</span>
+        <span id="coinCount">5</span>
       </div>
       <div class="silk-pill stat-chip" style="color:#fb7185;">
         <span>💎</span>
@@ -888,21 +904,21 @@
     </div>
   </div>
 
-  <!-- Powerups & zone -->
+  <!-- Active Powerups & Zone Indicator -->
   <div id="statusStrip">
     <div id="powerupBar"></div>
     <div id="zoneIndicator" class="silk-pill">
-      <span id="zoneText">🛡️ Central Sanctuary • Safe zone</span>
+      <span id="zoneText">🛡️ SANCTUARY • SAFE ZONE</span>
     </div>
   </div>
 
-  <!-- Radar minimap -->
-  <div id="minimapShell" title="Set waypoint">
+  <!-- Circular Radar Minimap -->
+  <div id="minimapShell" title="Click radar to set waypoint">
     <canvas id="minimapCanvas" width="146" height="146"></canvas>
-    <div id="minimapCoords" title="Teleporter">0, 65</div>
+    <div id="minimapCoords" title="Open Teleporter">0, 65</div>
   </div>
 
-  <!-- Target HP -->
+  <!-- Real-Time Target HP Telemetry -->
   <div id="targetHud" class="silk-card">
     <div class="target-top">
       <span id="targetName">Target</span>
@@ -914,78 +930,79 @@
     </div>
   </div>
 
-  <!-- Move building banner -->
+  <!-- Move Building Banner -->
   <div id="moveBuildingBanner" class="silk-pill">
-    <span>Click to place building</span>
+    <span>📍 Click space to place building</span>
     <div id="cancelMoveBuildingBtn" class="btn-pill">Cancel</div>
   </div>
 
-  <!-- Toast -->
+  <!-- Single Status Toast -->
   <div id="toastContainer"></div>
 
-  <!-- Bottom bar -->
+  <!-- Bottom Arsenal & Controls -->
   <div id="bottomHud">
     <div id="arsenalBar"></div>
     <div id="actionDock">
       <div id="dashBtn" class="btn-pill primary">⚡ Dash <kbd>Space</kbd></div>
-      <div id="beaconBtn" class="btn-pill">📡 Beacon (20🪙 + 60%⚡) <kbd>B</kbd></div>
+      <div id="beaconBtn" class="btn-pill">📡 Beacon (40🪙+75%⚡) <kbd>B</kbd></div>
       <div id="buildMineBtn" class="btn-pill gold-btn">⛏️ Ruby Mine (500🪙) <kbd>M</kbd></div>
-      <div id="teleportBtn" class="btn-pill violet-btn"><span id="teleportBtnLabel">🌀 Teleport</span> <kbd>X</kbd></div>
+      <div id="teleportBtn" class="btn-pill violet-btn">🌀 Teleport <kbd>X</kbd></div>
       <div id="leaderboardBtn" class="btn-pill gold-btn">🏆 Leaderboard <kbd>L</kbd></div>
       <div id="treatyBtn" class="btn-pill">📜 Treaty <kbd>T</kbd></div>
       <div id="shopBtn" class="btn-pill ruby-btn">💎 Shop <kbd>R</kbd></div>
       <div id="gangPanelBtn" class="btn-pill">🏴 Gangs <kbd>G</kbd></div>
-      <div id="chatToggleBtn" class="btn-pill">💬 Chat <kbd>C</kbd></div>
+      <div id="chatToggleBtn" class="btn-pill">💬 Comms <kbd>C</kbd></div>
     </div>
   </div>
 
-  <!-- Chat -->
+  <!-- Global Comms Drawer -->
   <div id="chatDrawer" class="silk-card">
     <div style="display:flex;justify-content:space-between;align-items:center;">
-      <span style="font-size:12px;font-weight:800;">Chat</span>
+      <span style="font-size:12px;font-weight:800;">🌐 World Comms</span>
       <div id="closeChatBtn" class="btn-pill" style="padding:3px 9px;">✕</div>
     </div>
     <div id="chatMessages"></div>
     <div style="display:flex;gap:6px;">
-      <input id="chatInput" class="input-capsule" style="padding:7px 12px;font-size:12px;" placeholder="Message..." maxlength="120" />
+      <input id="chatInput" class="input-capsule" style="padding:7px 12px;font-size:12px;" placeholder="Send message..." maxlength="120" />
       <div id="chatSendBtn" class="btn-pill primary">Send</div>
     </div>
   </div>
 
-  <!-- Teleporter -->
+  <!-- Spatial Teleporter Modal -->
   <div id="teleportModal" class="modal-backdrop">
     <div class="silk-card modal-box tp-card">
       <div class="modal-header">
-        <h2>🌀 Teleporter</h2>
+        <h2>🌀 Spatial Teleporter</h2>
         <div id="closeTeleportBtn" class="btn-pill">✕</div>
       </div>
 
-      <div style="font-size:11.5px;color:#cbd5e1;">
-        Position: <strong id="tpCurrentCoords" style="color:#38bdf8;">(0, 65)</strong>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:#cbd5e1;">
+        <span>Position: <strong id="tpCurrentCoords" style="color:#38bdf8;">(0, 65)</strong></span>
+        <span id="tpStatusBadge" style="color:#c084fc;font-weight:700;">70%⚡ + 35🪙</span>
+      </div>
+
+      <div class="tp-toggle-row">
+        <div class="row-info">
+          <div class="row-title" style="font-size:12px;">⚡ Cooldown &amp; Energy Cost</div>
+          <div id="tpCostDesc" class="row-sub">15s Cooldown • 70% Dash • 35🪙</div>
+        </div>
+        <div id="tpCostToggleSwitch" class="silk-switch active" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="tp-coord-grid">
         <div class="tp-field">
-          <span class="tp-field-label">X</span>
+          <span class="tp-field-label">X Coordinate</span>
           <input id="tpXInput" class="tp-num-input" type="number" step="10" placeholder="0" />
         </div>
         <div class="tp-field">
-          <span class="tp-field-label">Y</span>
+          <span class="tp-field-label">Y Coordinate</span>
           <input id="tpYInput" class="tp-num-input" type="number" step="10" placeholder="0" />
         </div>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <span style="font-size:10.5px;font-weight:800;color:#94a3b8;letter-spacing:0.4px;">LOCATIONS</span>
+        <span style="font-size:10.5px;font-weight:800;color:#94a3b8;letter-spacing:0.4px;">WAYPOINTS</span>
         <div id="tpPresetsRow" class="tp-presets"></div>
-      </div>
-
-      <div class="tp-toggle-row">
-        <div style="display:flex;flex-direction:column;gap:2px;">
-          <span style="font-size:11.5px;font-weight:700;">Cooldown &amp; energy cost</span>
-          <span id="tpCostInfo" class="row-sub"></span>
-        </div>
-        <div id="tpCostToggle" class="toggle-switch on" role="switch" aria-checked="true"></div>
       </div>
 
       <div id="executeTeleportBtn" class="btn-pill violet-btn" style="padding:13px;font-size:13.5px;font-weight:800;">
@@ -994,33 +1011,34 @@
     </div>
   </div>
 
-  <!-- Leaderboard -->
+  <!-- Live Wealth & Bounty Leaderboard Modal -->
   <div id="leaderboardModal" class="modal-backdrop">
     <div class="silk-card modal-box">
       <div class="modal-header">
-        <h2>🏆 Leaderboard</h2>
+        <h2>🏆 Wealth Leaderboard</h2>
         <div id="closeLeaderboardBtn" class="btn-pill">✕</div>
       </div>
       <div style="font-size:11.5px;color:#cbd5e1;line-height:1.45;">
-        Wealth = <strong style="color:#fbbf24;">coins</strong> + 15 × <strong style="color:#fb7185;">rubies</strong>.
-        The richest carries a bounty: takes ×10 damage, deals 5% less, and everyone else moves ×2 faster.
+        Wealth = <strong style="color:#fbbf24;">🪙 Coins</strong> + <strong style="color:#fb7185;">20 × 💎 Rubies</strong>.
+        <span style="color:#fbbf24;font-weight:700;">👑 #1 Bounty</span> takes <strong style="color:#f43f5e;">10× damage</strong>, deals <strong style="color:#38bdf8;">-5% damage</strong>, and all other players gain <strong style="color:#34d399;">2× speed</strong>.
       </div>
       <div id="leaderboardList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
-  <!-- Treaty -->
+  <!-- Treaty Board Modal -->
   <div id="treatyModal" class="modal-backdrop">
     <div class="silk-card modal-box">
       <div class="modal-header">
-        <h2>📜 Treaties</h2>
+        <h2>📜 Treaty Board</h2>
         <div id="closeTreatyBtn" class="btn-pill">✕</div>
       </div>
+      <div id="treatyZoneNote" style="font-size:12px;color:#c084fc;"></div>
       <div id="treatyList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
-  <!-- Shop -->
+  <!-- Ruby Shop Modal -->
   <div id="shopModal" class="modal-backdrop">
     <div class="silk-card modal-box">
       <div class="modal-header">
@@ -1030,54 +1048,57 @@
           <div id="closeShopBtn" class="btn-pill">✕</div>
         </div>
       </div>
-      <div style="font-size:11px;font-weight:800;color:#38bdf8;letter-spacing:0.4px;">UPGRADES</div>
+      <div id="shopZoneNote" style="font-size:12px;color:#fda4af;"></div>
+      <div style="font-size:11px;font-weight:800;color:#38bdf8;letter-spacing:0.4px;">PERMANENT UPGRADES</div>
       <div id="shopUpgradesList" style="display:flex;flex-direction:column;gap:8px;"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
-        <span style="font-size:11px;font-weight:800;color:#fbbf24;letter-spacing:0.4px;">BUILDINGS</span>
+        <span style="font-size:11px;font-weight:800;color:#fbbf24;letter-spacing:0.4px;">PASSIVE BUILDINGS</span>
         <span style="font-size:10.5px;font-weight:700;color:#94a3b8;">1 of each per life</span>
       </div>
       <div id="shopBuildingsList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
-  <!-- Gangs -->
+  <!-- Gangs & Roster Modal -->
   <div id="gangModal" class="modal-backdrop">
     <div class="silk-card modal-box">
       <div class="modal-header">
-        <h2>🏴 Gangs</h2>
+        <h2>🏴 Gang Rosters</h2>
         <div id="closeGangBtn" class="btn-pill">✕</div>
       </div>
+      <div style="font-size:11px;color:#94a3b8;">Active members across all 5 gangs.</div>
       <div id="gangRosterList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
-  <!-- Respawn -->
+  <!-- Respawn Overlay -->
   <div id="respawnOverlay">
     <div style="font-size:28px;font-weight:900;color:#f43f5e;letter-spacing:1.2px;">HULL DESTROYED</div>
-    <div id="respawnKillerText" style="font-size:13px;color:#cbd5e1;">Inventory reset.</div>
-    <div style="font-size:18px;font-weight:800;color:#38bdf8;">Respawning in <span id="respawnTimerText">3.0</span>s</div>
+    <div id="respawnKillerText" style="font-size:13px;color:#cbd5e1;">Run loot &amp; building quota reset.</div>
+    <div style="font-size:18px;font-weight:800;color:#38bdf8;">Respawning in <span id="respawnTimerText">3.0</span>s...</div>
   </div>
 
-  <!-- Onboarding -->
+  <!-- Onboarding Overlay -->
   <div id="onboardingOverlay">
     <div class="silk-card onboard-card">
       <div style="text-align:center;">
         <div style="font-size:28px;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#38bdf8,#c084fc,#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AETHERIA</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Open-World Space Combat</div>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:6px;">
         <label style="font-size:11px;font-weight:700;color:#cbd5e1;">USERNAME</label>
-        <input id="usernameInput" class="input-capsule" type="text" placeholder="Username" maxlength="18" autocomplete="off" />
+        <input id="usernameInput" class="input-capsule" type="text" placeholder="Enter username..." maxlength="18" autocomplete="off" />
         <div id="savedProfileBanner" style="font-size:11px;color:#34d399;min-height:16px;"></div>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <label style="font-size:11px;font-weight:700;color:#cbd5e1;">GANG</label>
+        <label style="font-size:11px;font-weight:700;color:#cbd5e1;">SELECT GANG</label>
         <div id="gangGrid" class="gang-grid"></div>
       </div>
 
       <div id="enterWorldBtn" class="btn-pill primary" style="padding:13px;font-size:14px;font-weight:800;">
-        Enter
+        Enter World
       </div>
 
       <div class="brand-footer">© 2026 Sanchar Koirala | All rights reserved</div>
@@ -1142,41 +1163,31 @@
       };
 
       const SHOP_UPGRADES = [
-        { id: 'permHp', name: 'Titanium Hull Plating', desc: '+30 Max HP', cost: 8, max: 10 },
-        { id: 'permSpeed', name: 'Ion Thruster Calibration', desc: '+10 Move Speed', cost: 8, max: 8 },
-        { id: 'permFireRate', name: 'Overclocked Capacitor', desc: '+8% Fire Rate', cost: 12, max: 8 },
-        { id: 'permCritChance', name: 'Quantum Targeting Lens', desc: '+5% Crit Chance', cost: 12, max: 8 },
-        { id: 'permCritDmg', name: 'High-Energy Core', desc: '+25% Crit Damage', cost: 12, max: 8 },
-        { id: 'permRegen', name: 'Nanite Repair Matrix', desc: '+1.5 HP/s Regen', cost: 8, max: 8 }
+        { id: 'permHp', name: 'Titanium Hull Plating', desc: '+25 Max HP', baseCost: 15, stepCost: 8, max: 10 },
+        { id: 'permSpeed', name: 'Ion Thruster Calibration', desc: '+8 Move Speed', baseCost: 18, stepCost: 9, max: 8 },
+        { id: 'permFireRate', name: 'Overclocked Capacitor', desc: '+7% Fire Rate', baseCost: 22, stepCost: 11, max: 8 },
+        { id: 'permCritChance', name: 'Quantum Targeting Lens', desc: '+4% Crit Chance', baseCost: 22, stepCost: 11, max: 8 },
+        { id: 'permCritDmg', name: 'High-Energy Core', desc: '+20% Crit Damage', baseCost: 25, stepCost: 12, max: 8 },
+        { id: 'permRegen', name: 'Nanite Repair Matrix', desc: '+1.2 HP/s Regen', baseCost: 18, stepCost: 9, max: 8 }
       ];
 
       const BUILDING_CATALOG = [
-        { id: 'solar_extractor', name: 'Solar Coin Extractor', desc: '+2 coins every 15s', cost: 12, coinRate: 2, rubyRate: 0, interval: 15, color: '#fbbf24' },
-        { id: 'aether_refinery', name: 'Aether Synthesis Rig', desc: '+3 coins & +1 ruby every 40s', cost: 30, coinRate: 3, rubyRate: 1, interval: 40, color: '#38bdf8' },
-        { id: 'crimson_forge', name: 'Crimson Ruby Forge', desc: '+1 coin & +2 rubies every 50s', cost: 50, coinRate: 1, rubyRate: 2, interval: 50, color: '#fb7185' }
+        { id: 'solar_extractor', name: 'Solar Coin Extractor', desc: '+2 Coins / 25s (1 per life)', cost: 30, interval: 25, coinRate: 2, rubyRate: 0, color: '#fbbf24' },
+        { id: 'aether_refinery', name: 'Aether Synthesis Rig', desc: '+4 Coins & +1 Ruby / 45s (1 per life)', cost: 65, interval: 45, coinRate: 4, rubyRate: 1, color: '#38bdf8' },
+        { id: 'crimson_forge', name: 'Crimson Ruby Forge', desc: '+1 Ruby / 60s (1 per life)', cost: 110, interval: 60, coinRate: 0, rubyRate: 1, color: '#fb7185' }
       ];
+
+      const MINE_BUILD_COST = 500;
+      const BEACON_COIN_COST = 40;
+      const BEACON_DASH_COST = 75;
+      const TELEPORT_COOLDOWN_SEC = 15;
+      const TELEPORT_ENERGY_COST = 70;
+      const TELEPORT_COIN_COST = 35;
 
       const MEMBERS_PER_GANG = 3;
 
-      // Richest-player bounty rules
-      const BOUNTY_DAMAGE_TAKEN_MULT = 10;    // damage the richest takes
-      const BOUNTY_DAMAGE_DEALT_MULT = 0.95;  // damage the richest deals
-      const BOUNTY_SPEED_MULT = 2;            // speed of everyone except the richest
-      const BOUNTY_KILL_COINS = 15;
-      const BOUNTY_KILL_RUBIES = 2;
-
-      // Costs & income
-      const BEACON_COIN_COST = 20;
-      const BEACON_ENERGY_COST = 60;
-      const MINE_COIN_COST = 500;
-      const MINE_MINING_RATE = 0.08;          // progress per second (1.0 = 1 ruby)
-
-      // Teleport
-      const TELEPORT_ENERGY_COST = 75;
-      const TELEPORT_COOLDOWN = 45;
-
       // =========================================================================
-      // 2. AUDIO
+      // 2. AUDIO ENGINE
       // =========================================================================
       const SoundFX = (() => {
         let ctx = null;
@@ -1225,7 +1236,7 @@
       })();
 
       // =========================================================================
-      // 3. FIREBASE RTDB (SDK with REST fallback)
+      // 3. FIREBASE RTDB + REAL-TIME CHILD EVENTS & REST FALLBACK
       // =========================================================================
       const AetheriaDB = (() => {
         let db = null;
@@ -1332,7 +1343,7 @@
       })();
 
       // =========================================================================
-      // 4. GAME STATE
+      // 4. GAME STATE & PARALLAX STARFIELD
       // =========================================================================
       const myPeerId = 'AE-' + Math.random().toString(36).slice(2, 8).toUpperCase();
       const sessionStartTs = Date.now();
@@ -1341,10 +1352,6 @@
       let isWorldHost = true;
       let lastHostSyncReceived = 0;
       let movingBuildingId = null;
-
-      // Teleport cooldown / energy cost toggle (stored locally in the browser only)
-      let teleportCostsEnabled = true;
-      try { teleportCostsEnabled = localStorage.getItem('aetheria_tp_costs') !== 'off'; } catch (_) {}
 
       const localMineProgress = {};
 
@@ -1368,14 +1375,15 @@
         radius: 17,
         hp: 120,
         maxHp: 120,
-        regen: 2.0,
+        regen: 1.5,
         baseSpeed: 165,
         dashEnergy: 40,
         dashMax: 100,
         dashTimer: 0,
         beaconCooldown: 0,
         teleportCooldown: 0,
-        coins: 15,
+        teleportCostEnabled: true,
+        coins: 5,
         rubies: 0,
         kills: 0,
         guns: {
@@ -1467,7 +1475,6 @@
         beaconBtn: document.getElementById('beaconBtn'),
         buildMineBtn: document.getElementById('buildMineBtn'),
         teleportBtn: document.getElementById('teleportBtn'),
-        teleportBtnLabel: document.getElementById('teleportBtnLabel'),
         leaderboardBtn: document.getElementById('leaderboardBtn'),
         treatyBtn: document.getElementById('treatyBtn'),
         shopBtn: document.getElementById('shopBtn'),
@@ -1477,11 +1484,12 @@
         teleportModal: document.getElementById('teleportModal'),
         closeTeleportBtn: document.getElementById('closeTeleportBtn'),
         tpCurrentCoords: document.getElementById('tpCurrentCoords'),
+        tpStatusBadge: document.getElementById('tpStatusBadge'),
+        tpCostDesc: document.getElementById('tpCostDesc'),
+        tpCostToggleSwitch: document.getElementById('tpCostToggleSwitch'),
         tpXInput: document.getElementById('tpXInput'),
         tpYInput: document.getElementById('tpYInput'),
         tpPresetsRow: document.getElementById('tpPresetsRow'),
-        tpCostToggle: document.getElementById('tpCostToggle'),
-        tpCostInfo: document.getElementById('tpCostInfo'),
         executeTeleportBtn: document.getElementById('executeTeleportBtn'),
 
         leaderboardModal: document.getElementById('leaderboardModal'),
@@ -1489,11 +1497,13 @@
         leaderboardList: document.getElementById('leaderboardList'),
 
         treatyModal: document.getElementById('treatyModal'),
+        treatyZoneNote: document.getElementById('treatyZoneNote'),
         treatyList: document.getElementById('treatyList'),
         closeTreatyBtn: document.getElementById('closeTreatyBtn'),
 
         shopModal: document.getElementById('shopModal'),
         shopRubyBalance: document.getElementById('shopRubyBalance'),
+        shopZoneNote: document.getElementById('shopZoneNote'),
         shopUpgradesList: document.getElementById('shopUpgradesList'),
         shopBuildingsList: document.getElementById('shopBuildingsList'),
         closeShopBtn: document.getElementById('closeShopBtn'),
@@ -1518,7 +1528,7 @@
       };
 
       // =========================================================================
-      // 6. HELPERS, WEALTH & STATS
+      // 6. HELPERS, LEADERBOARD WEALTH & STAT COMPUTATION
       // =========================================================================
       let toastTimeout = null;
       function showToast(msg) {
@@ -1561,7 +1571,7 @@
       }
 
       function computeWealth(coins, rubies) {
-        return Math.round((coins || 0) + (rubies || 0) * 15);
+        return Math.round((coins || 0) + (rubies || 0) * 20);
       }
 
       function getLeaderboardEntries() {
@@ -1623,19 +1633,6 @@
         return entries.length > 0 ? entries[0] : null;
       }
 
-      // Everyone except the richest moves faster.
-      function bountySpeedMult(entityId, richest) {
-        return richest && richest.id !== entityId ? BOUNTY_SPEED_MULT : 1;
-      }
-
-      // Damage on the richest is multiplied; damage dealt by the richest is reduced.
-      function applyBountyDamage(damage, attackerId, targetId, richest) {
-        if (!richest) return damage;
-        if (targetId === richest.id) return damage * BOUNTY_DAMAGE_TAKEN_MULT;
-        if (attackerId === richest.id) return damage * BOUNTY_DAMAGE_DEALT_MULT;
-        return damage;
-      }
-
       function getActiveBeaconBuff(x, y, gangId, ownerId) {
         for (const key of Object.keys(world.beacons)) {
           const b = world.beacons[key];
@@ -1651,19 +1648,20 @@
       }
 
       function getComputedStats() {
-        const coinTier = Math.floor(player.coins / 12);
+        const coinTier = Math.floor(player.coins / 25);
         const beacon = getActiveBeaconBuff(player.x, player.y, player.gang, player.id);
         const richest = getRichestTarget();
+        const isHunterWhenRichestExists = !!(richest && richest.id !== player.id);
 
-        const maxHp = 120 + (player.upgrades.permHp * 30) + (coinTier * 8);
-        const speed = (player.baseSpeed + (player.upgrades.permSpeed * 10) + Math.min(55, coinTier * 3))
-          * (player.dashTimer > 0 ? 2.25 : 1)
+        const maxHp = 120 + (player.upgrades.permHp * 25) + (coinTier * 6);
+        const speed = (player.baseSpeed + (player.upgrades.permSpeed * 8) + Math.min(45, coinTier * 2.5))
+          * (player.dashTimer > 0 ? 2.2 : 1)
           * (player.powerups.overdrive > 0 ? 1.25 : 1)
-          * bountySpeedMult(player.id, richest);
+          * (isHunterWhenRichestExists ? 2.0 : 1);
 
         const fireRateMult = 1
-          + (player.upgrades.permFireRate * 0.08)
-          + Math.min(0.45, coinTier * 0.025)
+          + (player.upgrades.permFireRate * 0.07)
+          + Math.min(0.40, coinTier * 0.02)
           + (player.powerups.overdrive > 0 ? 0.35 : 0)
           + (beacon ? 0.25 : 0);
 
@@ -1675,16 +1673,16 @@
           (beacon ? 0.40 : 0) + (player.powerups.shield > 0 ? 0.35 : 0)
         );
 
-        const regen = (2.0 + (player.upgrades.permRegen * 1.5) + (coinTier * 0.2))
-          * (beacon ? 2.5 : 1);
+        const regen = (1.5 + (player.upgrades.permRegen * 1.2) + (coinTier * 0.15))
+          * (beacon ? 2.2 : 1);
 
         const critChance = Math.min(0.75,
-          0.10 + (player.upgrades.permCritChance * 0.05) + Math.min(0.20, coinTier * 0.01)
+          0.08 + (player.upgrades.permCritChance * 0.04) + Math.min(0.18, coinTier * 0.01)
         );
 
-        const critMult = 1.6 + (player.upgrades.permCritDmg * 0.25) + Math.min(0.8, coinTier * 0.05);
+        const critMult = 1.6 + (player.upgrades.permCritDmg * 0.20) + Math.min(0.75, coinTier * 0.04);
 
-        return { maxHp, speed, fireRateMult, dmgMult, dmgReduction, regen, critChance, critMult, beacon, coinTier };
+        return { maxHp, speed, fireRateMult, dmgMult, dmgReduction, regen, critChance, critMult, beacon, coinTier, isHunterWhenRichestExists };
       }
 
       function sanitizeUsername(name) {
@@ -1692,7 +1690,7 @@
       }
 
       // =========================================================================
-      // 7. PERSISTENCE (aetheria/ in Firebase RTDB)
+      // 7. PERSISTENCE UNDER "aetheria/" IN FIREBASE RTDB
       // =========================================================================
       async function loadUserProfile(rawName) {
         const key = sanitizeUsername(rawName).toLowerCase();
@@ -1717,7 +1715,7 @@
       }
 
       // =========================================================================
-      // 8. P2P MESH (WebRTC + BroadcastChannel + RTDB signaling)
+      // 8. INSTANT 30HZ WEBRTC P2P MESH (TRICKLE ICE) + BROADCASTCHANNEL + RTDB
       // =========================================================================
       const P2PMesh = (() => {
         const rtcPeers = new Map();
@@ -1742,10 +1740,10 @@
           } else if (msg.type === 'pvp_hit' && msg.targetId === myPeerId) {
             damagePlayer(msg.damage, msg.attackerName, msg.attackerId);
           } else if (msg.type === 'pvp_kill_bounty' && msg.targetId === myPeerId) {
-            player.coins += BOUNTY_KILL_COINS;
-            player.rubies += BOUNTY_KILL_RUBIES;
+            player.coins += (msg.coins || 25);
+            player.rubies += (msg.rubies || 2);
             SoundFX.ruby();
-            addFloatText(player.x, player.y - 36, `Bounty +${BOUNTY_KILL_COINS}🪙 +${BOUNTY_KILL_RUBIES}💎`, '#fbbf24', 15);
+            addFloatText(player.x, player.y - 36, `👑 BOUNTY! +${msg.coins || 25}🪙 +${msg.rubies || 2}💎`, '#fbbf24', 15);
             saveUserProfile();
           } else if (msg.type === 'beacon_deploy' && msg.data) {
             world.beacons[msg.data.id] = msg.data;
@@ -1774,7 +1772,7 @@
 
         function bindDataChannel(remoteId, dc) {
           dc.onopen = () => {
-            ui.syncStatusBadge.textContent = 'P2P';
+            ui.syncStatusBadge.textContent = 'LIVE';
           };
           dc.onmessage = (ev) => {
             try {
@@ -1940,7 +1938,7 @@
       }
 
       // =========================================================================
-      // 9. WORLD ENTITIES & GANG ROSTERS
+      // 9. SHARED WORLD ENTITIES & EQUAL GANG ROSTERS
       // =========================================================================
       function createNpc(index, gangId) {
         const angle = (index / 15) * Math.PI * 2;
@@ -1959,7 +1957,7 @@
           radius: 16,
           hp: 130,
           maxHp: 130,
-          coins: 12,
+          coins: 5,
           rubies: 0,
           kills: 0,
           guns: { [startGun]: 1 },
@@ -1982,10 +1980,10 @@
             world.npcs.push(createNpc(idx++, g.id));
           }
         }
-        for (let i = 0; i < 30; i++) spawnCoin(true);
-        for (let i = 0; i < 11; i++) spawnGunDrop();
-        for (let i = 0; i < 9; i++) spawnPowerupDrop();
-        for (let i = 0; i < 6; i++) spawnRaider();
+        for (let i = 0; i < 16; i++) spawnCoin(true);
+        for (let i = 0; i < 6; i++) spawnGunDrop();
+        for (let i = 0; i < 5; i++) spawnPowerupDrop();
+        for (let i = 0; i < 7; i++) spawnRaider();
         spawnColossusBoss();
         rebalanceGangRosters();
       }
@@ -2028,16 +2026,16 @@
       }
 
       function spawnCoin(initial = false, customPos = null, customVal = null) {
-        const pos = customPos || randomSpaceCoord(initial ? 180 : 280, 1500);
+        const pos = customPos || randomSpaceCoord(initial ? 220 : 320, 1550);
         world.coins.push({
           id: 'c_' + Math.random().toString(36).slice(2, 8),
           x: pos.x,
           y: pos.y,
-          value: customVal !== null ? customVal : (Math.random() < 0.1 ? 2 : 1)
+          value: customVal !== null ? customVal : 1
         });
       }
 
-      function spawnLootBurst(x, y, count = 8, valueEach = 4) {
+      function spawnLootBurst(x, y, count = 5, valueEach = 2) {
         for (let i = 0; i < count; i++) {
           const ang = (i / count) * Math.PI * 2 + Math.random() * 0.4;
           const dist = 18 + Math.random() * 48;
@@ -2080,10 +2078,10 @@
           y: pos.y,
           angle: Math.random() * Math.PI * 2,
           wanderAngle: Math.random() * Math.PI * 2,
-          hp: isStalker ? 95 : 55,
-          maxHp: isStalker ? 95 : 55,
+          hp: isStalker ? 105 : 65,
+          maxHp: isStalker ? 105 : 65,
           radius: isStalker ? 16 : 12,
-          speed: isStalker ? 110 : 135,
+          speed: isStalker ? 115 : 140,
           fireCooldown: 1.0
         });
       }
@@ -2097,17 +2095,17 @@
           x: pos.x,
           y: pos.y,
           angle: 0,
-          hp: 1100,
-          maxHp: 1100,
+          hp: 1350,
+          maxHp: 1350,
           radius: 42,
-          speed: 62,
+          speed: 65,
           fireCooldown: 1.4,
           novaCooldown: 5.5
         });
       }
 
       // =========================================================================
-      // 10. DIPLOMACY
+      // 10. DIPLOMACY & HOSTILITY CHECKS
       // =========================================================================
       function isAlliedWith(entityId, entityGang) {
         if (entityId === player.id) return true;
@@ -2125,12 +2123,12 @@
       }
 
       // =========================================================================
-      // 11. COMBAT, BEACONS, MINES, TELEPORT & BUILDINGS
+      // 11. COMBAT, BEACONS, RUBY MINES, TELEPORTATION & BUILDINGS
       // =========================================================================
       function triggerDash() {
         if (player.dead) return;
         if (player.dashEnergy < 35) {
-          showToast('Need 35% dash energy');
+          showToast('⚡ Need 35% Dash Energy');
           return;
         }
         player.dashEnergy -= 35;
@@ -2141,27 +2139,34 @@
 
       function executeTeleportTo(rawX, rawY) {
         if (!joined || player.dead) {
-          showToast('Cannot teleport while dead');
+          showToast('🌀 Cannot teleport while hull is destroyed');
           return;
         }
+
+        if (player.teleportCostEnabled) {
+          if (player.teleportCooldown > 0) {
+            showToast(`⏳ Cooldown: ${player.teleportCooldown.toFixed(1)}s`);
+            return;
+          }
+          if (player.dashEnergy < TELEPORT_ENERGY_COST || player.coins < TELEPORT_COIN_COST) {
+            showToast(`🌀 Need ${TELEPORT_ENERGY_COST}% Dash & ${TELEPORT_COIN_COST}🪙`);
+            return;
+          }
+        }
+
         const nx = Number(rawX);
         const ny = Number(rawY);
         if (!Number.isFinite(nx) || !Number.isFinite(ny)) {
-          showToast('Invalid coordinates');
+          showToast('⚠️ Invalid X / Y coordinates');
           return;
         }
-        if (teleportCostsEnabled) {
-          if (player.teleportCooldown > 0) {
-            showToast(`Teleport cooldown: ${Math.ceil(player.teleportCooldown)}s`);
-            return;
-          }
-          if (player.dashEnergy < TELEPORT_ENERGY_COST) {
-            showToast(`Need ${TELEPORT_ENERGY_COST}% dash energy`);
-            return;
-          }
+
+        if (player.teleportCostEnabled) {
           player.dashEnergy -= TELEPORT_ENERGY_COST;
-          player.teleportCooldown = TELEPORT_COOLDOWN;
+          player.coins -= TELEPORT_COIN_COST;
+          player.teleportCooldown = TELEPORT_COOLDOWN_SEC;
         }
+
         const clampedX = Math.max(-12000, Math.min(12000, Math.round(nx)));
         const clampedY = Math.max(-12000, Math.min(12000, Math.round(ny)));
 
@@ -2173,52 +2178,26 @@
         player.targetPoint = null;
         spawnParticles(player.x, player.y, '#38bdf8', 22, 170);
         SoundFX.teleport();
-        addFloatText(player.x, player.y - 28, `Teleported (${clampedX}, ${clampedY})`, '#c084fc', 14);
+        addFloatText(player.x, player.y - 28, `🌀 (${clampedX}, ${clampedY})`, '#c084fc', 14);
         ui.teleportModal.classList.remove('open');
-      }
-
-      function updateTeleportInfo() {
-        ui.tpCostToggle.classList.toggle('on', teleportCostsEnabled);
-        ui.tpCostToggle.setAttribute('aria-checked', String(teleportCostsEnabled));
-
-        if (!teleportCostsEnabled) {
-          ui.tpCostInfo.textContent = 'Off';
-          ui.executeTeleportBtn.classList.remove('disabled');
-          ui.teleportBtnLabel.textContent = '🌀 Teleport';
-          return;
-        }
-
-        const onCooldown = player.teleportCooldown > 0;
-        const lowEnergy = player.dashEnergy < TELEPORT_ENERGY_COST;
-        if (onCooldown) {
-          ui.tpCostInfo.textContent = `Cooldown ${Math.ceil(player.teleportCooldown)}s`;
-        } else if (lowEnergy) {
-          ui.tpCostInfo.textContent = `Need ${TELEPORT_ENERGY_COST}% dash energy`;
-        } else {
-          ui.tpCostInfo.textContent = `${TELEPORT_ENERGY_COST}% dash energy • ${TELEPORT_COOLDOWN}s cooldown`;
-        }
-        ui.executeTeleportBtn.classList.toggle('disabled', onCooldown || lowEnergy);
-        ui.teleportBtnLabel.textContent = onCooldown
-          ? `🌀 Teleport (${Math.ceil(player.teleportCooldown)}s)`
-          : '🌀 Teleport';
       }
 
       function deployBeacon(ownerId, ownerName, gangId, x, y, isPlayer = false) {
         if (isPlayer) {
           if (player.dead) return;
           if (player.beaconCooldown > 0) {
-            showToast(`Beacon cooldown: ${player.beaconCooldown.toFixed(1)}s`);
+            showToast(`📡 Cooldown: ${player.beaconCooldown.toFixed(1)}s`);
             return;
           }
-          if (player.coins < BEACON_COIN_COST || player.dashEnergy < BEACON_ENERGY_COST) {
-            showToast(`Need ${BEACON_COIN_COST} coins and ${BEACON_ENERGY_COST}% dash energy`);
+          if (player.coins < BEACON_COIN_COST || player.dashEnergy < BEACON_DASH_COST) {
+            showToast(`📡 Need ${BEACON_COIN_COST}🪙 & ${BEACON_DASH_COST}% Dash`);
             return;
           }
           player.coins -= BEACON_COIN_COST;
-          player.dashEnergy -= BEACON_ENERGY_COST;
-          player.beaconCooldown = 14;
+          player.dashEnergy -= BEACON_DASH_COST;
+          player.beaconCooldown = 24;
           SoundFX.beacon();
-          addFloatText(player.x, player.y - 28, 'Beacon', '#38bdf8', 14);
+          addFloatText(player.x, player.y - 28, '📡 BEACON DEPLOYED', '#38bdf8', 14);
         }
 
         const id = 'b_' + ownerId + '_' + Date.now();
@@ -2233,7 +2212,7 @@
           radius: 155,
           color: gMeta.stroke,
           pulseTimer: 0,
-          expiresAt: Date.now() + 26000
+          expiresAt: Date.now() + 24000
         };
         world.beacons[id] = beaconObj;
         P2PMesh.broadcast({ type: 'beacon_deploy', data: beaconObj });
@@ -2242,11 +2221,11 @@
 
       function buildRubyMine() {
         if (player.dead) return;
-        if (player.coins < MINE_COIN_COST) {
-          showToast(`Need ${MINE_COIN_COST} coins`);
+        if (player.coins < MINE_BUILD_COST) {
+          showToast(`⛏️ Need ${MINE_BUILD_COST}🪙 for Ruby Mine`);
           return;
         }
-        player.coins -= MINE_COIN_COST;
+        player.coins -= MINE_BUILD_COST;
         const id = 'mine_' + myPeerId + '_' + Date.now();
         const safeZone = getSafeZoneAt(player.x, player.y);
         const mineObj = {
@@ -2256,8 +2235,8 @@
           gang: player.gang,
           x: Math.round(player.x),
           y: Math.round(player.y),
-          hp: 450,
-          maxHp: 450,
+          hp: 550,
+          maxHp: 550,
           protected: !!safeZone,
           createdAt: Date.now()
         };
@@ -2266,7 +2245,7 @@
         AetheriaDB.set(`mines/${id}`, mineObj);
         saveUserProfile();
         SoundFX.beacon();
-        addFloatText(player.x, player.y - 32, 'Mine built', '#fb7185', 14);
+        addFloatText(player.x, player.y - 32, '⛏️ RUBY MINE BUILT', '#fb7185', 14);
       }
 
       function spawnVisualProjectile(p) {
@@ -2325,35 +2304,46 @@
 
         const stats = getComputedStats();
         const richest = getRichestTarget();
-        // The receiving client applies the bounty modifiers, so remote hits are never scaled twice.
-        const scaledAmount = applyBountyDamage(amount, attackerId, player.id, richest);
-        const finalDmg = Math.max(1, Math.round(scaledAmount * (1 - stats.dmgReduction)));
+        const amIRichest = richest && richest.id === player.id;
+
+        // #1 Richest takes 10x incoming damage from all opponents
+        const bountyMultiplier = amIRichest ? 10.0 : 1.0;
+
+        // Opponents get 5% damage deduction when the #1 Richest attacks them
+        const richestAttackDeduction = (richest && attackerId === richest.id) ? 0.95 : 1.0;
+
+        const finalDmg = Math.max(1, Math.round(amount * bountyMultiplier * richestAttackDeduction * (1 - stats.dmgReduction)));
         player.hp -= finalDmg;
         player.hitFlash = 0.16;
         SoundFX.hit();
-        addFloatText(player.x, player.y - 20, `-${finalDmg}`, '#f43f5e', 13);
+        addFloatText(
+          player.x,
+          player.y - 20,
+          amIRichest ? `👑 10x BOUNTY -${finalDmg}!` : `-${finalDmg}`,
+          amIRichest ? '#fbbf24' : '#f43f5e',
+          amIRichest ? 15 : 13
+        );
 
         if (player.hp <= 0) {
-          const wasRichest = richest && richest.id === player.id;
-          const droppedCoins = wasRichest ? Math.max(20, Math.floor(player.coins * 0.5)) : Math.min(12, Math.floor(player.coins * 0.25));
+          const droppedCoins = amIRichest ? Math.max(25, Math.floor(player.coins * 0.5)) : Math.min(10, Math.floor(player.coins * 0.25));
 
           if (droppedCoins > 0) {
-            spawnLootBurst(player.x, player.y, wasRichest ? 8 : 4, Math.max(2, Math.ceil(droppedCoins / 6)));
+            spawnLootBurst(player.x, player.y, amIRichest ? 7 : 4, Math.max(2, Math.ceil(droppedCoins / 5)));
           }
 
-          if (wasRichest && attackerId) {
+          if (amIRichest && attackerId) {
             if (attackerId.startsWith('AE-')) {
               P2PMesh.broadcast({
                 type: 'pvp_kill_bounty',
                 targetId: attackerId,
-                coins: BOUNTY_KILL_COINS,
-                rubies: BOUNTY_KILL_RUBIES
+                coins: 25,
+                rubies: 2
               });
             } else {
               const killerNpc = world.npcs.find(n => n.id === attackerId);
               if (killerNpc) {
-                killerNpc.coins += BOUNTY_KILL_COINS;
-                killerNpc.rubies += BOUNTY_KILL_RUBIES;
+                killerNpc.coins += 25;
+                killerNpc.rubies += 2;
                 killerNpc.kills += 1;
               }
             }
@@ -2364,44 +2354,43 @@
           player.vx = 0;
           player.vy = 0;
           player.respawnTimer = 3.0;
-          player.killerName = attackerName || 'Hostile Force';
+          player.killerName = attackerName || 'Hostile';
           player.coins = 0;
           player.dashEnergy = 0;
           player.guns = { pulse: { level: 1, ammo: 18, maxAmmo: 18, reloading: 0 } };
           player.activeGun = 'pulse';
           player.powerups = { overdrive: 0, shield: 0, magnet: 0, vamp: 0 };
-          // Reset building quota so one more of each can be built after respawn
           player.lifetimeBuiltBuildings = {};
           spawnParticles(player.x, player.y, '#f43f5e', 24, 160);
-          ui.respawnKillerText.textContent = wasRichest
-            ? `Bounty claimed by ${player.killerName}. Building limit reset.`
-            : `Killed by ${player.killerName}. Building limit reset.`;
+          ui.respawnKillerText.textContent = amIRichest
+            ? `👑 Bounty claimed by ${player.killerName}. Building quota reset.`
+            : `Killed by ${player.killerName}. Building quota reset.`;
           ui.respawnOverlay.style.display = 'flex';
           saveUserProfile();
         }
       }
 
-      function registerKill(rewardCoins = 2, wasRichestTarget = false) {
+      function registerKill(rewardCoins = 1, wasRichestTarget = false) {
         player.kills += 1;
         player.coins += rewardCoins;
         if (wasRichestTarget) {
-          player.coins += BOUNTY_KILL_COINS;
-          player.rubies += BOUNTY_KILL_RUBIES;
+          player.coins += 25;
+          player.rubies += 2;
           SoundFX.ruby();
-          addFloatText(player.x, player.y - 38, `Bounty +${rewardCoins + BOUNTY_KILL_COINS}🪙 +${BOUNTY_KILL_RUBIES}💎`, '#fbbf24', 15);
+          addFloatText(player.x, player.y - 38, `👑 BOUNTY! +${rewardCoins + 25}🪙 +2💎`, '#fbbf24', 15);
         } else {
           SoundFX.kill();
-          addFloatText(player.x, player.y - 34, `+${rewardCoins}🪙`, '#34d399', 15);
+          addFloatText(player.x, player.y - 34, `+1 KILL (+${rewardCoins}🪙)`, '#34d399', 15);
         }
         if (player.powerups.vamp > 0) {
           const stats = getComputedStats();
-          player.hp = Math.min(stats.maxHp, player.hp + 25);
+          player.hp = Math.min(stats.maxHp, player.hp + 15);
         }
         saveUserProfile();
       }
 
       // =========================================================================
-      // 12. INPUT
+      // 12. KEYBOARD SHORTCUTS, CANVAS STEERING & MINIMAP AUTOPILOT
       // =========================================================================
       const keys = {};
       let pointerDown = false;
@@ -2486,7 +2475,7 @@
             b.x = Math.round(wx);
             b.y = Math.round(wy);
             saveUserProfile();
-            addFloatText(b.x, b.y - 24, 'Moved', '#fbbf24', 13);
+            addFloatText(b.x, b.y - 24, '📍 RELOCATED', '#fbbf24', 13);
           }
           movingBuildingId = null;
           ui.moveBuildingBanner.style.display = 'none';
@@ -2524,7 +2513,7 @@
       }, { passive: true });
       canvas.addEventListener('touchend', () => { pointerDown = false; });
 
-      // Click the radar to set a waypoint
+      // Click on Minimap Radar to fly directly to any point in the world
       ui.minimapShell.addEventListener('click', (e) => {
         if (e.target === ui.minimapCoords) return;
         if (!joined || player.dead) return;
@@ -2535,7 +2524,7 @@
         const wx = player.x + (e.clientX - cx) * scale;
         const wy = player.y + (e.clientY - cy) * scale;
         player.targetPoint = { x: wx, y: wy };
-        showToast('Waypoint set');
+        showToast(`🧭 Autopilot set to (${Math.round(wx)}, ${Math.round(wy)})`);
       });
 
       function cycleGun() {
@@ -2547,14 +2536,14 @@
       }
 
       // =========================================================================
-      // 13. SIMULATION
+      // 13. SIMULATION LOOP
       // =========================================================================
       let currentTargetEntity = null;
 
       function updateSimulation(dt) {
         if (!joined) return;
 
-        // Respawn countdown
+        // 1. Respawn Countdown (3.0s -> random deep space location)
         if (player.dead) {
           player.respawnTimer -= dt;
           ui.respawnTimerText.textContent = Math.max(0, player.respawnTimer).toFixed(1);
@@ -2567,7 +2556,7 @@
             player.dead = false;
             player.targetPoint = null;
             ui.respawnOverlay.style.display = 'none';
-            showToast('Respawned');
+            showToast('Reborn — building quota reset');
           }
           return;
         }
@@ -2587,7 +2576,7 @@
           if (player.powerups[pKey] > 0) player.powerups[pKey] = Math.max(0, player.powerups[pKey] - dt);
         }
 
-        // Movement
+        // 2. Player Movement (with 2x Hunter Speed Boost when another entity is #1 Richest)
         if (pointerDown && !movingBuildingId) {
           player.targetPoint = {
             x: player.x + (lastPointerClient.x - canvas.width / 2),
@@ -2612,7 +2601,7 @@
           player.x += player.vx * dt;
           player.y += player.vy * dt;
           player.angle = Math.atan2(player.vy, player.vx);
-          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 7.5 * dt);
+          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 5.0 * dt);
         } else if (player.targetPoint) {
           const dx = player.targetPoint.x - player.x;
           const dy = player.targetPoint.y - player.y;
@@ -2623,7 +2612,7 @@
             player.x += player.vx * dt;
             player.y += player.vy * dt;
             player.angle = Math.atan2(player.vy, player.vx);
-            player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 7.5 * dt);
+            player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 5.0 * dt);
           } else {
             player.vx = 0;
             player.vy = 0;
@@ -2632,14 +2621,14 @@
         } else {
           player.vx = 0;
           player.vy = 0;
-          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 2.4 * dt);
+          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 1.8 * dt);
         }
 
         if (stats.beacon) {
-          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 6 * dt);
+          player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 4.5 * dt);
         }
 
-        // Auto-aim & auto-fire (richest target is prioritized when hostile)
+        // 3. Auto-Aim & Auto-Fire (Prioritizing #1 Richest Bounty if hostile)
         const activeZone = getSafeZoneAt(player.x, player.y);
         const gunState = player.guns[player.activeGun];
         const gunSpec = GUN_CATALOG[player.activeGun];
@@ -2676,7 +2665,7 @@
               if (npc.dead || getSafeZoneAt(npc.x, npc.y)) continue;
               if (!isHostileToPlayer(npc.id, npc.gang)) continue;
               const d = Math.hypot(npc.x - player.x, npc.y - player.y);
-              const score = (richest && richest.id === npc.id) ? d - 600 : d;
+              const score = (richest && richest.id === npc.id) ? d - 700 : d;
               if (d <= gunSpec.range + npc.radius && score < bestScore) {
                 bestScore = score;
                 bestTarget = { entity: npc, kind: 'npc', dist: d };
@@ -2686,7 +2675,7 @@
               if (peer.dead || getSafeZoneAt(peer.x, peer.y)) continue;
               if (!isHostileToPlayer(peer.id, peer.gang)) continue;
               const d = Math.hypot(peer.x - player.x, peer.y - player.y);
-              const score = (richest && richest.id === peer.id) ? d - 600 : d;
+              const score = (richest && richest.id === peer.id) ? d - 700 : d;
               if (d <= gunSpec.range + 17 && score < bestScore) {
                 bestScore = score;
                 bestTarget = { entity: peer, kind: 'peer', dist: d };
@@ -2725,7 +2714,7 @@
           }
         }
 
-        // Pickups
+        // 4. Collect Coins, Guns & Powerups
         const magnetRange = player.powerups.magnet > 0 ? 155 : 34;
         for (let i = world.coins.length - 1; i >= 0; i--) {
           const c = world.coins[i];
@@ -2736,7 +2725,7 @@
           }
           if (d <= player.radius + 12) {
             player.coins += c.value;
-            player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 4);
+            player.dashEnergy = Math.min(player.dashMax, player.dashEnergy + 3);
             SoundFX.pickup();
             addFloatText(player.x, player.y - 18, `+${c.value}🪙`, '#fbbf24', 12);
             world.coins.splice(i, 1);
@@ -2776,13 +2765,13 @@
           }
         }
 
-        // Ruby mine channeling
+        // 5. Ruby Mine Channeling (12.5s per Ruby)
         for (const mId of Object.keys(world.mines)) {
           const m = world.mines[mId];
           if (!m) continue;
           const d = Math.hypot(m.x - player.x, m.y - player.y);
           if (d <= 125) {
-            localMineProgress[mId] = (localMineProgress[mId] || 0) + dt * MINE_MINING_RATE;
+            localMineProgress[mId] = (localMineProgress[mId] || 0) + dt * 0.08;
             if (localMineProgress[mId] >= 1) {
               localMineProgress[mId] = 0;
               player.rubies += 1;
@@ -2791,25 +2780,26 @@
               saveUserProfile();
             }
           } else if (localMineProgress[mId] > 0) {
-            localMineProgress[mId] = Math.max(0, localMineProgress[mId] - dt * 0.12);
+            localMineProgress[mId] = Math.max(0, localMineProgress[mId] - dt * 0.06);
           }
         }
 
-        // Passive income from buildings (rates come from the catalog by building type)
+        // 6. Passive Income from Player Buildings
         for (const b of player.buildings) {
-          const spec = BUILDING_CATALOG.find(x => x.id === b.type);
-          const coinRate = spec ? spec.coinRate : (b.coinRate || 0);
-          const rubyRate = spec ? spec.rubyRate : (b.rubyRate || 0);
-          const interval = spec ? spec.interval : 60;
           b._timer = (b._timer || 0) + dt;
+          const interval = b.interval || (b.type === 'solar_extractor' ? 25 : (b.type === 'aether_refinery' ? 45 : 60));
           if (b._timer >= interval) {
             b._timer = 0;
-            if (coinRate) player.coins += coinRate;
-            if (rubyRate) player.rubies += rubyRate;
-            addFloatText(b.x, b.y - 22, `+${coinRate}🪙${rubyRate ? ' +' + rubyRate + '💎' : ''}`, '#fbbf24', 11);
+            if (b.coinRate) player.coins += b.coinRate;
+            if (b.rubyRate) player.rubies += b.rubyRate;
+            const parts = [];
+            if (b.coinRate) parts.push(`+${b.coinRate}🪙`);
+            if (b.rubyRate) parts.push(`+${b.rubyRate}💎`);
+            addFloatText(b.x, b.y - 22, parts.join(' '), '#fbbf24', 11);
           }
         }
 
+        // 7. Update NPCs, Hostiles, Projectiles & Remote Peers
         updateNpcs(dt, richest);
         updateHostiles(dt, richest);
         updateProjectiles(dt, richest);
@@ -2827,7 +2817,7 @@
               npc.x = pos.x;
               npc.y = pos.y;
               npc.hp = npc.maxHp;
-              npc.coins = 5;
+              npc.coins = 4;
               npc.guns = { pulse: 1 };
               npc.activeGun = 'pulse';
               npc.dead = false;
@@ -2844,26 +2834,28 @@
             continue;
           }
 
-          if (npc.hp < npc.maxHp) npc.hp = Math.min(npc.maxHp, npc.hp + 2.2 * dt);
+          if (npc.hp < npc.maxHp) npc.hp = Math.min(npc.maxHp, npc.hp + 1.8 * dt);
           if (npc.fireCooldown > 0) npc.fireCooldown -= dt;
           if (npc.beaconCooldown > 0) npc.beaconCooldown -= dt;
 
-          const spd = bountySpeedMult(npc.id, richest);
+          // Everyone except the #1 richest gets a 2x speed boost
+          const isNpcRichest = richest && richest.id === npc.id;
+          const speedMult = (richest && !isNpcRichest) ? 2.0 : 1.0;
 
-          if (npc.coins >= MINE_COIN_COST && Object.keys(world.mines).length < 10) {
-            npc.coins -= MINE_COIN_COST;
+          if (npc.coins >= MINE_BUILD_COST && Object.keys(world.mines).length < 8) {
+            npc.coins -= MINE_BUILD_COST;
             const id = 'mine_' + npc.id + '_' + Date.now();
             const sz = getSafeZoneAt(npc.x, npc.y);
             const mineObj = {
               id, ownerId: npc.id, ownerName: npc.name, gang: npc.gang,
               x: Math.round(npc.x), y: Math.round(npc.y),
-              hp: 450, maxHp: 450, protected: !!sz, createdAt: Date.now()
+              hp: 550, maxHp: 550, protected: !!sz, createdAt: Date.now()
             };
             world.mines[id] = mineObj;
             AetheriaDB.set(`mines/${id}`, mineObj);
           }
 
-          // Hunt the richest if it is within sight range (560px) and on another team
+          // Prioritize #1 Richest on Leaderboard when spotted within sight range (620px) & NOT on same team
           let huntingRichestTarget = null;
           let targetDist = Infinity;
 
@@ -2875,7 +2867,7 @@
             !getSafeZoneAt(richest.x, richest.y)
           ) {
             const dRich = Math.hypot(richest.x - npc.x, richest.y - npc.y);
-            if (dRich <= 560) {
+            if (dRich <= 620) {
               huntingRichestTarget = richest;
               targetDist = dRich;
             }
@@ -2938,8 +2930,8 @@
 
           if (moveTarget) {
             const d = Math.hypot(moveTarget.x - npc.x, moveTarget.y - npc.y) || 1;
-            npc.vx = ((moveTarget.x - npc.x) / d) * 130 * spd;
-            npc.vy = ((moveTarget.y - npc.y) / d) * 130 * spd;
+            npc.vx = ((moveTarget.x - npc.x) / d) * 125 * speedMult;
+            npc.vy = ((moveTarget.y - npc.y) / d) * 125 * speedMult;
             npc.x += npc.vx * dt;
             npc.y += npc.vy * dt;
             npc.angle = Math.atan2(npc.vy, npc.vx);
@@ -2948,13 +2940,13 @@
             const dx = combatTarget.x - npc.x;
             const dy = combatTarget.y - npc.y;
             const d = Math.hypot(dx, dy) || 1;
-            const chaseSpeed = (huntingRichestTarget ? 142 : 118) * spd;
+            const chaseSpeed = (huntingRichestTarget ? 140 : 115) * speedMult;
             if (d > preferredRange) {
               npc.vx = (dx / d) * chaseSpeed;
               npc.vy = (dy / d) * chaseSpeed;
             } else {
-              npc.vx = (-dy / d) * 86 * spd;
-              npc.vy = (dx / d) * 86 * spd;
+              npc.vx = (-dy / d) * 86 * speedMult;
+              npc.vy = (dx / d) * 86 * speedMult;
             }
             npc.x += npc.vx * dt;
             npc.y += npc.vy * dt;
@@ -2970,8 +2962,8 @@
                 npc.wanderAngle += (Math.random() - 0.5) * 2.4;
               }
             }
-            npc.vx = Math.cos(npc.wanderAngle) * 105 * spd;
-            npc.vy = Math.sin(npc.wanderAngle) * 105 * spd;
+            npc.vx = Math.cos(npc.wanderAngle) * 100 * speedMult;
+            npc.vy = Math.sin(npc.wanderAngle) * 100 * speedMult;
             npc.x += npc.vx * dt;
             npc.y += npc.vy * dt;
             npc.angle = npc.wanderAngle;
@@ -3009,9 +3001,9 @@
             }
           }
 
-          if (combatTarget && !getSafeZoneAt(npc.x, npc.y) && npc.coins >= BEACON_COIN_COST + 2 && npc.beaconCooldown <= 0 && Math.random() < 0.015) {
+          if (combatTarget && !getSafeZoneAt(npc.x, npc.y) && npc.coins >= (BEACON_COIN_COST + 4) && npc.beaconCooldown <= 0 && Math.random() < 0.015) {
             npc.coins -= BEACON_COIN_COST;
-            npc.beaconCooldown = 28;
+            npc.beaconCooldown = 32;
             deployBeacon(npc.id, npc.name, npc.gang, npc.x, npc.y, false);
           }
 
@@ -3029,23 +3021,23 @@
                 1.5,
                 isWorldHost
               );
-              npc.fireCooldown = spec.fireInterval * (huntingRichestTarget ? 1.15 : 1.35);
+              npc.fireCooldown = spec.fireInterval * (huntingRichestTarget ? 1.1 : 1.35);
             }
           }
         }
       }
 
       function updateHostiles(dt, richest) {
-        // Raiders patrol and go for the richest when spotted
+        const speedMult = richest ? 2.0 : 1.0;
+
         for (const r of world.enemies) {
           r.fireCooldown -= dt;
-          const spd = bountySpeedMult(r.id, richest);
           let target = null;
           let bestD = 420;
 
           if (richest && !richest.dead && !getSafeZoneAt(richest.x, richest.y)) {
             const dRich = Math.hypot(richest.x - r.x, richest.y - r.y);
-            if (dRich < 560) {
+            if (dRich < 620) {
               bestD = dRich;
               target = richest;
             }
@@ -3069,8 +3061,8 @@
             const d = Math.hypot(dx, dy) || 1;
             r.angle = Math.atan2(dy, dx);
             if (d > 110) {
-              r.x += (dx / d) * r.speed * spd * dt;
-              r.y += (dy / d) * r.speed * spd * dt;
+              r.x += (dx / d) * r.speed * speedMult * dt;
+              r.y += (dy / d) * r.speed * speedMult * dt;
             }
             if (r.fireCooldown <= 0 && d < 290) {
               fireWeapon(
@@ -3081,26 +3073,24 @@
             }
           } else {
             r.wanderAngle = (r.wanderAngle || 0) + (Math.random() - 0.5) * 1.5 * dt;
-            r.x += Math.cos(r.wanderAngle) * (r.speed * 0.65) * spd * dt;
-            r.y += Math.sin(r.wanderAngle) * (r.speed * 0.65) * spd * dt;
+            r.x += Math.cos(r.wanderAngle) * (r.speed * 0.65) * speedMult * dt;
+            r.y += Math.sin(r.wanderAngle) * (r.speed * 0.65) * speedMult * dt;
             r.angle = r.wanderAngle;
           }
         }
 
-        // Colossus bosses also go for the richest when spotted
         for (const boss of world.bosses) {
           boss.fireCooldown -= dt;
           boss.novaCooldown -= dt;
           boss.angle += 0.4 * dt;
           const isEnraged = boss.hp < boss.maxHp * 0.5;
-          const spd = bountySpeedMult(boss.id, richest);
 
           let target = null;
           let bestD = 640;
 
           if (richest && !richest.dead && !getSafeZoneAt(richest.x, richest.y)) {
             const dRich = Math.hypot(richest.x - boss.x, richest.y - boss.y);
-            if (dRich < 680) {
+            if (dRich < 720) {
               bestD = dRich;
               target = richest;
             }
@@ -3123,8 +3113,8 @@
             const dy = target.y - boss.y;
             const d = Math.hypot(dx, dy) || 1;
             if (d > 170) {
-              boss.x += (dx / d) * boss.speed * spd * (isEnraged ? 1.35 : 1) * dt;
-              boss.y += (dy / d) * boss.speed * spd * (isEnraged ? 1.35 : 1) * dt;
+              boss.x += (dx / d) * boss.speed * speedMult * (isEnraged ? 1.35 : 1) * dt;
+              boss.y += (dy / d) * boss.speed * speedMult * (isEnraged ? 1.35 : 1) * dt;
             }
 
             if (!player.dead && !getSafeZoneAt(player.x, player.y)) {
@@ -3183,6 +3173,7 @@
 
           let hit = false;
 
+          // 1. Incoming hit on Local Player (damagePlayer handles 10x bounty & 5% deduction)
           if (p.ownerId !== player.id && !player.dead && isHostileToPlayer(p.ownerId, p.ownerGang)) {
             if (Math.hypot(p.x - player.x, p.y - player.y) <= player.radius + p.radius) {
               damagePlayer(p.damage, p.ownerName, p.ownerId);
@@ -3190,11 +3181,14 @@
             }
           }
 
+          // 2. Local Player hitting Remote Peers
           if (!hit && p.ownerId === player.id) {
             for (const peer of world.remotePeers.values()) {
               if (peer.dead || !isHostileToPlayer(peer.id, peer.gang)) continue;
               if (Math.hypot(p.x - peer.x, p.y - peer.y) <= 18 + p.radius) {
-                // Raw damage is sent; the target's client applies the bounty modifiers.
+                const isTargetRichest = richest && richest.id === peer.id;
+                const amIRichest = richest && richest.id === player.id;
+                const finalDmg = Math.max(1, Math.round(p.damage * (isTargetRichest ? 10 : 1) * (amIRichest ? 0.95 : 1)));
                 P2PMesh.broadcast({
                   type: 'pvp_hit',
                   targetId: peer.id,
@@ -3202,29 +3196,43 @@
                   attackerId: player.id,
                   attackerName: player.username
                 });
-                const shown = Math.round(applyBountyDamage(p.damage, player.id, peer.id, richest));
-                addFloatText(peer.x, peer.y - 20, p.isCrit ? `CRIT -${shown}!` : `-${shown}`, p.isCrit ? '#fbbf24' : '#38bdf8', 13);
+                addFloatText(
+                  peer.x,
+                  peer.y - 20,
+                  isTargetRichest ? `👑 10x -${finalDmg}!` : (p.isCrit ? `CRIT -${finalDmg}!` : `-${finalDmg}`),
+                  isTargetRichest ? '#fbbf24' : (p.isCrit ? '#fbbf24' : '#38bdf8'),
+                  isTargetRichest ? 15 : 13
+                );
                 hit = true;
                 break;
               }
             }
           }
 
+          // 3. Any Projectile hitting NPCs (10x damage to #1 Richest & 5% deduction when #1 Richest attacks)
           if (!hit) {
             for (const npc of world.npcs) {
               if (npc.dead || npc.id === p.ownerId || npc.gang === p.ownerGang) continue;
               if (p.ownerId === player.id && !isHostileToPlayer(npc.id, npc.gang)) continue;
               if (Math.hypot(p.x - npc.x, p.y - npc.y) <= npc.radius + p.radius) {
-                const dmg = Math.round(applyBountyDamage(p.damage, p.ownerId, npc.id, richest));
-                npc.hp -= dmg;
-                addFloatText(npc.x, npc.y - 18, p.isCrit ? `CRIT -${dmg}!` : `-${dmg}`, p.isCrit ? '#fbbf24' : '#fff', 12);
+                const isTargetRichest = richest && richest.id === npc.id;
+                const isShooterRichest = richest && richest.id === p.ownerId;
+                const finalDmg = Math.max(1, Math.round(p.damage * (isTargetRichest ? 10 : 1) * (isShooterRichest ? 0.95 : 1)));
+
+                npc.hp -= finalDmg;
+                addFloatText(
+                  npc.x,
+                  npc.y - 18,
+                  isTargetRichest ? `👑 10x -${finalDmg}!` : (p.isCrit ? `CRIT -${finalDmg}!` : `-${finalDmg}`),
+                  isTargetRichest ? '#fbbf24' : (p.isCrit ? '#fbbf24' : '#fff'),
+                  isTargetRichest ? 14 : 12
+                );
                 if (npc.hp <= 0) {
-                  const wasRichest = richest && richest.id === npc.id;
-                  if (wasRichest) spawnLootBurst(npc.x, npc.y, 7, 4);
+                  if (isTargetRichest) spawnLootBurst(npc.x, npc.y, 7, 4);
                   npc.dead = true;
                   npc.respawnTimer = 3.0;
                   spawnParticles(npc.x, npc.y, '#fb923c', 16, 130);
-                  if (p.ownerId === player.id) registerKill(2, wasRichest);
+                  if (p.ownerId === player.id) registerKill(2, isTargetRichest);
                 }
                 hit = true;
                 break;
@@ -3232,16 +3240,18 @@
             }
           }
 
+          // 4. Hitting Raiders (5% deduction if shooter is #1 Richest)
           if (!hit && p.ownerGang !== 'raider') {
             for (let j = world.enemies.length - 1; j >= 0; j--) {
               const r = world.enemies[j];
               if (Math.hypot(p.x - r.x, p.y - r.y) <= r.radius + p.radius) {
-                const dmg = Math.round(applyBountyDamage(p.damage, p.ownerId, r.id, richest));
-                r.hp -= dmg;
-                addFloatText(r.x, r.y - 16, `-${dmg}`, '#38bdf8', 11);
+                const isShooterRichest = richest && richest.id === p.ownerId;
+                const finalDmg = Math.max(1, Math.round(p.damage * (isShooterRichest ? 0.95 : 1)));
+                r.hp -= finalDmg;
+                addFloatText(r.x, r.y - 16, `-${finalDmg}`, '#38bdf8', 11);
                 if (r.hp <= 0) {
                   spawnParticles(r.x, r.y, '#38bdf8', 14, 120);
-                  if (p.ownerId === player.id) registerKill(2, false);
+                  if (p.ownerId === player.id) registerKill(1, false);
                   world.enemies.splice(j, 1);
                   spawnRaider();
                 }
@@ -3251,21 +3261,23 @@
             }
           }
 
+          // 5. Hitting Colossus Boss (5% deduction if shooter is #1 Richest)
           if (!hit && p.ownerGang !== 'boss') {
             for (let j = world.bosses.length - 1; j >= 0; j--) {
               const boss = world.bosses[j];
               if (Math.hypot(p.x - boss.x, p.y - boss.y) <= boss.radius + p.radius) {
-                const dmg = Math.round(applyBountyDamage(p.damage, p.ownerId, boss.id, richest));
-                boss.hp -= dmg;
-                addFloatText(boss.x, boss.y - 34, p.isCrit ? `CRIT -${dmg}!` : `-${dmg}`, '#fbbf24', 14);
+                const isShooterRichest = richest && richest.id === p.ownerId;
+                const finalDmg = Math.max(1, Math.round(p.damage * (isShooterRichest ? 0.95 : 1)));
+                boss.hp -= finalDmg;
+                addFloatText(boss.x, boss.y - 34, p.isCrit ? `CRIT -${finalDmg}!` : `-${finalDmg}`, '#fbbf24', 14);
                 if (boss.hp <= 0) {
                   spawnParticles(boss.x, boss.y, '#fb7185', 40, 220);
                   if (p.ownerId === player.id) {
-                    player.rubies += 3;
-                    registerKill(20, false);
+                    player.rubies += 1;
+                    registerKill(12, false);
                   }
                   world.bosses.splice(j, 1);
-                  setTimeout(spawnColossusBoss, 18000);
+                  setTimeout(spawnColossusBoss, 35000);
                 }
                 hit = true;
                 break;
@@ -3273,21 +3285,23 @@
             }
           }
 
+          // 6. Hitting Enemy Ruby Mines
           if (!hit) {
             for (const mId of Object.keys(world.mines)) {
               const m = world.mines[mId];
               if (!m || m.protected || m.ownerId === p.ownerId || m.gang === p.ownerGang) continue;
               if (Math.hypot(p.x - m.x, p.y - m.y) <= 22 + p.radius) {
-                const dmg = Math.round(applyBountyDamage(p.damage, p.ownerId, m.id, richest));
-                m.hp -= dmg;
-                addFloatText(m.x, m.y - 22, `-${dmg}`, '#fb7185', 12);
+                const isShooterRichest = richest && richest.id === p.ownerId;
+                const finalDmg = Math.max(1, Math.round(p.damage * (isShooterRichest ? 0.95 : 1)));
+                m.hp -= finalDmg;
+                addFloatText(m.x, m.y - 22, `-${finalDmg}`, '#fb7185', 12);
                 if (m.hp <= 0) {
                   delete world.mines[mId];
                   delete localMineProgress[mId];
                   AetheriaDB.remove(`mines/${mId}`);
                   spawnParticles(m.x, m.y, '#fb7185', 24, 150);
                   if (p.ownerId === player.id) {
-                    player.rubies += 2;
+                    player.rubies += 1;
                     registerKill(8, false);
                   }
                 }
@@ -3378,7 +3392,7 @@
       }
 
       // =========================================================================
-      // 14. RENDERING
+      // 14. MAIN CANVAS & CIRCULAR RADAR MINIMAP RENDERING
       // =========================================================================
       function resizeCanvas() {
         canvas.width = window.innerWidth;
@@ -3395,7 +3409,7 @@
         ctx.fillStyle = '#03050a';
         ctx.fillRect(0, 0, w, h);
 
-        // Starfield
+        // 0. Parallax Deep-Space Starfield
         for (const st of STAR_FIELD) {
           const sx = ((st.x - player.x * st.parallax) % w + w) % w;
           const sy = ((st.y - player.y * st.parallax) % h + h) % h;
@@ -3408,7 +3422,7 @@
         ctx.save();
         ctx.translate(w / 2 - player.x, h / 2 - player.y);
 
-        // Grid
+        // 1. Infinite Spatial Sector Grid
         const gridSize = 120;
         const startX = Math.floor((player.x - w / 2) / gridSize) * gridSize;
         const endX = player.x + w / 2 + gridSize;
@@ -3428,7 +3442,7 @@
         }
         ctx.stroke();
 
-        // Safe zones
+        // 2. Safe Zones
         for (const z of SAFE_ZONES) {
           const grad = ctx.createRadialGradient(z.x, z.y, 15, z.x, z.y, z.radius);
           grad.addColorStop(0, z.color + '2c');
@@ -3447,13 +3461,13 @@
           ctx.fillStyle = z.color;
           ctx.font = '800 13px Inter, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(`${z.icon} ${z.name}`, z.x, z.y - z.radius + 24);
+          ctx.fillText(`${z.icon} ${z.name.toUpperCase()}`, z.x, z.y - z.radius + 24);
           ctx.fillStyle = 'rgba(226, 232, 240, 0.68)';
           ctx.font = '600 10px Inter, sans-serif';
-          ctx.fillText('Safe zone', z.x, z.y - z.radius + 38);
+          ctx.fillText('SAFE ZONE', z.x, z.y - z.radius + 38);
         }
 
-        // Beacons
+        // 3. Resonance Beacons
         for (const id of Object.keys(world.beacons)) {
           const b = world.beacons[id];
           if (!b) continue;
@@ -3474,10 +3488,10 @@
           ctx.fillStyle = '#fff';
           ctx.font = '700 10px Inter, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(`${b.ownerName}'s beacon`, b.x, b.y - 14);
+          ctx.fillText(`📡 ${b.ownerName}'s Beacon`, b.x, b.y - 14);
         }
 
-        // Ruby mines
+        // 4. Ruby Mines & Live Mining Channel Ring
         for (const mId of Object.keys(world.mines)) {
           const m = world.mines[mId];
           if (!m) continue;
@@ -3512,13 +3526,13 @@
           ctx.fillStyle = '#fb7185';
           ctx.font = '800 11px Inter, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(isMining ? `💎 ${Math.round(prog * 100)}%` : '💎 Ruby mine', m.x, m.y - 31);
+          ctx.fillText(isMining ? `💎 MINING ${Math.round(prog * 100)}%` : '💎 RUBY MINE', m.x, m.y - 31);
           ctx.fillStyle = '#cbd5e1';
           ctx.font = '600 9px Inter, sans-serif';
-          ctx.fillText(`${m.ownerName} • ${m.protected ? 'Safe' : Math.round(m.hp) + ' HP'}`, m.x, m.y + 34);
+          ctx.fillText(`${m.ownerName} • ${m.protected ? 'SAFE' : Math.round(m.hp) + ' HP'}`, m.x, m.y + 34);
         }
 
-        // Player buildings
+        // 5. Passive Income Buildings
         for (const b of player.buildings) {
           ctx.fillStyle = b.color + '33';
           ctx.strokeStyle = b.color;
@@ -3531,10 +3545,10 @@
           ctx.fillStyle = '#fff';
           ctx.font = '700 10px Inter, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(b.name, b.x, b.y - 22);
+          ctx.fillText(`🏛️ ${b.name}`, b.x, b.y - 22);
         }
 
-        // Coins, guns & powerups
+        // 6. Coins, Guns & Powerups
         for (const c of world.coins) {
           ctx.fillStyle = c.value > 1 ? '#f59e0b' : '#fbbf24';
           ctx.beginPath();
@@ -3554,7 +3568,7 @@
           ctx.fillStyle = '#fff';
           ctx.font = '700 9px Inter, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(spec.name, g.x, g.y - 17);
+          ctx.fillText(`🔫 ${spec.name}`, g.x, g.y - 17);
         }
 
         const pColors = { overdrive: '#38bdf8', shield: '#34d399', magnet: '#c084fc', vamp: '#fb7185' };
@@ -3570,7 +3584,7 @@
           ctx.fillText(p.type.toUpperCase(), p.x, p.y - 14);
         }
 
-        // Raiders & bosses
+        // 7. Raiders & Colossus Bosses
         for (const r of world.enemies) {
           drawUnit(r.x, r.y, r.radius, '#991b1b', '#ef4444', r.name, r.hp, r.maxHp, 'HOSTILE', r.angle || 0, false);
         }
@@ -3578,7 +3592,7 @@
           drawUnit(boss.x, boss.y, boss.radius, '#4c0519', '#fb7185', boss.name, boss.hp, boss.maxHp, 'BOSS', boss.angle || 0, false);
         }
 
-        // NPCs
+        // 8. Intelligent NPCs
         for (const npc of world.npcs) {
           if (npc.dead) continue;
           const gm = getGangMeta(npc.gang);
@@ -3587,7 +3601,7 @@
           drawUnit(npc.x, npc.y, npc.radius, gm.c1, gm.stroke, `${npc.name} [${gm.name}]`, npc.hp, npc.maxHp, rel, npc.angle || 0, isRich);
         }
 
-        // Remote players
+        // 9. Remote Online Peers
         for (const peer of world.remotePeers.values()) {
           if (peer.dead) continue;
           const gm = getGangMeta(peer.gang);
@@ -3596,7 +3610,7 @@
           drawUnit(peer.x, peer.y, 17, gm.c1, gm.stroke, `${peer.username} [${gm.name}]`, peer.hp, peer.maxHp, rel, peer.angle || 0, isRich);
         }
 
-        // Local player
+        // 10. Local Player
         if (!player.dead) {
           if (player.targetPoint) {
             ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
@@ -3639,7 +3653,7 @@
           }
         }
 
-        // Projectiles, particles & floating text
+        // 11. Projectiles, Particles & Floating Texts
         for (const p of world.projectiles) {
           ctx.fillStyle = p.color;
           ctx.beginPath();
@@ -3669,7 +3683,6 @@
       }
 
       function drawUnit(x, y, radius, fill, stroke, label, hp, maxHp, tag, angle = 0, isRichest = false) {
-        // Bounty halo
         if (isRichest) {
           ctx.save();
           ctx.strokeStyle = 'rgba(251, 191, 36, 0.85)';
@@ -3681,7 +3694,6 @@
           ctx.restore();
         }
 
-        // Weapon barrel
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(angle);
@@ -3689,7 +3701,6 @@
         ctx.fillRect(radius * 0.4, -3, radius * 0.75, 6);
         ctx.restore();
 
-        // Hull
         ctx.fillStyle = fill;
         ctx.strokeStyle = isRichest ? '#fbbf24' : stroke;
         ctx.lineWidth = 3;
@@ -3698,7 +3709,6 @@
         ctx.fill();
         ctx.stroke();
 
-        // HP bar
         const barW = Math.max(36, radius * 2.2);
         const barH = 5;
         const bx = x - barW / 2;
@@ -3717,7 +3727,7 @@
         if (isRichest) {
           ctx.fillStyle = '#fbbf24';
           ctx.font = '900 10px Inter, sans-serif';
-          ctx.fillText('👑 Bounty', x, by - 17);
+          ctx.fillText('👑 #1 BOUNTY', x, by - 17);
         }
       }
 
@@ -3836,7 +3846,7 @@
       }
 
       // =========================================================================
-      // 15. HUD & MODALS
+      // 15. HUD & MODALS (LEADERBOARD, TELEPORT, SHOP, TREATY, GANGS)
       // =========================================================================
       function updateHud() {
         const stats = getComputedStats();
@@ -3853,30 +3863,39 @@
         ui.killCount.textContent = player.kills;
         ui.onlineCount.textContent = 1 + world.remotePeers.size;
 
-        ui.buildMineBtn.classList.toggle('disabled', player.coins < MINE_COIN_COST);
-        ui.beaconBtn.classList.toggle('disabled', player.coins < BEACON_COIN_COST || player.dashEnergy < BEACON_ENERGY_COST || player.beaconCooldown > 0);
+        ui.buildMineBtn.classList.toggle('disabled', player.coins < MINE_BUILD_COST);
+        ui.beaconBtn.classList.toggle('disabled', player.coins < BEACON_COIN_COST || player.dashEnergy < BEACON_DASH_COST || player.beaconCooldown > 0);
         ui.dashBtn.classList.toggle('disabled', player.dashEnergy < 35);
-        updateTeleportInfo();
+
+        const tpLockedByCost = player.teleportCostEnabled && (
+          player.teleportCooldown > 0 ||
+          player.dashEnergy < TELEPORT_ENERGY_COST ||
+          player.coins < TELEPORT_COIN_COST
+        );
+        ui.teleportBtn.classList.toggle('disabled', tpLockedByCost);
+        ui.teleportBtn.innerHTML = (player.teleportCostEnabled && player.teleportCooldown > 0)
+          ? `🌀 Teleport (${player.teleportCooldown.toFixed(0)}s) <kbd>X</kbd>`
+          : `🌀 Teleport <kbd>X</kbd>`;
 
         const sz = getSafeZoneAt(player.x, player.y);
         if (sz) {
-          ui.zoneText.textContent = `${sz.icon} ${sz.name} • Safe zone`;
+          ui.zoneText.textContent = `${sz.icon} ${sz.name.toUpperCase()} • SAFE ZONE`;
           ui.zoneText.style.color = sz.color;
         } else {
-          ui.zoneText.textContent = 'Deep Space • Combat';
+          ui.zoneText.textContent = `🌌 DEEP SPACE • PVP ACTIVE`;
           ui.zoneText.style.color = '#e2e8f0';
         }
 
         const badges = [];
         if (richest) {
           if (richest.id === player.id) {
-            badges.push(`<div class="bounty-alert-pill">👑 You carry the bounty</div>`);
+            badges.push(`<div class="bounty-alert-pill">👑 #1 BOUNTY • 10× INCOMING DMG</div>`);
           } else {
-            badges.push(`<div class="powerup-pill" style="border-color:rgba(251,191,36,0.55);color:#fde047;">👑 ${richest.name} (${richest.wealth})</div>`);
+            badges.push(`<div class="hunter-buff-pill">⚡ BOUNTY HUNT (${richest.name}): 10× DMG • -5% TAKEN • 2× SPEED</div>`);
           }
         }
-        if (stats.beacon) badges.push(`<div class="powerup-pill">📡 Beacon</div>`);
-        if (stats.coinTier > 0) badges.push(`<div class="powerup-pill">Tier ${stats.coinTier}</div>`);
+        if (stats.beacon) badges.push(`<div class="powerup-pill">📡 Beacon (+35% DMG • -40% Taken)</div>`);
+        if (stats.coinTier > 0) badges.push(`<div class="powerup-pill">📈 Tier ${stats.coinTier} (+${stats.coinTier * 6} HP)</div>`);
         if (player.powerups.overdrive > 0) badges.push(`<div class="powerup-pill">⚡ Overdrive ${player.powerups.overdrive.toFixed(0)}s</div>`);
         if (player.powerups.shield > 0) badges.push(`<div class="powerup-pill">🛡️ Shield ${player.powerups.shield.toFixed(0)}s</div>`);
         if (player.powerups.magnet > 0) badges.push(`<div class="powerup-pill">🧲 Magnet ${player.powerups.magnet.toFixed(0)}s</div>`);
@@ -3919,10 +3938,34 @@
         });
       }
 
-      function openTeleportModal() {
+      function syncTeleportModalUI() {
         ui.tpCurrentCoords.textContent = `(${Math.round(player.x)}, ${Math.round(player.y)})`;
+        ui.tpCostToggleSwitch.classList.toggle('active', player.teleportCostEnabled);
+        ui.tpCostToggleSwitch.setAttribute('aria-checked', String(player.teleportCostEnabled));
+
+        if (player.teleportCostEnabled) {
+          ui.tpCostDesc.textContent = `${TELEPORT_COOLDOWN_SEC}s Cooldown • ${TELEPORT_ENERGY_COST}% Dash • ${TELEPORT_COIN_COST}🪙`;
+          if (player.teleportCooldown > 0) {
+            ui.tpStatusBadge.textContent = `Cooldown ${player.teleportCooldown.toFixed(1)}s`;
+            ui.tpStatusBadge.style.color = '#fb7185';
+          } else {
+            ui.tpStatusBadge.textContent = `${TELEPORT_ENERGY_COST}%⚡ + ${TELEPORT_COIN_COST}🪙`;
+            ui.tpStatusBadge.style.color = '#fbbf24';
+          }
+          const canAfford = player.teleportCooldown <= 0 && player.dashEnergy >= TELEPORT_ENERGY_COST && player.coins >= TELEPORT_COIN_COST;
+          ui.executeTeleportBtn.classList.toggle('disabled', !canAfford);
+        } else {
+          ui.tpCostDesc.textContent = 'Free Teleport (0s • 0% Dash • 0🪙)';
+          ui.tpStatusBadge.textContent = 'Free';
+          ui.tpStatusBadge.style.color = '#34d399';
+          ui.executeTeleportBtn.classList.remove('disabled');
+        }
+      }
+
+      function openTeleportModal() {
         ui.tpXInput.value = Math.round(player.x);
         ui.tpYInput.value = Math.round(player.y);
+        syncTeleportModalUI();
 
         const richest = getRichestTarget();
         const presets = [
@@ -3932,7 +3975,7 @@
         ];
         if (richest && richest.id !== player.id) {
           presets.push({
-            label: `👑 ${richest.name} (${Math.round(richest.x)}, ${Math.round(richest.y)})`,
+            label: `👑 Richest: ${richest.name} (${Math.round(richest.x)}, ${Math.round(richest.y)})`,
             x: Math.round(richest.x),
             y: Math.round(richest.y)
           });
@@ -3954,7 +3997,6 @@
           });
         });
 
-        updateTeleportInfo();
         ui.teleportModal.classList.add('open');
         setTimeout(() => ui.tpXInput.focus(), 40);
       }
@@ -3972,10 +4014,10 @@
                 <div class="row-title" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                   <span>${escapeHtml(e.name)} ${e.isPlayer ? '(You)' : ''}</span>
                   <span class="gang-badge ${gm.css}">${gm.name}</span>
-                  ${isRank1 ? '<span style="font-size:10px;font-weight:900;color:#fbbf24;">• Bounty</span>' : ''}
+                  ${isRank1 ? '<span style="font-size:10px;font-weight:900;color:#fbbf24;">• 10× BOUNTY TARGET</span>' : ''}
                 </div>
                 <div class="row-sub">
-                  🪙 ${e.coins} • 💎 ${e.rubies} • ⚔️ ${e.kills}
+                  🪙 ${e.coins} Coins • 💎 ${e.rubies} Rubies • ⚔️ ${e.kills} Kills
                 </div>
               </div>
             </div>
@@ -3989,6 +4031,11 @@
       }
 
       function openTreatyModal() {
+        const sz = getSafeZoneAt(player.x, player.y);
+        ui.treatyZoneNote.textContent = sz && sz.id === 'treaty'
+          ? 'Inside Treaty Plaza — diplomacy active.'
+          : 'Visit Treaty Board (-480, -260) or use Teleporter.';
+
         let html = '';
         for (const g of GANGS) {
           if (g.id === player.gang) continue;
@@ -4047,19 +4094,28 @@
         ui.treatyModal.classList.add('open');
       }
 
+      function getUpgradeCurrentCost(u, lvl) {
+        return u.baseCost + (lvl * u.stepCost);
+      }
+
       function openShopModal() {
+        const sz = getSafeZoneAt(player.x, player.y);
         ui.shopRubyBalance.textContent = player.rubies;
+        ui.shopZoneNote.textContent = sz && sz.id === 'shop'
+          ? 'Inside Ruby Shop — permanent upgrades & passive structures.'
+          : 'Visit Ruby Shop (480, -260) or use Teleporter.';
 
         ui.shopUpgradesList.innerHTML = SHOP_UPGRADES.map(u => {
           const lvl = player.upgrades[u.id] || 0;
           const maxed = lvl >= u.max;
+          const currentCost = getUpgradeCurrentCost(u, lvl);
           return `<div class="row-card">
             <div class="row-info">
               <div class="row-title">${u.name} (Lv.${lvl}/${u.max})</div>
               <div class="row-sub">${u.desc}</div>
             </div>
-            <div class="btn-pill ruby-btn ${maxed || player.rubies < u.cost ? 'disabled' : ''}" data-upg="${u.id}">
-              ${maxed ? 'MAXED' : `💎 ${u.cost}`}
+            <div class="btn-pill ruby-btn ${maxed || player.rubies < currentCost ? 'disabled' : ''}" data-upg="${u.id}">
+              ${maxed ? 'MAXED' : `💎 ${currentCost}`}
             </div>
           </div>`;
         }).join('');
@@ -4068,9 +4124,12 @@
           btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-upg');
             const item = SHOP_UPGRADES.find(x => x.id === id);
-            if (!item || player.rubies < item.cost) return;
-            player.rubies -= item.cost;
-            player.upgrades[id] = (player.upgrades[id] || 0) + 1;
+            if (!item) return;
+            const lvl = player.upgrades[id] || 0;
+            const currentCost = getUpgradeCurrentCost(item, lvl);
+            if (lvl >= item.max || player.rubies < currentCost) return;
+            player.rubies -= currentCost;
+            player.upgrades[id] = lvl + 1;
             saveUserProfile();
             SoundFX.ruby();
             openShopModal();
@@ -4081,7 +4140,7 @@
           const builtThisLifetime = !!player.lifetimeBuiltBuildings[b.id];
           const isDisabled = builtThisLifetime || player.rubies < b.cost;
           const btnText = builtThisLifetime
-            ? 'Built'
+            ? 'Built This Life'
             : `Build (💎 ${b.cost})`;
           return `<div class="row-card">
             <div class="row-info">
@@ -4095,14 +4154,14 @@
         }).join('');
 
         if (player.buildings.length > 0) {
-          bHtml += `<div style="font-size:11px;font-weight:800;color:#34d399;margin-top:6px;">YOUR BUILDINGS (${player.buildings.length})</div>`;
+          bHtml += `<div style="font-size:11px;font-weight:800;color:#34d399;margin-top:6px;">ACTIVE BUILDINGS (${player.buildings.length})</div>`;
           bHtml += player.buildings.map(owned => `
             <div class="row-card">
               <div class="row-info">
                 <div class="row-title">${owned.name}</div>
                 <div class="row-sub">Position: (${owned.x}, ${owned.y})</div>
               </div>
-              <div class="btn-pill primary" data-move-b="${owned.id}">📍 Move</div>
+              <div class="btn-pill primary" data-move-b="${owned.id}">📍 Relocate</div>
             </div>
           `).join('');
         }
@@ -4112,7 +4171,7 @@
           btn.addEventListener('click', () => {
             const bId = btn.getAttribute('data-buy-b');
             if (player.lifetimeBuiltBuildings[bId]) {
-              showToast('Already built this life');
+              showToast('🏛️ 1 per life — die & reborn to build more');
               return;
             }
             const spec = BUILDING_CATALOG.find(x => x.id === bId);
@@ -4123,6 +4182,7 @@
               id: 'bld_' + Date.now(),
               type: spec.id,
               name: spec.name,
+              interval: spec.interval,
               coinRate: spec.coinRate,
               rubyRate: spec.rubyRate,
               color: spec.color,
@@ -4168,10 +4228,10 @@
       }
 
       // =========================================================================
-      // 16. NETWORK LOOPS
+      // 16. REAL-TIME 30HZ P2P + RTDB NETWORK LOOPS
       // =========================================================================
       function startNetworkLoops() {
-        // P2P state broadcast (30Hz)
+        // 1. Instant 30Hz (33ms) P2P State Broadcast
         setInterval(() => {
           if (!joined) return;
           const stats = getComputedStats();
@@ -4198,7 +4258,7 @@
           });
         }, 33);
 
-        // Same-browser discovery ping (500ms)
+        // 2. Same-browser discovery ping (500ms)
         setInterval(() => {
           if (!joined) return;
           P2PMesh.broadcast({
@@ -4218,7 +4278,7 @@
           });
         }, 500);
 
-        // Host NPC sync over P2P (60ms)
+        // 3. Host 16Hz (60ms) NPC Position & Wealth Sync over P2P
         setInterval(() => {
           if (!joined || !isWorldHost || world.remotePeers.size === 0) return;
           P2PMesh.broadcast({
@@ -4232,7 +4292,7 @@
           });
         }, 60);
 
-        // RTDB session heartbeat (260ms)
+        // 4. Fast 260ms RTDB Session Heartbeat with Wealth
         setInterval(async () => {
           if (!joined) return;
           const stats = getComputedStats();
@@ -4257,7 +4317,7 @@
           });
         }, 260);
 
-        // RTDB listeners: sessions and WebRTC signaling
+        // 5. Real-Time Child Listeners for Session & WebRTC Signaling Updates
         AetheriaDB.onChildEvents(
           'sessions',
           (id, s) => {
@@ -4387,7 +4447,7 @@
           lookupTimer = setTimeout(async () => {
             const saved = await loadUserProfile(val);
             if (saved) {
-              ui.savedProfileBanner.textContent = `Saved: ${saved.kills || 0} kills • ${saved.rubies || 0} rubies • ${getGangMeta(saved.gang).name}`;
+              ui.savedProfileBanner.textContent = `Saved: ${saved.kills || 0} Kills • ${saved.rubies || 0} Rubies • ${getGangMeta(saved.gang).name}`;
               if (saved.gang) {
                 selectedGangId = saved.gang;
                 ui.gangGrid.querySelectorAll('.gang-option').forEach(x => {
@@ -4414,11 +4474,10 @@
           if (saved) {
             player.kills = saved.kills || 0;
             player.rubies = saved.rubies || 0;
-            player.coins = Math.max(15, saved.coins || 15);
+            player.coins = Math.max(5, saved.coins || 5);
             if (saved.upgrades) player.upgrades = { ...player.upgrades, ...saved.upgrades };
             if (Array.isArray(saved.buildings)) player.buildings = saved.buildings;
           }
-          // Fresh building quota on join
           player.lifetimeBuiltBuildings = {};
 
           const gm = getGangMeta(player.gang);
@@ -4456,6 +4515,18 @@
         ui.closeShopBtn.addEventListener('click', () => ui.shopModal.classList.remove('open'));
         ui.closeGangBtn.addEventListener('click', () => ui.gangModal.classList.remove('open'));
 
+        ui.tpCostToggleSwitch.addEventListener('click', () => {
+          player.teleportCostEnabled = !player.teleportCostEnabled;
+          syncTeleportModalUI();
+        });
+        ui.tpCostToggleSwitch.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            player.teleportCostEnabled = !player.teleportCostEnabled;
+            syncTeleportModalUI();
+          }
+        });
+
         ui.executeTeleportBtn.addEventListener('click', () => {
           executeTeleportTo(ui.tpXInput.value, ui.tpYInput.value);
         });
@@ -4464,12 +4535,6 @@
         });
         ui.tpYInput.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') executeTeleportTo(ui.tpXInput.value, ui.tpYInput.value);
-        });
-
-        ui.tpCostToggle.addEventListener('click', () => {
-          teleportCostsEnabled = !teleportCostsEnabled;
-          try { localStorage.setItem('aetheria_tp_costs', teleportCostsEnabled ? 'on' : 'off'); } catch (_) {}
-          updateTeleportInfo();
         });
 
         ui.chatToggleBtn.addEventListener('click', () => ui.chatDrawer.classList.toggle('open'));
@@ -4500,7 +4565,7 @@
       }
 
       // =========================================================================
-      // 18. MAIN LOOP
+      // 18. MAIN ANIMATION LOOP
       // =========================================================================
       let lastTime = performance.now();
       let hudTick = 0;
@@ -4521,6 +4586,9 @@
             renderArsenalBar();
             if (ui.leaderboardModal.classList.contains('open')) {
               openLeaderboardModal();
+            }
+            if (ui.teleportModal.classList.contains('open')) {
+              syncTeleportModalUI();
             }
           }
         }
